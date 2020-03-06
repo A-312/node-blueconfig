@@ -1,6 +1,6 @@
 /**
- * convict-format-with-validator
- * Format 'email', 'ipaddress' and 'url' for convict
+ * blueconfig-format-with-validator
+ * Format 'email', 'ipaddress' and 'url' for blueconfig
  */
 'use strict'
 

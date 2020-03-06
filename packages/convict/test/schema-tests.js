@@ -5,11 +5,11 @@ const expect = chai.expect;
 
 const path = require('path');
 const new_require = require('./new_require.js');
-const convict = new_require('../');
+const blueconfig = new_require('../');
 
-describe('convict schema', function() {
+describe('blueconfig schema', function() {
   let myOwnConf; // init in beforeEach
-  const requiredPropConf = convict({
+  const requiredPropConf = blueconfig({
     foo: {
       none: {
         format: String,
@@ -36,19 +36,19 @@ describe('convict schema', function() {
 
   it('must have the default getters order', function() {
     const order = ['default', 'value', 'env', 'arg', 'force'];
-    expect(convict.getGettersOrder()).to.be.deep.equal(order);
+    expect(blueconfig.getGettersOrder()).to.be.deep.equal(order);
   });
 
   it('must parse a config specification from a file', function() {
     const filepath = path.join(__dirname, 'schema.json');
 
-    expect(() => convict(filepath)).to.not.throw();
+    expect(() => blueconfig(filepath)).to.not.throw();
   });
 
   it('must parse a specification with built-in formats', function() {
     const filepath = path.join(__dirname, 'fixtures/schema-built-in-formats.json');
 
-    expect(() => convict(filepath)).to.not.throw();
+    expect(() => blueconfig(filepath)).to.not.throw();
   });
 
   it('must throw when parsing a specification that reuses a command-line argument', function() {
@@ -63,7 +63,7 @@ describe('convict schema', function() {
       }
     };
 
-    expect(() => convict(schema)).to.throw('bar: uses a already used value in "arg" getter (actual: "BAZ")');
+    expect(() => blueconfig(schema)).to.throw('bar: uses a already used value in "arg" getter (actual: "BAZ")');
   });
 
   it('requiredPropConf must be valid', function() {
@@ -71,7 +71,7 @@ describe('convict schema', function() {
   });
 
   it('must throw if string property is required but undefined', function() {
-    const requiredStringandUndefined = convict({
+    const requiredStringandUndefined = blueconfig({
       foo: {
         none: {
           format: String,
@@ -95,7 +95,7 @@ describe('convict schema', function() {
   });
 
   it('must accept process arguments and environment variables as parameters', function() {
-    const conf = convict({
+    const conf = blueconfig({
       foo: {
         format: String,
         default: 'DEFAULT',
@@ -119,7 +119,7 @@ describe('convict schema', function() {
   describe('after being parsed', function() {
     // >> init myOwnConf before each it
     beforeEach(function() {
-      myOwnConf = convict(path.join(__dirname, 'schema.json'));
+      myOwnConf = blueconfig(path.join(__dirname, 'schema.json'));
     });
     // <<
 
@@ -139,7 +139,7 @@ describe('convict schema', function() {
         }
       };
 
-      expect(() => convict(invalidSchema)).to.throw("_cvtProperties: '_cvtProperties' is reserved word of convict, it can be used like property name.");
+      expect(() => blueconfig(invalidSchema)).to.throw("_cvtProperties: '_cvtProperties' is reserved word of blueconfig, it can be used like property name.");
     });
 
     const expectedProperties = {
@@ -228,10 +228,10 @@ describe('convict schema', function() {
     });
 
     it('must parse exported schema', function() {
-      expect(() => convict(myOwnConf.getSchema())).to.not.throw();
+      expect(() => blueconfig(myOwnConf.getSchema())).to.not.throw();
     });
 
-    it('must returns the data schema (like is stored in convict instance) with debug=true', function() {
+    it('must returns the data schema (like is stored in blueconfig instance) with debug=true', function() {
       const dataSchema = convertFunctionToString(myOwnConf.getSchema(true));
       expect(dataSchema).to.deep.equal(expectedDataSchema);
     });
@@ -317,7 +317,7 @@ describe('convict schema', function() {
       describe('when acting on an Object property', function() {
         // >> init myOwnConf before each it
         beforeEach(function() {
-          myOwnConf = convict(path.join(__dirname, 'fixtures/schema-built-in-formats.json'));
+          myOwnConf = blueconfig(path.join(__dirname, 'fixtures/schema-built-in-formats.json'));
         });
         // <<
 
@@ -371,8 +371,8 @@ describe('convict schema', function() {
   });
 });
 
-describe('convict used multiple times on one schema', function() {
-  const convict = require('../');
+describe('blueconfig used multiple times on one schema', function() {
+  const blueconfig = require('../');
   let schema = {
     publicServerAddress:  {
       doc: 'The public-facing server address',
@@ -381,8 +381,8 @@ describe('convict used multiple times on one schema', function() {
     }
   };
   expect(function() {
-    convict(schema);
-    convict(schema);
+    blueconfig(schema);
+    blueconfig(schema);
   }).to.not.throw();
 });
 

@@ -6,13 +6,13 @@ const expect = chai.expect;
 const validator = require('validator');
 
 const new_require = require('./new_require.js');
-const convict = new_require('../');
+const blueconfig = new_require('../');
 
-describe('convict formats', function() {
+describe('blueconfig formats', function() {
   let conf;
 
   it('must init and parse a schema', function() {
-    convict.addFormat({
+    blueconfig.addFormat({
       name: 'float-percent',
       validate: function(val) {
         if (val !== 0 && (!val || val > 1 || val < 0)) {
@@ -24,7 +24,7 @@ describe('convict formats', function() {
       }
     });
 
-    convict.addFormats({
+    blueconfig.addFormats({
       prime: {
         validate: function(val) {
           function isPrime(n) {
@@ -49,7 +49,7 @@ describe('convict formats', function() {
       }
     });
 
-    conf = convict({
+    conf = blueconfig({
       foo: {
         enum: {
           format: ['foo', 'bar'],
@@ -131,7 +131,7 @@ describe('convict formats', function() {
 
   describe('predefined formats', function() {
     describe('port_or_windows_named_pipe', function() {
-      let conf = convict({
+      let conf = blueconfig({
         port: {
           format: 'port_or_windows_named_pipe',
           default: '1234',
@@ -173,7 +173,7 @@ describe('convict formats', function() {
       });
 
       it('must throw for invalid ports', function() {
-        let conf = convict({
+        let conf = blueconfig({
           invalid: {
             format: 'port_or_windows_named_pipe',
             default: '235235452355',
@@ -185,7 +185,7 @@ describe('convict formats', function() {
 
       it('must throw for invalid pipes', function() {
 
-        let conf = convict({
+        let conf = blueconfig({
           invalid: {
             format: 'port_or_windows_named_pipe',
             default: '\\.pipe\\test',
@@ -205,7 +205,7 @@ describe('convict formats', function() {
       }
     };
 
-    expect(() => convict(schema)).to.throw('foo: uses an unknown format type (actual: "unknown")');
+    expect(() => blueconfig(schema)).to.throw('foo: uses an unknown format type (actual: "unknown")');
   });
 
   it('must accept undefined as a default', function() {
@@ -240,7 +240,7 @@ describe('convict formats', function() {
       'sources': [
         {
           'type': 'git',
-          'url': 'https://github.com/mozilla/node-convict.git'
+          'url': 'https://github.com/mozilla/node-blueconfig.git'
         },
         {
           'type': 'git',
@@ -253,7 +253,7 @@ describe('convict formats', function() {
       'sources': [
         {
           'type': 'git',
-          'url': 'https:/(è_é)/github.com/mozilla/node-convict.git'
+          'url': 'https:/(è_é)/github.com/mozilla/node-blueconfig.git'
         },
         {
           'type': 'git',
@@ -263,7 +263,7 @@ describe('convict formats', function() {
     };
 
     it('must parse a config specification', function() {
-      convict.addFormat({
+      blueconfig.addFormat({
         name: 'source-array',
         validate: function(sources, schema) {
           if (!Array.isArray(sources)) {
@@ -271,22 +271,22 @@ describe('convict formats', function() {
           }
 
           sources.forEach((source) => {
-            convict(schema.children).load(source).validate();
+            blueconfig(schema.children).load(source).validate();
           })
         }
       });
     });
 
-    it('must add url format of convict-format-with-validator', function() {
-      convict.addFormat(require('convict-format-with-validator')['url']);
+    it('must add url format of blueconfig-format-with-validator', function() {
+      blueconfig.addFormat(require('blueconfig-format-with-validator')['url']);
     });
 
     it('must validate children value without throw an Error', function() {
-      expect(() => convict(schema).load(config).validate()).to.not.throw();
+      expect(() => blueconfig(schema).load(config).validate()).to.not.throw();
     });
 
     it('successfully fails to validate incorrect children values', function() {
-      expect(() => convict(schema).load(configWithError).validate()).to.throw('url: must be a URL: value was "https:/(è_é)/github.com/mozilla/node-convict.git');
+      expect(() => blueconfig(schema).load(configWithError).validate()).to.throw('url: must be a URL: value was "https:/(è_é)/github.com/mozilla/node-blueconfig.git');
     });
   });
 });

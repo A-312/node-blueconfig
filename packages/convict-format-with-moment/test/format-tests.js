@@ -5,19 +5,19 @@ const expect = chai.expect;
 
 const moment = require('moment');
 
-const new_require = require('../../convict/test/new_require.js');
-const convict = new_require('../../convict/');
+const new_require = require('../../blueconfig/test/new_require.js');
+const blueconfig = new_require('../../blueconfig/');
 
-describe('convict formats', function() {
+describe('blueconfig formats', function() {
   let conf;
 
-  it('must add "duration" and "timestamp" format with convict-format-with-moment', function() {
-    convict.addFormat(require('../').duration);
-    convict.addFormat(require('../').timestamp);
+  it('must add "duration" and "timestamp" format with blueconfig-format-with-moment', function() {
+    blueconfig.addFormat(require('../').duration);
+    blueconfig.addFormat(require('../').timestamp);
   });
 
   it('must parse a config specification', function() {
-    conf = convict({
+    conf = blueconfig({
       foo: {
         date: {
           format: 'timestamp',

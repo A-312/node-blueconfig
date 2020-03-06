@@ -1,6 +1,6 @@
 'use strict';
 
-exports.formats = require('convict-format-with-validator');
+exports.formats = require('blueconfig-format-with-validator');
 
 exports.conf = {
   ip: {

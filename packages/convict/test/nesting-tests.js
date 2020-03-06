@@ -4,7 +4,7 @@ const chai = require('chai');
 const expect = chai.expect;
 
 const new_require = require('./new_require.js');
-const convict = new_require('../');
+const blueconfig = new_require('../');
 
 const strictMode = {
   allowed: 'strict'
@@ -13,12 +13,12 @@ const strictMode = {
 describe('deep nested tree structure', function() {
   let conf;
 
-  it('must add formats of convict-format-with-validator', function() {
-    convict.addFormats(require('convict-format-with-validator'));
+  it('must add formats of blueconfig-format-with-validator', function() {
+    blueconfig.addFormats(require('blueconfig-format-with-validator'));
   });
 
   it('must parse a deep nested schema', function() {
-    conf = convict({
+    conf = blueconfig({
       db: {
         name: {
           format: String,

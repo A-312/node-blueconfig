@@ -1,13 +1,13 @@
-# Convict-moment
+# Blueconfig-moment
 
-[![NPM version](http://img.shields.io/npm/v/convict-format-with-moment.svg)](https://www.npmjs.org/package/convict-format-with-moment)
+[![NPM version](http://img.shields.io/npm/v/blueconfig-format-with-moment.svg)](https://www.npmjs.org/package/blueconfig-format-with-moment)
 
-Format 'duration' and 'timestamp' for convict with momentjs.
+Format 'duration' and 'timestamp' for blueconfig with momentjs.
 
 ## Install
 
 ```shell
-npm install convict-format-with-moment
+npm install blueconfig-format-with-moment
 ```
 
 ## Usage
@@ -15,13 +15,13 @@ npm install convict-format-with-moment
 An example `config.js` file:
 
 ```javascript
-const convict = require('convict');
+const blueconfig = require('blueconfig');
 
-convict.addFormat(require('convict-format-with-moment').duration);
-convict.addFormat(require('convict-format-with-moment').timestamp);
+blueconfig.addFormat(require('blueconfig-format-with-moment').duration);
+blueconfig.addFormat(require('blueconfig-format-with-moment').timestamp);
 
 // Define a schema
-var config = convict({
+var config = blueconfig({
   format: {
     format: 'duration'
   },
@@ -40,4 +40,4 @@ Use [moment.js](http://momentjs.com/) to validate:
 
 ### Coercion
 
-Convict will automatically coerce strings variables to their proper types when importing them. `duration` and `timestamp` are also parse and converted into numbers, though they utilize [moment.js](http://momentjs.com/) for date parsing.
+Blueconfig will automatically coerce strings variables to their proper types when importing them. `duration` and `timestamp` are also parse and converted into numbers, though they utilize [moment.js](http://momentjs.com/) for date parsing.

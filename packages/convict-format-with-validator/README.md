@@ -1,13 +1,13 @@
-# Convict-validator
+# Blueconfig-validator
 
-[![NPM version](http://img.shields.io/npm/v/convict-format-with-validator.svg)](https://www.npmjs.org/package/convict-format-with-validator)
+[![NPM version](http://img.shields.io/npm/v/blueconfig-format-with-validator.svg)](https://www.npmjs.org/package/blueconfig-format-with-validator)
 
-Format 'email', 'ipaddress' and 'url' for convict with validatorjs.
+Format 'email', 'ipaddress' and 'url' for blueconfig with validatorjs.
 
 ## Install
 
 ```shell
-npm install convict-format-with-validator
+npm install blueconfig-format-with-validator
 ```
 
 ## Usage
@@ -15,16 +15,16 @@ npm install convict-format-with-validator
 An example `config.js` file:
 
 ```javascript
-const convict = require('convict');
+const blueconfig = require('blueconfig');
 
-convict.addFormat(require('convict-format-with-validator').ipaddress);
-convict.addFormat(require('convict-format-with-validator').port);
+blueconfig.addFormat(require('blueconfig-format-with-validator').ipaddress);
+blueconfig.addFormat(require('blueconfig-format-with-validator').port);
 
 // or :
-// convict.addFormats(require('convict-format-with-validator'));
+// blueconfig.addFormats(require('blueconfig-format-with-validator'));
 
 // Define a schema
-var config = convict({
+var config = blueconfig({
   ip: {
     doc: 'The IP address to bind.',
     format: 'ipaddress',
@@ -51,4 +51,4 @@ Use [validator.js](https://github.com/chriso/node-validator#list-of-validation-m
 
 ### Coercion
 
-Convict will automatically coerce strings variables to their proper types when importing them.
+Blueconfig will automatically coerce strings variables to their proper types when importing them.

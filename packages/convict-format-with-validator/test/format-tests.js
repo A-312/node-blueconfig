@@ -3,18 +3,18 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const new_require = require('../../convict/test/new_require.js');
-const convict = new_require('../../convict/');
+const new_require = require('../../blueconfig/test/new_require.js');
+const blueconfig = new_require('../../blueconfig/');
 
-describe('convict formats', function() {
+describe('blueconfig formats', function() {
   let conf;
 
-  it('must add formats ("email", "ipaddress" and "url") with convict-format-with-validator', function() {
-    convict.addFormats(require('../'));
+  it('must add formats ("email", "ipaddress" and "url") with blueconfig-format-with-validator', function() {
+    blueconfig.addFormats(require('../'));
   });
 
   it('must parse a config specification', function() {
-    conf = convict({
+    conf = blueconfig({
       foo: {
         host: {
           format: 'ipaddress',

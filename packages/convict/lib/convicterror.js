@@ -2,11 +2,11 @@
 
 /**
   * class parent allows to do:
-  * if (myError instanceof CONVICT_ERROR) {
-  *   console.log('is convict error');
+  * if (myError instanceof BLUECONFIG_ERROR) {
+  *   console.log('is blueconfig error');
   * }
  **/
-class CONVICT_ERROR extends Error {
+class BLUECONFIG_ERROR extends Error {
   constructor(message) {
     super(message);
     return this;
@@ -15,10 +15,10 @@ class CONVICT_ERROR extends Error {
 
 
 // =========================================
-// ============= CONVICT ERROR =============
+// ============= BLUECONFIG ERROR =============
 // =========================================
 
-// new Error = Probably a convict internal error
+// new Error = Probably a blueconfig internal error
 
 // =========================================
 // ============= INSIDE ERROR ==============
@@ -26,7 +26,7 @@ class CONVICT_ERROR extends Error {
 // =========================================
 // This is probably a js/application problem.
 
-class SCHEMA_INVALID extends CONVICT_ERROR {
+class SCHEMA_INVALID extends BLUECONFIG_ERROR {
   constructor(fullName, message, value) {
     super(`${fullName}: ${message}`);
     this.fullName = fullName;
@@ -43,7 +43,7 @@ class SCHEMA_INVALID extends CONVICT_ERROR {
 // ========================================= or wrong path with get/set/default/reset/getOrigin function.
 // This is probably a js/application problem.
 
-class CUSTOMISE_FAILED extends CONVICT_ERROR {
+class CUSTOMISE_FAILED extends BLUECONFIG_ERROR {
   constructor(message) {
     super(message);
     this.type = 'CUSTOMISE_FAILED';
@@ -52,16 +52,16 @@ class CUSTOMISE_FAILED extends CONVICT_ERROR {
   }
 }
 
-class INCORRECT_USAGE extends CONVICT_ERROR {
+class INCORRECT_USAGE extends BLUECONFIG_ERROR {
   constructor(message) {
     super(message);
     this.type = 'INCORRECT_USAGE';
-    this.doc = 'Incorrect usage of convict function, maybe wrong parameter, fix your javascript code to continue.';
+    this.doc = 'Incorrect usage of blueconfig function, maybe wrong parameter, fix your javascript code to continue.';
     return this;
   }
 }
 
-class PATH_INVALID extends CONVICT_ERROR {
+class PATH_INVALID extends BLUECONFIG_ERROR {
   constructor(fullName, lastPosition, parent) {
     let path = parent.path;
     const state = (() => {
@@ -92,7 +92,7 @@ class PATH_INVALID extends CONVICT_ERROR {
 // =========================================
 // This is probably a config problem.
 
-class VALUE_INVALID extends CONVICT_ERROR {
+class VALUE_INVALID extends BLUECONFIG_ERROR {
   constructor(message) {
     super(message);
     this.type = 'VALUE_INVALID';
@@ -101,7 +101,7 @@ class VALUE_INVALID extends CONVICT_ERROR {
   }
 }
 
-class VALIDATE_FAILED extends CONVICT_ERROR {
+class VALIDATE_FAILED extends BLUECONFIG_ERROR {
   constructor(message) {
     super('Validate failed because wrong value(s):\n' + message);
     this.type = 'VALIDATE_FAILED';
@@ -110,7 +110,7 @@ class VALIDATE_FAILED extends CONVICT_ERROR {
   }
 }
 
-class FORMAT_INVALID extends CONVICT_ERROR {
+class FORMAT_INVALID extends BLUECONFIG_ERROR {
   constructor(fullName, message, getter, getterValue, value) {
     super(message);
     this.fullName = fullName;
@@ -125,7 +125,7 @@ class FORMAT_INVALID extends CONVICT_ERROR {
 }
 
 module.exports = {
-  CONVICT_ERROR,
+  BLUECONFIG_ERROR,
   // 1
   SCHEMA_INVALID,
   // 2

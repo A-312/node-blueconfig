@@ -4,13 +4,13 @@ const chai = require('chai');
 const expect = chai.expect;
 
 const new_require = require('./new_require.js');
-const convict = new_require('../');
+const blueconfig = new_require('../');
 
-describe('convict get function', function() {
+describe('blueconfig get function', function() {
   let conf;
 
   it('must parse a schema', function() {
-    conf = convict({
+    conf = blueconfig({
       env: {
         format: ['bar', 'baz', 'foo'],
         default: 'bar',
@@ -57,7 +57,7 @@ describe('convict get function', function() {
 
   it('must have the default getters order', function() {
     const order = ['default', 'value', 'env', 'arg', 'force'];
-    expect(convict.getGettersOrder()).to.be.deep.equal(order);
+    expect(blueconfig.getGettersOrder()).to.be.deep.equal(order);
   });
 
   it('must be valid', function() {
@@ -98,7 +98,7 @@ describe('convict get function', function() {
     });
 
     it('must parse with custom default substitute', function() {
-      conf = convict({
+      conf = blueconfig({
         // default
         '[cvt]default': {
           default: 'myDefaultValue',

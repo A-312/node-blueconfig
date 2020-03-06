@@ -1,5 +1,5 @@
 /**
- * convict
+ * blueconfig
  * Configuration management with support for environmental variables, files,
  * and validation.
  */
@@ -10,9 +10,9 @@ const parseArgs = require('yargs-parser');
 const cloneDeep = require('lodash.clonedeep');
 const parsePath = require('objectpath').parse;
 const stringifyPath = require('objectpath').stringify;
-const cvtError  = require('./convicterror.js');
+const cvtError  = require('./blueconfigerror.js');
 
-const CONVICT_ERROR = cvtError.CONVICT_ERROR;
+const BLUECONFIG_ERROR = cvtError.BLUECONFIG_ERROR;
 // 1
 const SCHEMA_INVALID = cvtError.SCHEMA_INVALID;
 // 2
@@ -218,7 +218,7 @@ const BUILT_INS = BUILT_IN_NAMES.map(function(name) {
 
 function parsingSchema(name, rawSchema, props, fullName) {
   if (name === '_cvtProperties') {
-    throw new SCHEMA_INVALID(fullName, "'_cvtProperties' is reserved word of convict, it can be used like property name.");
+    throw new SCHEMA_INVALID(fullName, "'_cvtProperties' is reserved word of blueconfig, it can be used like property name.");
   }
 
   const countChildren = (rawSchema) ? Object.keys(rawSchema).length : 0;
@@ -551,7 +551,7 @@ function walk(obj, path, initializeMissing) {
   return obj;
 }
 
-function convertSchema(nodeSchema, convictProperties) {
+function convertSchema(nodeSchema, blueconfigProperties) {
   if (!nodeSchema || typeof nodeSchema !== 'object' || Array.isArray(nodeSchema)) {
     return nodeSchema;
   } else if (nodeSchema._cvtProperties) {
@@ -563,7 +563,7 @@ function convertSchema(nodeSchema, convictProperties) {
       let keyname = name;
       if (typeof nodeSchema[name] === 'function') {
         return;
-      } else if (name === 'default' && convictProperties) {
+      } else if (name === 'default' && blueconfigProperties) {
         keyname = this._defaultSubstitute;
       }
 
@@ -577,14 +577,14 @@ function convertSchema(nodeSchema, convictProperties) {
 /**
  * @returns a config object
  */
-const convict = function convict(def, opts) {
+const blueconfig = function blueconfig(def, opts) {
 
   // TODO: Rename this `rv` variable (supposedly "return value") into something
-  // more meaningful.   ^^ --> rv != convict (-> rv is local & convict is global)
+  // more meaningful.   ^^ --> rv != blueconfig (-> rv is local & blueconfig is global)
   const rv = {
     /**
      * Gets the array of process arguments, using the override passed to the
-     * convict function or process.argv if no override was passed.
+     * blueconfig function or process.argv if no override was passed.
      */
     getArgs: function() {
       return (opts && opts.args) || process.argv.slice(2);
@@ -592,7 +592,7 @@ const convict = function convict(def, opts) {
 
     /**
      * Gets the environment variable map, using the override passed to the
-     * convict function or process.env if no override was passed.
+     * blueconfig function or process.env if no override was passed.
      */
     getEnv: function() {
       return (opts && opts.env) || process.env;
@@ -850,8 +850,8 @@ const convict = function convict(def, opts) {
               }
             }
 
-            if (!(err instanceof CONVICT_ERROR)) {
-              let warning = '[/!\\ this is probably convict internal error]';
+            if (!(err instanceof BLUECONFIG_ERROR)) {
+              let warning = '[/!\\ this is probably blueconfig internal error]';
               if (process.stdout.isTTY) {
                 warning = BOLD_YELLOW_TEXT + warning + RESET_TEXT;
               }
@@ -964,14 +964,14 @@ function sortGetters(currentOrder, newOrder) {
 /**
  * Gets array with getter name in the current order of priority
  */
-convict.getGettersOrder = function() {
+blueconfig.getGettersOrder = function() {
   return cloneDeep(getters.order);
 };
 
 /**
  * Orders getters
  */
-convict.sortGetters = function(newOrder) {
+blueconfig.sortGetters = function(newOrder) {
   const sortFilter = sortGetters(getters.order, newOrder);
 
   getters.order.sort(sortFilter);
@@ -980,7 +980,7 @@ convict.sortGetters = function(newOrder) {
 /**
  * Adds a new custom getter
  */
-convict.addGetter = function(property, getter, usedOnlyOnce, rewrite) {
+blueconfig.addGetter = function(property, getter, usedOnlyOnce, rewrite) {
   if (typeof property === 'object') {
     getter = property.getter;
     usedOnlyOnce = property.usedOnlyOnce;
@@ -1012,12 +1012,12 @@ convict.addGetter = function(property, getter, usedOnlyOnce, rewrite) {
   };
 };
 
-convict.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value));
-convict.sortGetters(['default', 'value']); // set default before value
-convict.addGetter('env', function(value, schema, stopPropagation) {
+blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value));
+blueconfig.sortGetters(['default', 'value']); // set default before value
+blueconfig.addGetter('env', function(value, schema, stopPropagation) {
   return schema._cvtCoerce(this.getEnv()[value]);
 });
-convict.addGetter('arg', function(value, schema, stopPropagation) {
+blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
   const argv = parseArgs(this.getArgs(), {
     configuration: {
       'dot-notation': false
@@ -1029,10 +1029,10 @@ convict.addGetter('arg', function(value, schema, stopPropagation) {
 /**
  * Adds new custom getters
  */
-convict.addGetters = function(getters) {
+blueconfig.addGetters = function(getters) {
   Object.keys(getters).forEach(function(property) {
     const child = getters[property];
-    convict.addGetter(property, child.getter, child.usedOnlyOnce, child.rewrite);
+    blueconfig.addGetter(property, child.getter, child.usedOnlyOnce, child.rewrite);
   });
 };
 
@@ -1040,7 +1040,7 @@ convict.addGetters = function(getters) {
 /**
  * Adds a new custom format
  */
-convict.addFormat = function(name, validate, coerce, rewrite) {
+blueconfig.addFormat = function(name, validate, coerce, rewrite) {
   if (typeof name === 'object') {
     validate = name.validate;
     coerce = name.coerce;
@@ -1066,16 +1066,16 @@ convict.addFormat = function(name, validate, coerce, rewrite) {
 /**
  * Adds new custom formats
  */
-convict.addFormats = function(formats) {
+blueconfig.addFormats = function(formats) {
   Object.keys(formats).forEach(function(name) {
-    convict.addFormat(name, formats[name].validate, formats[name].coerce, formats[name].rewrite);
+    blueconfig.addFormat(name, formats[name].validate, formats[name].coerce, formats[name].rewrite);
   });
 };
 
 /**
  * Adds a new custom file parser
  */
-convict.addParser = function(parsers) {
+blueconfig.addParser = function(parsers) {
   if (!Array.isArray(parsers)) parsers = [parsers];
 
   parsers.forEach(function(parser) {
@@ -1093,4 +1093,4 @@ convict.addParser = function(parsers) {
   });
 };
 
-module.exports = convict;
+module.exports = blueconfig;

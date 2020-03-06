@@ -4,10 +4,10 @@ const chai = require('chai');
 const expect = chai.expect;
 
 const new_require = require('./new_require.js');
-const convict = new_require('../');
+const blueconfig = new_require('../');
 
-describe('convict set function', function() {
-  const conf = convict({
+describe('blueconfig set function', function() {
+  const conf = blueconfig({
     color: {
       format: 'String',
       default: 'green',
@@ -21,7 +21,7 @@ describe('convict set function', function() {
 
   it('must have the default getters order', function() {
     const order = ['default', 'value', 'env', 'arg', 'force'];
-    expect(convict.getGettersOrder()).to.be.deep.equal(order);
+    expect(blueconfig.getGettersOrder()).to.be.deep.equal(order);
   });
 
   const result = (value, getter) => ({ value, getter });

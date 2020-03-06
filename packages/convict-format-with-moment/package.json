@@ -1,22 +1,22 @@
 {
   "author": "Lloyd Hilaiel <lloyd@hilaiel.com> (http://lloyd.io)",
-  "name": "convict-format-with-moment",
-  "description": "Format 'duration' and 'timestamp' for convict",
+  "name": "blueconfig-format-with-moment",
+  "description": "Format 'duration' and 'timestamp' for blueconfig",
   "keywords": [
-    "convict",
-    "convict-format",
+    "blueconfig",
+    "blueconfig-format",
     "duration",
     "timestamp",
     "moment"
   ],
   "version": "0.1.0",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/mozilla/node-convict",
+  "homepage": "https://github.com/mozilla/node-blueconfig",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mozilla/node-convict/tree/master/packages/convict-format-with-moment"
+    "url": "https://github.com/mozilla/node-blueconfig/tree/master/packages/blueconfig-format-with-moment"
   },
-  "bugs": "https://github.com/mozilla/node-convict/issues",
+  "bugs": "https://github.com/mozilla/node-blueconfig/issues",
   "engines": {
     "node": ">=6"
   },
@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "chai": "4.2.0",
-    "convict": "file:../convict",
+    "blueconfig": "file:../blueconfig",
     "eslint": "6.5.1",
     "mocha": "6.2.2"
   }

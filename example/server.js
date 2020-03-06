@@ -2,11 +2,11 @@
 
 const path = require('path');
 const http = require('http');
-const convict = require('convict');
+const blueconfig = require('blueconfig');
 
-convict.addFormat(require('convict-format-with-validator').ipaddress);
+blueconfig.addFormat(require('blueconfig-format-with-validator').ipaddress);
 
-let conf = convict({
+let conf = blueconfig({
   ip: {
     doc: 'The IP Address to bind.',
     format: 'ipaddress',

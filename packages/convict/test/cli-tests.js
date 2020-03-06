@@ -39,18 +39,18 @@ describe('CLI tests', function() {
       const state = (typeof expectedOutput === 'string') ? 'throw' : 'not throw';
       let conf;
 
-      it('Convict must ' + state, function() {
+      it('Blueconfig must ' + state, function() {
         function init() {
-          const convict = new_require('../');
+          const blueconfig = new_require('../');
           const settings = require(path.join(__dirname, 'cases', name + '.js'));
 
           if (settings.formats) {
             if (Array.isArray(settings.formats)) {
               settings.formats.forEach(function(formats) {
-                convict.addFormats(formats);
+                blueconfig.addFormats(formats);
               });
             } else {
-              convict.addFormats(settings.formats);
+              blueconfig.addFormats(settings.formats);
             }
           }
 
@@ -68,7 +68,7 @@ describe('CLI tests', function() {
             opts.strictParsing = true;
           }
 
-          conf = convict(settings.conf, opts);
+          conf = blueconfig(settings.conf, opts);
           if (settings.data) {
             if (Array.isArray(settings.data)) {
               settings.data.forEach((data) => conf.load(data));

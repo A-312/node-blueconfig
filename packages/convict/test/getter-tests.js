@@ -4,18 +4,18 @@ const chai = require('chai');
 const expect = chai.expect;
 
 const new_require = require('./new_require.js');
-const convict = new_require('../');
+const blueconfig = new_require('../');
 
-describe('convict getters', function() {
+describe('blueconfig getters', function() {
   let conf;
 
   it('must have the default getters order', function() {
     const order = ['default', 'value', 'env', 'arg', 'force'];
-    expect(convict.getGettersOrder()).to.be.deep.equal(order);
+    expect(blueconfig.getGettersOrder()).to.be.deep.equal(order);
   });
 
   it('must init and set custom getters', function() {
-    convict.addGetter({
+    blueconfig.addGetter({
       property: 'ghost',
       getter: (value, schema, stopPropagation) => {
         stopPropagation();
@@ -23,21 +23,21 @@ describe('convict getters', function() {
       }
     });
 
-    convict.addGetters({
+    blueconfig.addGetters({
       'answer': {
         getter: (value, schema, stopPropagation) => 'Yes, you can.',
         usedOnlyOnce: true
       }
     });
 
-    convict.addGetter({
+    blueconfig.addGetter({
       property: 'answer_no',
       getter: (value, schema, stopPropagation) => 'No, you cannot.'
     });
   });
 
   it('must parse a schema with custom getters', function() {
-    conf = convict({
+    conf = blueconfig({
       plane: {
         default: 'foo',
         answer: 'Can I fly?'
@@ -73,24 +73,24 @@ describe('convict getters', function() {
   const perfectOrder = ['default', 'value', 'env', 'arg', 'answer', 'answer_no', 'ghost', 'force'];
 
   it('must throw with an incorrect getter order', function() {
-    expect(() => convict.sortGetters('bad')).to.throw('Invalid argument: newOrder must be an array.');
-    expect(() => convict.sortGetters(['default', 'value', 'force', 'env'])).to.throw('Invalid order: force cannot be sorted');
-    expect(() => convict.sortGetters(['default', 'env'])).to.throw('Invalid order: several getters are missed: value, arg, ghost, answer, answer_no');
+    expect(() => blueconfig.sortGetters('bad')).to.throw('Invalid argument: newOrder must be an array.');
+    expect(() => blueconfig.sortGetters(['default', 'value', 'force', 'env'])).to.throw('Invalid order: force cannot be sorted');
+    expect(() => blueconfig.sortGetters(['default', 'env'])).to.throw('Invalid order: several getters are missed: value, arg, ghost, answer, answer_no');
     const wrongOrder = ['default', 'value', 'env', 'arg', 'ghost', 'answer', 'answer_no', 'charlie'];
-    expect(() => convict.sortGetters(wrongOrder)).to.throw('Invalid order: unknown getter: charlie');
+    expect(() => blueconfig.sortGetters(wrongOrder)).to.throw('Invalid order: unknown getter: charlie');
   });
 
   it('must change the current order', function() {
-    expect(convict.getGettersOrder()).to.be.deep.equal(wrongOrder);
-    convict.sortGetters(perfectOrder);
-    expect(convict.getGettersOrder()).to.be.deep.equal(perfectOrder);
+    expect(blueconfig.getGettersOrder()).to.be.deep.equal(wrongOrder);
+    blueconfig.sortGetters(perfectOrder);
+    expect(blueconfig.getGettersOrder()).to.be.deep.equal(perfectOrder);
     expect(conf.getGettersOrder()).to.be.deep.equal(wrongOrder);
 
     const testOrder = ['default', 'value', 'arg', 'env', 'ghost', 'answer', 'answer_no', 'force'];
     conf.sortGetters(testOrder);
 
     expect(conf.getGettersOrder()).to.be.deep.equal(testOrder);
-    expect(convict.getGettersOrder()).to.be.deep.equal(perfectOrder);
+    expect(blueconfig.getGettersOrder()).to.be.deep.equal(perfectOrder);
   });
 
   it('must failed because custom getter order', function() {
@@ -141,26 +141,26 @@ describe('convict getters', function() {
     const expected = 'The getter property name "answer" is already registered. Set the 4th argument (rewrite) of `addGetter` at true to skip this error.';
     const getter = (value, schema, stopPropagation) => 'Yes, you can.';
 
-    expect(() => convict.addGetter('answer', getter)).to.throw(expected);
+    expect(() => blueconfig.addGetter('answer', getter)).to.throw(expected);
   });
 
   it('must accept only fonction', function() {
     const expected = 'Getter function for "bad" must be a function';
     const str = 'not a function';
 
-    expect(() => convict.addGetter('bad', str)).to.throw(expected);
+    expect(() => blueconfig.addGetter('bad', str)).to.throw(expected);
   });
 
   it('must not accept getter name: value', function() {
     const expected = 'Getter name use a reservated word: value';
 
-    expect(() => convict.addGetter('value', (v) => v)).to.throw(expected);
+    expect(() => blueconfig.addGetter('value', (v) => v)).to.throw(expected);
   });
 
   it('must not accept getter name: force', function() {
     const expected = 'Getter name use a reservated word: force';
 
-    expect(() => convict.addGetter('force', (v) => v)).to.throw(expected);
+    expect(() => blueconfig.addGetter('force', (v) => v)).to.throw(expected);
   });
 
   it('getter with `usedOnlyOnce = true` must not have similar value', function() {
@@ -174,7 +174,7 @@ describe('convict getters', function() {
         answer: 'Can I fly?'
       }
     };
-    expect(() => convict(schema)).to.throw('bird: uses a already used value in "answer" getter (actual: "Can I fly?")');
+    expect(() => blueconfig(schema)).to.throw('bird: uses a already used value in "answer" getter (actual: "Can I fly?")');
   });
 
   it('must not rewrite an existing getter because I ask to force', function() {
@@ -185,7 +185,7 @@ describe('convict getters', function() {
       }
     };
     expect(() =>
-      convict.addGetter('answer', getter, usedOnlyOnce, true)
+      blueconfig.addGetter('answer', getter, usedOnlyOnce, true)
     ).to.not.throw();
   });
 
@@ -201,7 +201,7 @@ describe('convict getters', function() {
       }
     };
 
-    expect(() => convict(schema)).to.not.throw();
+    expect(() => blueconfig(schema)).to.not.throw();
   });
 
   it('cannot ask "Can I leave?" several time', function() {
@@ -216,16 +216,16 @@ describe('convict getters', function() {
       }
     };
 
-    expect(() => convict(schema)).to.throw('Stop asking!');
+    expect(() => blueconfig(schema)).to.throw('Stop asking!');
   });
 
   describe('test `conf.refreshGetters()`', function() {
-    const convict = new_require('../');
+    const blueconfig = new_require('../');
     let conf;
 
     it('must have the default getters order', function() {
       const order = ['default', 'value', 'env', 'arg', 'force'];
-      expect(convict.getGettersOrder()).to.be.deep.equal(order);
+      expect(blueconfig.getGettersOrder()).to.be.deep.equal(order);
     });
 
     it('must init and parse schema', function() {
@@ -262,7 +262,7 @@ describe('convict getters', function() {
         args: '--FOOD meat'
       };
 
-      conf = convict(schema, options);
+      conf = blueconfig(schema, options);
 
       conf.load({
         today: 'yes',

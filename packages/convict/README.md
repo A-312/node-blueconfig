@@ -1,8 +1,8 @@
-# Convict
+# Blueconfig
 
-[![NPM version](http://img.shields.io/npm/v/convict.svg)](https://www.npmjs.org/package/convict)
+[![NPM version](http://img.shields.io/npm/v/blueconfig.svg)](https://www.npmjs.org/package/blueconfig)
 
-Convict expands on the standard pattern of configuring node.js applications in a way that is more robust and accessible to collaborators, who may have less interest in digging through imperative code in order to inspect or modify settings. By introducing a configuration schema, convict gives project collaborators more **context** on each setting and enables **validation and early failures** for when configuration goes wrong.
+Blueconfig expands on the standard pattern of configuring node.js applications in a way that is more robust and accessible to collaborators, who may have less interest in digging through imperative code in order to inspect or modify settings. By introducing a configuration schema, blueconfig gives project collaborators more **context** on each setting and enables **validation and early failures** for when configuration goes wrong.
 
 
 ## Features
@@ -27,7 +27,7 @@ Convict expands on the standard pattern of configuring node.js applications in a
 ## Install
 
 ```shell
-npm install convict
+npm install blueconfig
 ```
 
 ## Usage
@@ -35,12 +35,12 @@ npm install convict
 An example `config.js` file:
 
 ```javascript
-const convict = require('convict');
+const blueconfig = require('blueconfig');
 
-convict.addFormat(require('convict-format-with-validator').ipaddress);
+blueconfig.addFormat(require('blueconfig-format-with-validator').ipaddress);
 
 // Define a schema
-const config = convict({
+const config = blueconfig({
   env: {
     doc: 'The application environment.',
     format: ['production', 'development', 'test'],
@@ -117,7 +117,7 @@ A configuration module, with its deep nested schema, could look like this:
 
 config.js:
 ```javascript
-const config = convict({
+const config = blueconfig({
   db: {
     name: {
       format: String,
@@ -145,11 +145,11 @@ const config = convict({
 config.loadFile(['./prod.json', './config.json']);
 ```
 
-Each setting in the schema has the following possible properties, each aiding in the convict's goal of being more robust and collaborator friendly.
+Each setting in the schema has the following possible properties, each aiding in the blueconfig's goal of being more robust and collaborator friendly.
 
-### Convict properties
+### Blueconfig properties
 
- - **Type information**: the `format` property specifies either a built-in convict format (`ipaddress`, `port`, `int`, etc.) or it can be a function to check a custom format. During validation, if a format check fails it will be added to the error report.
+ - **Type information**: the `format` property specifies either a built-in blueconfig format (`ipaddress`, `port`, `int`, etc.) or it can be a function to check a custom format. During validation, if a format check fails it will be added to the error report.
  - **Default values**: Is a default value before this value will be overwritten by another getter. 
  - **Environmental variables**: If the variable specified by `env` has a value, it will overwrite the setting's default value. An environment variable may not be mapped to more than one setting.
  - **Command-line arguments**: If the command-line argument specified by `arg` is supplied, it will overwrite the setting's default value or the value derived from `env`.
@@ -157,17 +157,17 @@ Each setting in the schema has the following possible properties, each aiding in
 
 ### Schema parsing behavior
 
-#### Config & convict properties parsing
+#### Config & blueconfig properties parsing
 
-Config properties are property that you will use in your app, convict properties are property that you will use in your schema to validate value (e.g.: `default`, `format`, `sensitive`, `env` or `arg`...).
+Config properties are property that you will use in your app, blueconfig properties are property that you will use in your schema to validate value (e.g.: `default`, `format`, `sensitive`, `env` or `arg`...).
 
-Only two convict properties are used to turn an object to a config properties:
+Only two blueconfig properties are used to turn an object to a config properties:
   - `default`: Every setting *must* have a default value but can be omitted if `format` is defined and not an Object `{...}`. If you want to use `default` property name like a config property in your schema use `$~default`. `$~default` will be replaced by `default` during the schema parsing;
   - `format`: If `default` is not defined and format is not an Object `{...}`, the current object will turn to a config properties.
 
 Also **magic parsing** will turn `keyname: [ notObject ]` to `keyname: { default: [ notObject ], format: [ keyname type ] }`. E.g:
 ```javascript
-const config = convict({
+const config = blueconfig({
   keyname: 'str',
   zoo: {
     elephant: {
@@ -180,7 +180,7 @@ const config = convict({
     }
   }
 });
-// convict will understand `config.getSchema()`:
+// blueconfig will understand `config.getSchema()`:
 ({
   keyname: {
     default: 'str',
@@ -201,14 +201,14 @@ const config = convict({
 });
 ```
 
-When you use schema parsing with `opt.strictParsing = true`, `default` and `format` will be required, **magic parsing** will be disabled. Convict will throw an error if `default` and `format` properties are missing.
+When you use schema parsing with `opt.strictParsing = true`, `default` and `format` will be required, **magic parsing** will be disabled. Blueconfig will throw an error if `default` and `format` properties are missing.
 
 #### Optional config property
 
 By default, the config property will be ignored during the schema validation if its value is `undefined` and `schema.default` is `undefined`. If you want to not accept optional value and validate value in this case [`value === undefined and schema.default === default`], set `schema.required` to `true`.
 
 ```javascript
-const config = convict({
+const config = blueconfig({
   options: { // optional
     format: String,
     default: undefined
@@ -224,9 +224,9 @@ const config = convict({
 
 ### Validation
 
-In order to help detect misconfigurations, convict allows you to define a format for each setting. By default, convict checks if the value of the property has the same type (according to `Object.prototype.toString.call`) as the default value specified in the schema. You can define a custom format checking function in the schema by setting the `format` property.
+In order to help detect misconfigurations, blueconfig allows you to define a format for each setting. By default, blueconfig checks if the value of the property has the same type (according to `Object.prototype.toString.call`) as the default value specified in the schema. You can define a custom format checking function in the schema by setting the `format` property.
 
-convict provides several predefined formats for validation that you can use. Most of them are self-explanatory:
+blueconfig provides several predefined formats for validation that you can use. Most of them are self-explanatory:
 
 * `*` - any value is valid
 * `int`
@@ -235,7 +235,7 @@ convict provides several predefined formats for validation that you can use. Mos
 * `port_or_windows_named_pipe`
 * `nat` - positive integer (natural number)
 
-You can find other format [here](https://www.npmjs.com/search?q=keywords:convict-format).
+You can find other format [here](https://www.npmjs.com/search?q=keywords:blueconfig-format).
 
 If `format` is set to one of the built-in JavaScript constructors, `Object`, `Array`, `String`, `Number`, `RegExp`, or `Boolean`, validation will use Object.prototype.toString.call to check that the setting is the proper type.
 
@@ -246,7 +246,7 @@ You can specify a custom format checking method on a property basis.
 For example:
 
 ```javascript
-const config = convict({
+const config = blueconfig({
   key: {
     doc: 'API key',
     format: function check(val, schema) {
@@ -274,11 +274,11 @@ const config = convict({
 });
 ```
 
-Or, you can use `convict.addFormat()` to register a custom format checking
+Or, you can use `blueconfig.addFormat()` to register a custom format checking
 method that can be reused for many different properties:
 
 ```javascript
-convict.addFormat({
+blueconfig.addFormat({
   name: 'float-percent',
   validate: function(val, schema) {
     if (val !== 0 && (!val || val > 1 || val < 0)) {
@@ -290,7 +290,7 @@ convict.addFormat({
   }
 });
 
-const config = convict({
+const config = blueconfig({
   space_used: {
     format: 'float-percent',
     default: 0.5
@@ -309,7 +309,7 @@ The `coerce` function is optional.
 You can specify a custom format checking for array items:
 
 ```javascript
-convict.addFormat({
+blueconfig.addFormat({
   name: 'source-array',
   validate: function(sources, schema) {
     if (!Array.isArray(sources)) {
@@ -317,12 +317,12 @@ convict.addFormat({
     }
 
     for (source of sources) {
-      convict(schema.children).load(source).validate();
+      blueconfig(schema.children).load(source).validate();
     }
   }
 });
 
-convict.addFormat(require('convict-format-with-validator').url);
+blueconfig.addFormat(require('blueconfig-format-with-validator').url);
 
 const schema = {
   sources: {
@@ -345,11 +345,11 @@ const schema = {
   }
 };
 
-convict(schema).load({
+blueconfig(schema).load({
   'sources': [
     {
       'type': 'git',
-      'url': 'https://github.com/mozilla/node-convict.git'
+      'url': 'https://github.com/mozilla/node-blueconfig.git'
     },
     {
       'type': 'git',
@@ -361,18 +361,18 @@ convict(schema).load({
 
 ### Coercion
 
-Convict will automatically coerce environmental variables from strings to their proper types when importing them.
+Blueconfig will automatically coerce environmental variables from strings to their proper types when importing them.
 For instance, values with the format `int`, `nat`, `port`, or `Number` will become numbers after a straight forward
 `parseInt` or `parseFloat`.
 
 
 ### Precedence order
 
-When merging configuration values from different sources, Convict follows precedence rules depending on the getters' order.
+When merging configuration values from different sources, Blueconfig follows precedence rules depending on the getters' order.
 The default getters order, from lowest to highest:
 
 ```javascript
-convict.getGettersOrder();
+blueconfig.getGettersOrder();
 // ['default', 'value', 'env', 'arg', 'force']
 ```
 
@@ -390,7 +390,7 @@ This order means that if schema defines parameter to be taken from an environmen
 
 ```javascript
 process.env.PORT = 8080; // environment variable is set
-const config = convict({
+const config = blueconfig({
   port: {
     default: 3000,
     env: 'PORT'
@@ -402,7 +402,7 @@ console.log(config.get('port')); // still 8080 from env
 
 ### Overriding Environment variables and Command line arguments
 
-Convict allows to override Environment variables and Command-line arguments.
+Blueconfig allows to override Environment variables and Command-line arguments.
 It can be helpful for testing purposes.
 
 When creating a config object pass an object with two optional properties as the 2nd parameter:
@@ -411,7 +411,7 @@ When creating a config object pass an object with two optional properties as the
 - `args: Array<string>` - this array will be used instead of `process.argv`
 
 ```javascript
-const config = convict({
+const config = blueconfig({
   // configuration schema
 }, {
   env: {
@@ -425,20 +425,20 @@ const config = convict({
 
 ### Configuration file additional types support
 
-Convict is able to parse files with custom file types during `loadFile`.
+Blueconfig is able to parse files with custom file types during `loadFile`.
 For this specify the corresponding parsers with the associated file extensions.
 
 ```javascript
-convict.addParser({ extension: 'toml', parse: toml.parse });
-convict.addParser({ extension: ['yml', 'yaml'], parse: yaml.safeLoad });
-convict.addParser([
+blueconfig.addParser({ extension: 'toml', parse: toml.parse });
+blueconfig.addParser({ extension: ['yml', 'yaml'], parse: yaml.safeLoad });
+blueconfig.addParser([
   { extension: 'json', parse: JSON.parse },
   { extension: 'json5', parse: json5.parse },
   { extension: ['yml', 'yaml'], parse: yaml.safeLoad },
   { extension: 'toml', parse: toml.parse }
 ]);
 
-const config = convict({ ... });
+const config = blueconfig({ ... });
 config.loadFile('config.toml');
 ```
 
@@ -450,14 +450,14 @@ default json parser.
 If you want to allow comments in your JSON file, use [JSON5](https://www.npmjs.com/package/json5).
 
 ```javascript
-convict.addParser({extension: 'json', parse: require('json5').parse});
+blueconfig.addParser({extension: 'json', parse: require('json5').parse});
 ```
 
-## API convict (global)
+## API blueconfig (global)
 
 Some functions are only global, like `addParser`, `addFormat`, `addGetter`, etc.
 
-### convict.addParser(parser)
+### blueconfig.addParser(parser)
 
  - **parser**: should be an `Object` or an `Array` containing a list of `Object`.
 
@@ -465,16 +465,16 @@ Adds new parsers for custom file extensions.
 E.g.:
 ```javascript
 // Allow comments in JSON file (with JSON5)
-convict.addParser({ extension: 'json5', parse: require('json5').parse });
+blueconfig.addParser({ extension: 'json5', parse: require('json5').parse });
 ```
 
-### convict.addFormat(format) or convict.addFormat(name, validate, coerce[, rewrite = false])
+### blueconfig.addFormat(format) or blueconfig.addFormat(name, validate, coerce[, rewrite = false])
 
 Adds a new custom format, `format` is an object, see example below. `rewrite = true`
 will let you rewrite an existing format.
 E.g.:
 ```javascript
-convict.addFormat({
+blueconfig.addFormat({
   name: 'float-percent',
   validate: function(val, validate) {
     if (val !== 0 && (!val || val > 1 || val < 0)) {
@@ -487,13 +487,13 @@ convict.addFormat({
 });
 ```
 
-### convict.addFormats(formats)
+### blueconfig.addFormats(formats)
 
 Adds new custom formats, `formats` being an object whose keys are the new custom
 format names, see example below.
 E.g.:
 ```javascript
-convict.addFormats({
+blueconfig.addFormats({
   prime: {
     validate: function(val) {
       function isPrime(n) {
@@ -519,23 +519,23 @@ convict.addFormats({
 });
 ```
 
-### convict.addGetter(getter) or convict.addGetter(property, getter[, usedOnlyOnce = false, rewrite = false])
+### blueconfig.addGetter(getter) or blueconfig.addGetter(property, getter[, usedOnlyOnce = false, rewrite = false])
 
 Adds a new custom getter, `getter` being an object, see example below. `rewrite = true`
 will let you rewrite an existing getter.
 
-The third argument of getter callback function lets catch `undefined` value. By default, convict
+The third argument of getter callback function lets catch `undefined` value. By default, blueconfig
 will try to call each getter function to get a value (different of `undefined`), then `stopPropagation()`
 stops the getter calling loop.
 E.g.:
 ```javascript
-convict.addGetter({
+blueconfig.addGetter({
   name: 'file',
   getter: (value, schema, stopPropagation) => fs.readFileSync(value, 'utf-8').toString(),
   usedOnlyOnce: true // use file only once
 });
 
-convict.addGetter({
+blueconfig.addGetter({
   property: 'accept-undefined',
   getter: (value, schema, stopPropagation) => {
     stopPropagation();
@@ -544,47 +544,47 @@ convict.addGetter({
 });
 ```
 
-### convict.addGetters(getters)
+### blueconfig.addGetters(getters)
 
 Adds new custom getter, `getter` being an object whose keys are the new custom
 getter names.
 E.g.:
 ```javascript
-convict.addGetters([
+blueconfig.addGetters([
   /* example to rewrite 'env' getter: */
   { name: 'env', getter: (val) => schema._cvtCoerce(this.getEnv()[val]), usedOnlyOnce: false, rewrite: true },
   { name: 'getter2', getter: (val) => val }
 ]);
 ```
 
-### convict.getGettersOrder()
+### blueconfig.getGettersOrder()
 
 Returns array containing getter names sorted by priority (ascending order).
 E.g.:
 ```javascript
-convict.getGettersOrder();
+blueconfig.getGettersOrder();
 // ['default', 'value', 'env', 'arg', 'force']
 ```
 
 Also see: [`config.getGettersOrder()`](#TEMP_LINK)
 
-### convict.sortGetters(newOrder)
+### blueconfig.sortGetters(newOrder)
 
 Sort getter depending on array order, priority uses ascending order. You have
-to sort getters before create configuration object instance (before `config = convict({})`)
+to sort getters before create configuration object instance (before `config = blueconfig({})`)
 because global getters config is cloned to a local getters config. Also see:
 [`config.refreshGetters()`](#TEMP_LINK)
 
 E.g.:
 ```javascript
-convict.getGettersOrder();
+blueconfig.getGettersOrder();
 // ['default', 'value', 'env', 'arg', 'force']
 
 // two ways to do:
-convict.setGettersOrder(['default', 'value', 'arg', 'env', 'force']);
-convict.setGettersOrder(['default', 'value', 'arg', 'env']); // force is optional and must be the last one
+blueconfig.setGettersOrder(['default', 'value', 'arg', 'env', 'force']);
+blueconfig.setGettersOrder(['default', 'value', 'arg', 'env']); // force is optional and must be the last one
 
-convict.getGettersOrder();
+blueconfig.getGettersOrder();
 // ['default', 'value', 'arg', 'env', 'force']
 ```
 
@@ -593,12 +593,12 @@ Also see: [`config.sortGetters()`](#TEMP_LINK)
 
 ## API config instance (local, inherited configuration object)
 
-Inherited config object created by `const config = convict(schema)`.
+Inherited config object created by `const config = blueconfig(schema)`.
 
-### const config = convict(schema[, opts])
+### const config = blueconfig(schema[, opts])
 
-`convict()` takes a schema object or a path to a schema JSON file and returns a
-convict configuration object.
+`blueconfig()` takes a schema object or a path to a schema JSON file and returns a
+blueconfig configuration object.
 
 **opts:** Optional object:
 
@@ -618,7 +618,7 @@ to local (configuration instance).
 
 E.g.:
 ```javascript
-const config = convict({
+const config = blueconfig({
   env: {
     doc: 'The applicaton environment.',
     format: ['production', 'development', 'test'],
@@ -633,7 +633,7 @@ const config = convict({
 });
 
 // or
-config = convict('/some/path/to/a/config-schema.json');
+config = blueconfig('/some/path/to/a/config-schema.json');
 ```
 
 ### config.get(name)
@@ -662,11 +662,11 @@ config.getOrigin('db.host');
 
 ### config.getGettersOrder()
 
-Local (configuration instance) version of : [`convict.getGettersOrder()`](#TEMP_LINK)
+Local (configuration instance) version of : [`blueconfig.getGettersOrder()`](#TEMP_LINK)
 
 ### config.sortGetters(newOrder)
 
-Local (configuration instance) version of : [`convict.sortGetters()`](#TEMP_LINK)
+Local (configuration instance) version of : [`blueconfig.sortGetters()`](#TEMP_LINK)
 
 Sort getter depending of array order, priority uses ascending order.
 
@@ -679,16 +679,16 @@ on new getters' order.
 of Origin priority. (See: [`getter-tests.js#L304`](#TEMP_LINK))
 E.g.:
 ```javascript
-convict.getGettersOrder();
+blueconfig.getGettersOrder();
 // ['default', 'value', 'env', 'arg', 'force']
 
-const conf = convict(schema); // will clone: ['default', 'value', 'env', 'arg', 'force']
+const conf = blueconfig(schema); // will clone: ['default', 'value', 'env', 'arg', 'force']
 
 // two ways to do:
-convict.setGettersOrder(['value', 'default', 'arg', 'env', 'force']);
+blueconfig.setGettersOrder(['value', 'default', 'arg', 'env', 'force']);
 
 conf.getGettersOrder(); // ['default', 'value', 'env', 'arg', 'force']
-convict.getGettersOrder(); // ['value', 'default', 'arg', 'env', 'force']
+blueconfig.getGettersOrder(); // ['value', 'default', 'arg', 'env', 'force']
 
 conf.refreshGetters(); // refresh and apply global change to local
 
@@ -807,7 +807,7 @@ collected and thrown or displayed at once.
 ```javascript
 config.validate({
   allowed: 'strict',
-  output: require('debug')('convict:validate:error');
+  output: require('debug')('blueconfig:validate:error');
 })
 ```
 
@@ -825,19 +825,19 @@ aren't set, to avoid revealing any information.
 
 ### config.getSchema(debug)
 
-Exports the schema as JSON. When debug is true, returns data schema (copy of convict storage).
+Exports the schema as JSON. When debug is true, returns data schema (copy of blueconfig storage).
 
 ### config.getSchemaString(debug)
 
-Exports the schema as a JSON string. When debug is true, returns data schema (copy of convict storage).
+Exports the schema as a JSON string. When debug is true, returns data schema (copy of blueconfig storage).
 
 ### config.getArgs()
 
-The array of process arguments (not including the launcher and application file arguments). Defaults to process.argv unless an override is specified using the args key of the second (options) argument of the convict function.
+The array of process arguments (not including the launcher and application file arguments). Defaults to process.argv unless an override is specified using the args key of the second (options) argument of the blueconfig function.
 
 ### config.getEnv()
 
-The map of environment variables. Defaults to process.env unless an override is specified using the env key of the second argument (options) argument of the convict function.
+The map of environment variables. Defaults to process.env unless an override is specified using the env key of the second argument (options) argument of the blueconfig function.
 
 ## API schema property
 
@@ -861,16 +861,16 @@ Calls the `coerce` function corresponding to `schema.format`, used by getters to
 
 ## FAQ
 
-### [How can I define a configuration property as "required" without providing a default value?](https://github.com/mozilla/node-convict/issues/29)
+### [How can I define a configuration property as "required" without providing a default value?](https://github.com/mozilla/node-blueconfig/issues/29)
 
 The philosophy was to have production values be the default values. Usually you only want to change defaults for deploy or instance (in aws speak) specific tweaks. However, you can set a default value to `null` and if your format doesn't accept `null` it will throw an error.
 
-### [How can I use convict in a (browserify-based) browser context?](https://github.com/mozilla/node-convict/issues/47)
+### [How can I use blueconfig in a (browserify-based) browser context?](https://github.com/mozilla/node-blueconfig/issues/47)
 
-Thanks to [browserify](http://browserify.org/), `convict` can be used for web applications too. To do so,
+Thanks to [browserify](http://browserify.org/), `blueconfig` can be used for web applications too. To do so,
 
 * Use [`brfs`](https://www.npmjs.com/package/brfs) to ensure the `fs.loadFileSync` schema-loading calls are inlined at build time rather than resolved at runtime (in Gulp, add `.transform(brfs)` to your browserify pipe).
-* To support *"loading configuration from a `http://foo.bar/some.json` URL"*, build a thin wrapper around convict using your favorite http package (e.g. [`superagent`](https://visionmedia.github.io/superagent/)). Typically, in the success callback, call convict's `load()` on the body of the response.
+* To support *"loading configuration from a `http://foo.bar/some.json` URL"*, build a thin wrapper around blueconfig using your favorite http package (e.g. [`superagent`](https://visionmedia.github.io/superagent/)). Typically, in the success callback, call blueconfig's `load()` on the body of the response.
 
 
 ## Contributing

@@ -1,10 +1,10 @@
 {
   "author": "Lloyd Hilaiel <lloyd@hilaiel.com> (http://lloyd.io)",
-  "name": "convict-format-with-validator",
-  "description": "Format 'email', 'ipaddress' and 'url' for convict",
+  "name": "blueconfig-format-with-validator",
+  "description": "Format 'email', 'ipaddress' and 'url' for blueconfig",
   "keywords": [
-    "convict",
-    "convict-format",
+    "blueconfig",
+    "blueconfig-format",
     "email",
     "ipaddress",
     "url",
@@ -12,12 +12,12 @@
   ],
   "version": "0.1.0",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/mozilla/node-convict",
+  "homepage": "https://github.com/mozilla/node-blueconfig",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mozilla/node-convict/tree/master/packages/convict-format-with-validator"
+    "url": "https://github.com/mozilla/node-blueconfig/tree/master/packages/blueconfig-format-with-validator"
   },
-  "bugs": "https://github.com/mozilla/node-convict/issues",
+  "bugs": "https://github.com/mozilla/node-blueconfig/issues",
   "engines": {
     "node": ">=6"
   },
@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "chai": "4.2.0",
-    "convict": "file:../convict",
+    "blueconfig": "file:../blueconfig",
     "eslint": "6.5.1",
     "mocha": "6.2.2"
   }

@@ -1,6 +1,6 @@
 /**
- * convict-format-with-moment
- * Format 'duration' and 'timestamp' for convict
+ * blueconfig-format-with-moment
+ * Format 'duration' and 'timestamp' for blueconfig
  */
 'use strict'
 

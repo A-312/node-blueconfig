@@ -1,8 +1,8 @@
 'use strict';
 
 exports.formats = [
-  require('convict-format-with-moment'),
-  require('convict-format-with-validator')
+  require('blueconfig-format-with-moment'),
+  require('blueconfig-format-with-validator')
 ];
 
 exports.conf = {

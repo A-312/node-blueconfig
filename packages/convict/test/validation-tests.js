@@ -10,10 +10,10 @@ const strictMode = {
 };
 
 const new_require = require('./new_require.js');
-const convict = new_require('../');
+const blueconfig = new_require('../');
 
 describe('configuration files contain properties not declared in the schema', function() {
-  let conf = convict({
+  let conf = blueconfig({
     foo: {
       doc: 'testing',
       format: String,
@@ -42,7 +42,7 @@ describe('configuration files contain properties not declared in the schema', fu
 
   it('must have the default getters order', function() {
     const order = ['default', 'value', 'env', 'arg', 'force'];
-    expect(convict.getGettersOrder()).to.be.deep.equal(order);
+    expect(blueconfig.getGettersOrder()).to.be.deep.equal(order);
   });
 
   it('must not throw, if properties in config file match with the schema', function() {
@@ -110,11 +110,11 @@ describe('configuration files contain properties not declared in the schema', fu
 
   it('must not break when a failed validation follows an undeclared property and must display warnings, and call the user output function', function() {
     expect(function() {
-      convict.addFormat('foo', function(val) {
+      blueconfig.addFormat('foo', function(val) {
         if (val !== 0) { throw new Error('Validation error'); }
       });
 
-      const conf = convict({
+      const conf = blueconfig({
         test2: {
           one: { default: 0 },
           two: {
@@ -157,7 +157,7 @@ describe('configuration files contain properties not declared in the schema', fu
         default: {}
       }
     };
-    const conf = convict(schema);
+    const conf = blueconfig(schema);
 
     conf.loadFile([
       path.join(__dirname, 'fixtures/object_override1.json'),
@@ -169,7 +169,7 @@ describe('configuration files contain properties not declared in the schema', fu
 });
 
 describe('setting specific values', function() {
-  const convict = require('../');
+  const blueconfig = require('../');
   let myOwnConf; // init in beforeEach
 
   // >> init myOwnConf before each it
@@ -181,7 +181,7 @@ describe('setting specific values', function() {
         default: {}
       }
     };
-    myOwnConf = convict(schema);
+    myOwnConf = blueconfig(schema);
   });
   // <<
 
@@ -211,7 +211,7 @@ describe('setting specific values', function() {
 });
 
 describe('schema contains an object property with a custom format', function() {
-  const convict = require('../');
+  const blueconfig = require('../');
   const schemaWithFoo22Format = {
     object: {
       doc: 'testing',
@@ -223,12 +223,12 @@ describe('schema contains an object property with a custom format', function() {
   };
 
   it('must throw if a nested object property has an undeclared format', function() {
-    expect(() => convict(schemaWithFoo22Format)).to.throw('object: uses an unknown format type (actual: "foo22")');
+    expect(() => blueconfig(schemaWithFoo22Format)).to.throw('object: uses an unknown format type (actual: "foo22")');
   });
 
   it('must not throw if an object property has a nested value and a custom format and after set a object property with a custom format', function() {
-    convict.addFormat('foo22', function() {})
-    const conf = convict(schemaWithFoo22Format);
+    blueconfig.addFormat('foo22', function() {})
+    const conf = blueconfig(schemaWithFoo22Format);
 
     // must validate before set
     expect(() => conf.validate(strictMode)).to.not.throw();
@@ -241,10 +241,10 @@ describe('schema contains an object property with a custom format', function() {
 
   it('must throw if a custom format foo is existing and if rewrite = false', function() {
     expect(() => 
-      convict.addFormat('foo22', function() {})
+      blueconfig.addFormat('foo22', function() {})
     ).to.throw('The format name "foo22" is already registered. Set the 4th argument (rewrite) of `addFormat` at true to skip this error.');
     expect(() => 
-      convict.addFormat('foo22', function() {}, null, true) // true = rewrite = throw
+      blueconfig.addFormat('foo22', function() {}, null, true) // true = rewrite = throw
     ).to.not.throw();
   });
 
@@ -258,22 +258,22 @@ describe('schema contains an object property with a custom format', function() {
         }
       }
     };
-    const conf = convict(schema);
+    const conf = blueconfig(schema);
 
     expect(() => conf.validate()).to.not.throw();
   });
 
-  it('must throw because unexpected error (-> convict internal error)', function() {
-    const message = 'this is a hack to make a fake convict internal error';
+  it('must throw because unexpected error (-> blueconfig internal error)', function() {
+    const message = 'this is a hack to make a fake blueconfig internal error';
 
-    convict.addFormat('hack', function(name, schema) {
+    blueconfig.addFormat('hack', function(name, schema) {
       // we prevent that error : will be catch in original _cvtValidateFormat function
       //                     and will be convert to FORMAT_INVALID Error.
       schema._cvtValidateFormat = function(value) {
         throw new Error(message);
       };
     });
-    const conf = convict({
+    const conf = blueconfig({
       object: {
         format: 'hack',
         default: ''
@@ -284,6 +284,6 @@ describe('schema contains an object property with a custom format', function() {
     expect(() => conf.validate(strictMode)).not.to.throw();
 
     // run the hack function
-    expect(() => conf.validate(strictMode)).to.throw(message + ' \x1b[33;1m[/!\\ this is probably convict internal error]\x1b[0m');
+    expect(() => conf.validate(strictMode)).to.throw(message + ' \x1b[33;1m[/!\\ this is probably blueconfig internal error]\x1b[0m');
   });
 });
