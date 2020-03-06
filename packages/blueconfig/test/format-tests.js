@@ -240,7 +240,7 @@ describe('blueconfig formats', function() {
       'sources': [
         {
           'type': 'git',
-          'url': 'https://github.com/mozilla/node-blueconfig.git'
+          'url': 'https://github.com/A-312/node-blueconfig.git'
         },
         {
           'type': 'git',
@@ -253,7 +253,7 @@ describe('blueconfig formats', function() {
       'sources': [
         {
           'type': 'git',
-          'url': 'https:/(è_é)/github.com/mozilla/node-blueconfig.git'
+          'url': 'https:/(è_é)/github.com/A-312/node-blueconfig.git'
         },
         {
           'type': 'git',
@@ -286,7 +286,7 @@ describe('blueconfig formats', function() {
     });
 
     it('successfully fails to validate incorrect children values', function() {
-      expect(() => blueconfig(schema).load(configWithError).validate()).to.throw('url: must be a URL: value was "https:/(è_é)/github.com/mozilla/node-blueconfig.git');
+      expect(() => blueconfig(schema).load(configWithError).validate()).to.throw('url: must be a URL: value was "https:/(è_é)/github.com/A-312/node-blueconfig.git');
     });
   });
 });

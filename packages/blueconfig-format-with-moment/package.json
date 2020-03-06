@@ -10,12 +10,12 @@
   ],
   "version": "6.0.0",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/mozilla/node-blueconfig",
+  "homepage": "https://github.com/A-312/node-blueconfig",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mozilla/node-blueconfig/tree/master/packages/blueconfig-format-with-moment"
+    "url": "https://github.com/A-312/node-blueconfig/tree/master/packages/blueconfig-format-with-moment"
   },
-  "bugs": "https://github.com/mozilla/node-blueconfig/issues",
+  "bugs": "https://github.com/A-312/node-blueconfig/issues",
   "engines": {
     "node": ">=6"
   },

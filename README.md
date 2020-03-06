@@ -1,9 +1,9 @@
 # Node-blueconfig
 
-[![Dependency Status](https://david-dm.org/mozilla/node-blueconfig.svg)](https://david-dm.org/mozilla/node-blueconfig)
-[![devDependency Status](https://david-dm.org/mozilla/node-blueconfig/dev-status.svg)](https://david-dm.org/mozilla/node-blueconfig#info=devDependencies)
-[![Build Status](https://travis-ci.org/mozilla/node-blueconfig.svg?branch=master)](https://travis-ci.org/mozilla/node-blueconfig)
-[![Coverage Status](https://coveralls.io/repos/github/mozilla/node-blueconfig/badge.svg?branch=master)](https://coveralls.io/github/mozilla/node-blueconfig?branch=master)
+[![Dependency Status](https://david-dm.org/A-312/node-blueconfig.svg)](https://david-dm.org/A-312/node-blueconfig)
+[![devDependency Status](https://david-dm.org/A-312/node-blueconfig/dev-status.svg)](https://david-dm.org/A-312/node-blueconfig#info=devDependencies)
+[![Build Status](https://travis-ci.org/A-312/node-blueconfig.svg?branch=master)](https://travis-ci.org/A-312/node-blueconfig)
+[![Coverage Status](https://coveralls.io/repos/github/A-312/node-blueconfig/badge.svg?branch=master)](https://coveralls.io/github/A-312/node-blueconfig?branch=master)
 
 *This is a fork of node-convict*
 
