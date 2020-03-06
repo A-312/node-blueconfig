@@ -1,0 +1,43 @@
+{
+  "name": "blueconfig-format-with-validator",
+  "description": "Format 'email', 'ipaddress' and 'url' for blueconfig",
+  "keywords": [
+    "blueconfig",
+    "blueconfig-format",
+    "email",
+    "ipaddress",
+    "url",
+    "validator"
+  ],
+  "version": "6.0.1",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/A-312/node-blueconfig",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/A-312/node-blueconfig/tree/master/packages/blueconfig-format-with-validator"
+  },
+  "bugs": "https://github.com/A-312/node-blueconfig/issues",
+  "engines": {
+    "node": ">=6"
+  },
+  "scripts": {
+    "posttest": "npm run lint",
+    "test": "mocha --check-leaks test/*-tests.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "version": "sh ..\\..\\assert_changelog_ready $npm_package_version"
+  },
+  "files": [
+    "lib"
+  ],
+  "main": "lib/index.js",
+  "dependencies": {
+    "validator": "11.1.0"
+  },
+  "devDependencies": {
+    "blueconfig": "file:../blueconfig",
+    "chai": "4.2.0",
+    "eslint": "6.5.1",
+    "mocha": "6.2.2"
+  }
+}

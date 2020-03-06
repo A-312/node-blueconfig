@@ -9,6 +9,6 @@
     "lcov"
   ],
   "cache": true,
-  "temp-dir": "/tmp/nyc_temp_convict",
-  "report-dir": "/tmp/nyc_report_convict"
+  "temp-dir": "/tmp/nyc_temp_blueconfig",
+  "report-dir": "/tmp/nyc_report_blueconfig"
 }

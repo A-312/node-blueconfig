@@ -1,4 +1,9 @@
-Copyright 2012 the lloydster
+Fork of node-convict
+
+https://github.com/mozilla/node-convict
+https://github.com/mozilla/node-convict/pulls?q=is%3Apr+author%3AA-312+is%3Aclosed
+
+See: CHANGELOG.md
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
