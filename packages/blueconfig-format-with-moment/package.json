@@ -1,5 +1,4 @@
 {
-  "author": "Lloyd Hilaiel <lloyd@hilaiel.com> (http://lloyd.io)",
   "name": "blueconfig-format-with-moment",
   "description": "Format 'duration' and 'timestamp' for blueconfig",
   "keywords": [

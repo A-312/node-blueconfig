@@ -5,6 +5,8 @@
 [![Build Status](https://travis-ci.org/mozilla/node-blueconfig.svg?branch=master)](https://travis-ci.org/mozilla/node-blueconfig)
 [![Coverage Status](https://coveralls.io/repos/github/mozilla/node-blueconfig/badge.svg?branch=master)](https://coveralls.io/github/mozilla/node-blueconfig?branch=master)
 
+*This is a fork of node-convict*
+
 Blueconfig expands on the standard pattern of configuring node.js applications in a way that is more robust and accessible to collaborators, who may have less interest in digging through imperative code in order to inspect or modify settings. By introducing a configuration schema, blueconfig gives project collaborators more **context** on each setting and enables **validation and early failures** for when configuration goes wrong.
 
 This repository is a collection of packages.

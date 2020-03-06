@@ -1,5 +1,4 @@
 {
-  "author": "Lloyd Hilaiel <lloyd@hilaiel.com> (http://lloyd.io)",
   "name": "blueconfig-format-with-validator",
   "description": "Format 'email', 'ipaddress' and 'url' for blueconfig",
   "keywords": [

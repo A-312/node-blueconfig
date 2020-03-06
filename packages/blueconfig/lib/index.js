@@ -1,7 +1,9 @@
 /**
  * blueconfig
- * Configuration management with support for environmental variables, files,
- * and validation.
+ *
+ * forked-from: node-config
+ * forked-from: Configuration management with support for environmental variables, files,
+ * forked-from: and validation.
  */
 'use strict';
 

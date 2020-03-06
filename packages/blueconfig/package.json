@@ -1,5 +1,4 @@
 {
-  "author": "Lloyd Hilaiel <lloyd@hilaiel.com> (http://lloyd.io)",
   "name": "blueconfig",
   "description": "Featureful configuration management library for Node.js (nested structure, schema validation, etc.)",
   "keywords": [
