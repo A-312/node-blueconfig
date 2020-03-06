@@ -2,7 +2,9 @@
 
 const path = require('path');
 const http = require('http');
-const convict = require('../lib/convict.js');
+const convict = require('convict');
+
+convict.addFormat(require('convict-format-with-validator').ipaddress);
 
 let conf = convict({
   ip: {
