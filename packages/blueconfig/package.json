@@ -9,7 +9,7 @@
     "nested",
     "validation"
   ],
-  "version": "6.0.1",
+  "version": "6.0.2",
   "license": "Apache-2.0",
   "homepage": "https://github.com/A-312/node-blueconfig",
   "repository": {
@@ -24,8 +24,7 @@
     "posttest": "npm run lint",
     "test": "mocha --check-leaks test/*-tests.js",
     "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "version": "sh ..\\..\\assert_changelog_ready $npm_package_version"
+    "lint:fix": "eslint --fix ."
   },
   "files": [
     "lib"
