@@ -10,7 +10,7 @@ const parseArgs = require('yargs-parser');
 const cloneDeep = require('lodash.clonedeep');
 const parsePath = require('objectpath').parse;
 const stringifyPath = require('objectpath').stringify;
-const cvtError  = require('./blueconfigerror.js');
+const cvtError  = require('./error.js');
 
 const BLUECONFIG_ERROR = cvtError.BLUECONFIG_ERROR;
 // 1
