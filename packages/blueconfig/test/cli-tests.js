@@ -71,9 +71,9 @@ describe('CLI tests', function() {
           conf = blueconfig(settings.conf, opts);
           if (settings.data) {
             if (Array.isArray(settings.data)) {
-              settings.data.forEach((data) => conf.load(data));
+              settings.data.forEach((data) => conf.merge(data));
             } else {
-              conf.load(settings.data);
+              conf.merge(settings.data);
             }
           }
           conf.validate(settings.validate || {});

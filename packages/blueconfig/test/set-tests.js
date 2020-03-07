@@ -58,9 +58,9 @@ describe('blueconfig set function', function() {
     conf.set('color', 'blue');
   });
 
-  it('must not change forced value with load', function() {
+  it('must not change forced value with merge', function() {
     conf.set('color', 'green', true, true);
-    conf.load({color: 'blue'});
+    conf.merge({color: 'blue'});
     expect(get('color')).to.deep.equal(result('green', 'force'));
   });
 
@@ -69,8 +69,8 @@ describe('blueconfig set function', function() {
     expect(get('color')).to.deep.equal(result('chartreuse', 'default'));
   });
 
-  it('must change value with load if we use higher getter level', function() {
-    conf.load({color: 'green'});
+  it('must change value with merge if we use higher getter level', function() {
+    conf.merge({color: 'green'});
     expect(get('color')).to.deep.equal(result('green', 'value'));
   });
 

@@ -39,7 +39,7 @@ describe('deep nested tree structure', function() {
   });
 
   it('instance must be valid', function() {
-    conf.load({
+    conf.merge({
       db: {
         name: 'some_db',
         synchro: {

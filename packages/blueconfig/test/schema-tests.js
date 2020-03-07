@@ -40,7 +40,7 @@ describe('blueconfig schema', function() {
   });
 
   it('must parse a config specification from a file', function() {
-    const filepath = path.join(__dirname, 'schema.json');
+    const filepath = path.join(__dirname, 'fixtures/schema.json');
 
     expect(() => blueconfig(filepath)).to.not.throw();
   });
@@ -119,9 +119,29 @@ describe('blueconfig schema', function() {
   describe('after being parsed', function() {
     // >> init myOwnConf before each it
     beforeEach(function() {
-      myOwnConf = blueconfig(path.join(__dirname, 'schema.json'));
+      myOwnConf = blueconfig(path.join(__dirname, 'fixtures/schema.json'));
     });
     // <<
+
+    it('must be merge several configs', function() {
+      myOwnConf.merge([
+        {foo: 914}
+      ]);
+      expect(myOwnConf.get('foo')).to.be.equal(914);
+      myOwnConf.merge([
+        {foo: 9, zoo: 4},
+        {foo: 10}
+      ]);
+      expect(myOwnConf.get('foo')).to.be.equal(10);
+      expect(myOwnConf.get('zoo')).to.be.equal(4);
+    });
+
+    it('must be load object (`.load(object)` is currently deprecated but not removed)', function() {
+      myOwnConf.load({
+        foo: 91
+      });
+      expect(myOwnConf.get('foo')).to.be.equal(91);
+    });
 
     it('must be valid', function() {
       expect(() => myOwnConf.validate()).to.not.throw();
@@ -333,8 +353,8 @@ describe('blueconfig schema', function() {
           expect(() => myOwnConf.default('someObject.five')).to.throw('someObject.five.default: cannot find "someObject" property because "someObject" is not defined.');
         });
 
-        it('must not be altered by calls to .load()', function() {
-          myOwnConf.load({someObject: {five: 5}});
+        it('must not be altered by calls to .merge()', function() {
+          myOwnConf.merge({someObject: {five: 5}});
 
           expect(myOwnConf.default('someObject')).to.deep.equal({});
           expect(() => myOwnConf.default('someObject.five')).to.throw('someObject.five.default: cannot find "someObject" property because "someObject" is not defined.');

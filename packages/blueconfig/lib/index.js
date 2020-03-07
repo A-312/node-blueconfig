@@ -802,6 +802,21 @@ const blueconfig = function blueconfig(def, opts) {
       return this;
     },
 
+    merge: function(sources) {
+      if (!Array.isArray(sources)) sources = [sources];
+      sources.forEach((config) => {
+        if (typeof config === 'string') {
+          const json = loadFile(config);
+          if (json) {
+            this.load(json);
+          }
+        } else {
+          this.load(config);
+        }
+      });
+      return this;
+    },
+
     /**
      * Validates config against the schema used to initialize it
      */

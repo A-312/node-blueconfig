@@ -62,7 +62,7 @@ describe('blueconfig getters', function() {
   });
 
   it('must failed because custom getter order', function() {
-    conf.load({
+    conf.merge({
       default: 'foo',
       plane: 'airbus'
     });
@@ -94,7 +94,7 @@ describe('blueconfig getters', function() {
   });
 
   it('must failed because custom getter order', function() {
-    conf.load({
+    conf.merge({
       default: 'foo',
       plane: 'airbus'
     });
@@ -105,8 +105,8 @@ describe('blueconfig getters', function() {
     expect(() => conf.refreshGetters()).to.not.throw();
   });
 
-  it('must load with custom getters', function() {
-    conf.load({
+  it('must merge with custom getters', function() {
+    conf.merge({
       default: 'foo',
       plane: 'airbus'
     });
@@ -264,7 +264,7 @@ describe('blueconfig getters', function() {
 
       conf = blueconfig(schema, options);
 
-      conf.load({
+      conf.merge({
         today: 'yes',
         unexpected: true
       });
