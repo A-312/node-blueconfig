@@ -271,7 +271,7 @@ describe('blueconfig formats', function() {
           }
 
           sources.forEach((source) => {
-            blueconfig(schema.children).load(source).validate();
+            blueconfig(schema.children).merge(source).validate();
           })
         }
       });
@@ -282,11 +282,11 @@ describe('blueconfig formats', function() {
     });
 
     it('must validate children value without throw an Error', function() {
-      expect(() => blueconfig(schema).load(config).validate()).to.not.throw();
+      expect(() => blueconfig(schema).merge(config).validate()).to.not.throw();
     });
 
     it('successfully fails to validate incorrect children values', function() {
-      expect(() => blueconfig(schema).load(configWithError).validate()).to.throw('url: must be a URL: value was "https:/(è_é)/github.com/A-312/node-blueconfig.git');
+      expect(() => blueconfig(schema).merge(configWithError).validate()).to.throw('url: must be a URL: value was "https:/(è_é)/github.com/A-312/node-blueconfig.git');
     });
   });
 });

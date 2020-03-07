@@ -46,25 +46,25 @@ describe('configuration files contain properties not declared in the schema', fu
   });
 
   it('must not throw, if properties in config file match with the schema', function() {
-    conf.loadFile(path.join(__dirname, 'fixtures/validation_correct.json'));
+    conf.merge(path.join(__dirname, 'fixtures/validation_correct.json'));
 
     expect(() => conf.validate(strictMode)).to.not.throw();
   });
 
   it('must not throw, if the option to check for non schema properties is set by default but must display warnings', function() {
-    conf.loadFile(path.join(__dirname, 'fixtures/validation_incorrect.json'));
+    conf.merge(path.join(__dirname, 'fixtures/validation_incorrect.json'));
 
     expect(() => conf.validate()).to.not.throw();
   });
 
   it('must not throw, if the option to check for non schema properties is not specified and must display warnings', function() {
-    conf.loadFile(path.join(__dirname, 'fixtures/validation_incorrect.json'));
+    conf.merge(path.join(__dirname, 'fixtures/validation_incorrect.json'));
 
     expect(() => conf.validate()).to.not.throw();
   });
 
   it('must throw, if properties in config file do not match the properties declared in the schema', function() {
-    conf.loadFile(path.join(__dirname, 'fixtures/validation_incorrect.json'));
+    conf.merge(path.join(__dirname, 'fixtures/validation_incorrect.json'));
 
     const expected = 'Validate failed because wrong value(s):'
     + "\n  - configuration param 'undeclared' not declared in the schema"
@@ -77,7 +77,7 @@ describe('configuration files contain properties not declared in the schema', fu
     const opts = {
       allowed: 'warn'
     };
-    conf.loadFile(path.join(__dirname, 'fixtures/validation_incorrect.json'));
+    conf.merge(path.join(__dirname, 'fixtures/validation_incorrect.json'));
 
     expect(() => conf.validate(opts)).to.not.throw();
   });
@@ -92,7 +92,7 @@ describe('configuration files contain properties not declared in the schema', fu
       'undeclared': 'this property is not declared in the schema'
     };
 
-    expect(() => conf.load(param)).to.not.throw();
+    expect(() => conf.merge(param)).to.not.throw();
 
     const expected = 'Validate failed because wrong value(s):'
       + '\n  - foo: must be of type String: value was 58, getter was `value`'
@@ -126,8 +126,8 @@ describe('configuration files contain properties not declared in the schema', fu
 
       // if this key is a number, the error occurs; if it is a string, it does not
       // i don't know why. the deep nesting is also required.
-      conf.load({'0': true});
-      conf.load({ test2: { two: 'two' } });
+      conf.merge({'0': true});
+      conf.merge({ test2: { two: 'two' } });
       conf.validate({
         output: myOutput
       });
@@ -144,7 +144,7 @@ describe('configuration files contain properties not declared in the schema', fu
     const opts = {
       output: 312
     };
-    conf.loadFile(path.join(__dirname, 'fixtures/validation_incorrect.json'));
+    conf.merge(path.join(__dirname, 'fixtures/validation_incorrect.json'));
 
     expect(() => conf.validate(opts)).to.throw('options.output is optionnal and must be a function.');
   });
@@ -159,7 +159,7 @@ describe('configuration files contain properties not declared in the schema', fu
     };
     const conf = blueconfig(schema);
 
-    conf.loadFile([
+    conf.merge([
       path.join(__dirname, 'fixtures/object_override1.json'),
       path.join(__dirname, 'fixtures/object_override2.json')
     ]);

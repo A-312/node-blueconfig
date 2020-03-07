@@ -9,7 +9,7 @@ Blueconfig expands on the standard pattern of configuring node.js applications i
 
 ## Features
 
-* **Loading and merging**: configurations are loaded from disk or inline and
+* **Load and merge**: configurations are loaded from disk or inline and automatically
     merged
 * **Nested structure**: keys and values can be organized in a tree structure
 * **Environmental variables**: values can be derived from environmental
@@ -78,7 +78,7 @@ const config = blueconfig({
 
 // Load environment dependent configuration
 const env = config.get('env');
-config.loadFile('./config/' + env + '.json');
+config.merge('./config/' + env + '.json');
 
 // Perform validation
 config.validate({allowed: 'strict'});
@@ -144,7 +144,7 @@ const config = blueconfig({
   }
 });
 
-config.loadFile(['./prod.json', './config.json']);
+config.merge(['./prod.json', './config.json']);
 ```
 
 Each setting in the schema has the following possible properties, each aiding in the blueconfig's goal of being more robust and collaborator friendly.
@@ -319,7 +319,7 @@ blueconfig.addFormat({
     }
 
     for (source of sources) {
-      blueconfig(schema.children).load(source).validate();
+      blueconfig(schema.children).merge(source).validate();
     }
   }
 });
@@ -347,7 +347,7 @@ const schema = {
   }
 };
 
-blueconfig(schema).load({
+blueconfig(schema).merge({
   'sources': [
     {
       'type': 'git',
@@ -380,7 +380,7 @@ blueconfig.getGettersOrder();
 
 1. Use `default` property set in schema
 2. **Value** used with:
-    - `config.loadFile(file)` and `config.load(json)` ;
+    - `config.merge(file)` and `config.merge(json)` ;
     - `config.set(name, value, false, true)`.
 3. Use the environment variable (only used when `env` property is set in schema)
 4. Use the commandline arguments (only used when `arg` property is set in schema)
@@ -388,7 +388,7 @@ blueconfig.getGettersOrder();
     - With: `config.set(name, value, true)` (permanent) ;
     - With: `config.set(name, value)` (can be undo with `config.refreshGetters()`).
 
-This order means that if schema defines parameter to be taken from an environment variable and environment variable is set then you cannot override it with `config.loadFile(file)` or `config.load(json)`.
+This order means that if schema defines parameter to be taken from an environment variable and environment variable is set then you cannot override it with `config.merge(file)` or `config.merge(json)`.
 
 ```javascript
 process.env.PORT = 8080; // environment variable is set
@@ -398,7 +398,7 @@ const config = blueconfig({
     env: 'PORT'
   }
 });
-config.load({ port: 9000 });
+config.merge({ port: 9000 });
 console.log(config.get('port')); // still 8080 from env
 ```
 
@@ -427,7 +427,7 @@ const config = blueconfig({
 
 ### Configuration file additional types support
 
-Blueconfig is able to parse files with custom file types during `loadFile`.
+Blueconfig is able to parse files with custom file types during `merge`.
 For this specify the corresponding parsers with the associated file extensions.
 
 ```javascript
@@ -441,10 +441,10 @@ blueconfig.addParser([
 ]);
 
 const config = blueconfig({ ... });
-config.loadFile('config.toml');
+config.merge('config.toml');
 ```
 
-If no supported extension is detected, `loadFile` will fallback to using the
+If no supported extension is detected, `merge` will fallback to using the
 default json parser.
 
 #### Allow comments in JSON files
@@ -677,7 +677,7 @@ Sort getter depending of array order, priority uses ascending order.
 Reclone global getters config to local getters config and update configuration object value depending
 on new getters' order.
 
-`value` set with `.load()`/`.set()` will be replaced by schema/getter value depending
+`value` set with `.merge()`/`.set()` will be replaced by schema/getter value depending
 of Origin priority. (See: [`getter-tests.js#L304`](#TEMP_LINK))
 E.g.:
 ```javascript
@@ -761,36 +761,35 @@ config.set('color', 'pink', false); // getter: 'value'
 config.set('color', 'green', true); // getter: 'force'
 // .get('color') --> 'green'
 
-config.load({color: 'blue'}); // getter: 'value'
+config.merge({color: 'blue'}); // getter: 'value'
 // value will not change because value priority < force priority
 // .get('color') --> 'green'
 ```
 
-### config.load(object)
+### config.merge(object | file | Array[object | file])
 
-Loads and merges a JavaScript object into `config`.
+Loads/merges a JavaScript object into `config`.
 E.g.:
 ```javascript
-config.load({
+config.merge({
   'env': 'test',
   'ip': '127.0.0.1',
   'port': 80
 });
 ```
-### config.loadFile(file or fileArray)
 
-Loads and merges one or multiple JSON configuration files into `config`.
-E.g.:
+Merges one or multiple JSON configuration files into `config`.
 ```javascript
-config.loadFile('./config/' + conf.get('env') + '.json');
+config.merge('./config/' + conf.get('env') + '.json');
 ```
 
-Or, loading multiple files at once.
+Or, merging multiple files at once.
 E.g.:
 ```javascript
 // CONFIG_FILES=/path/to/production.json,/path/to/secrets.json,/path/to/sitespecific.json
-config.loadFile(process.env.CONFIG_FILES.split(','));
+config.merge(process.env.CONFIG_FILES.split(','));
 ```
+
 ### config.validate([options])
 
 Validates `config` against the schema used to initialize it. All errors are
@@ -868,7 +867,7 @@ Calls the `coerce` function corresponding to `schema.format`, used by getters to
 Thanks to [browserify](http://browserify.org/), `blueconfig` can be used for web applications too. To do so,
 
 * Use [`brfs`](https://www.npmjs.com/package/brfs) to ensure the `fs.loadFileSync` schema-loading calls are inlined at build time rather than resolved at runtime (in Gulp, add `.transform(brfs)` to your browserify pipe).
-* To support *"loading configuration from a `http://foo.bar/some.json` URL"*, build a thin wrapper around blueconfig using your favorite http package (e.g. [`superagent`](https://visionmedia.github.io/superagent/)). Typically, in the success callback, call blueconfig's `load()` on the body of the response.
+* To support *"loading configuration from a `http://foo.bar/some.json` URL"*, build a thin wrapper around blueconfig using your favorite http package (e.g. [`superagent`](https://visionmedia.github.io/superagent/)). Typically, in the success callback, call blueconfig's `merge()` on the body of the response.
 
 
 ## Contributing
