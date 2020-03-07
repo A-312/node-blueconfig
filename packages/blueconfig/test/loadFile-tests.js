@@ -12,8 +12,8 @@ const new_require = require('./new_require.js');
 const blueconfig = new_require('../');
 
 describe('blueconfig merge & addParser functions', function() {
-  const schema = require('./fixtures/formats/schema');
-  const expected_output = require('./fixtures/formats/out');
+  const schema = require('./fixtures/schema');
+  const expected_output = require('./fixtures/out');
 
   describe('.addParser()', function() {
     it('must not throw on valid parser', function() {
@@ -118,7 +118,8 @@ describe('blueconfig merge & addParser functions', function() {
       expect(conf.get()).to.deep.equal(expected_output);
 
       conf.loadFile([
-        path.join(__dirname, 'fixtures/formats/data.json')
+        path.join(__dirname, 'fixtures/formats/data.json'),
+        path.join(__dirname, 'fixtures/empty.json')
       ]);
 
       expect(() => conf.validate()).to.not.throw();
