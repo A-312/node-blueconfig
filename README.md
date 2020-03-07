@@ -5,9 +5,9 @@
 [![Build Status](https://travis-ci.org/A-312/node-blueconfig.svg?branch=master)](https://travis-ci.org/A-312/node-blueconfig)
 [![Coverage Status](https://coveralls.io/repos/github/A-312/node-blueconfig/badge.svg?branch=master)](https://coveralls.io/github/A-312/node-blueconfig?branch=master)
 
-*This is a fork of node-convict*
+Blueconfig validates and merges configs for node.js applications. Configs can be an object or a file (json, yaml...). Dev has to set a pattern *schema* then Blueconfig will validate *the schema*.
 
-Blueconfig expands on the standard pattern of configuring node.js applications in a way that is more robust and accessible to collaborators, who may have less interest in digging through imperative code in order to inspect or modify settings. By introducing a configuration schema, blueconfig gives project collaborators more **context** on each setting and enables **validation and early failures** for when configuration goes wrong.
+By introducing a configuration schema, blueconfig gives project collaborators more **context** on each setting and enables **validation and early failures** for when configuration goes wrong.
 
 This repository is a collection of packages.
 
@@ -24,3 +24,7 @@ This repository is a collection of packages.
  - [blueconfig-format-with-validator](/packages/blueconfig-format-with-validator/)
 
   Format 'email', 'ipaddress' and 'url' for blueconfig.
+
+## Blueconfig is a fork of node-convict
+
+*This is a fork of node-convict because workflow of node-convict is too slow and there is no dialog about futur changes. I had so many changes that I can't wait, I already waited 6 month, I got only 1/4 of my changes merged.*

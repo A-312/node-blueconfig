@@ -863,11 +863,7 @@ Calls the `coerce` function corresponding to `schema.format`, used by getters to
 
 ## FAQ
 
-### [How can I define a configuration property as "required" without providing a default value?](https://github.com/A-312/node-blueconfig/issues/29)
-
-The philosophy was to have production values be the default values. Usually you only want to change defaults for deploy or instance (in aws speak) specific tweaks. However, you can set a default value to `null` and if your format doesn't accept `null` it will throw an error.
-
-### [How can I use blueconfig in a (browserify-based) browser context?](https://github.com/A-312/node-blueconfig/issues/47)
+### How can I use blueconfig in a (browserify-based) browser context?
 
 Thanks to [browserify](http://browserify.org/), `blueconfig` can be used for web applications too. To do so,
 
