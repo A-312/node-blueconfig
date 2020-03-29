@@ -15,6 +15,7 @@ const stringifyPath = require('objectpath').stringify;
 const cvtError  = require('./error.js');
 
 const BLUECONFIG_ERROR = cvtError.BLUECONFIG_ERROR;
+const LISTOFERRORS = cvtError.LISTOFERRORS;
 // 1
 const SCHEMA_INVALID = cvtError.SCHEMA_INVALID;
 // 2
@@ -364,12 +365,20 @@ function parsingSchema(name, rawSchema, props, fullName) {
   
   schema._cvtValidateFormat = function(value) {
     try {
-      newFormat(value, schema);
+      newFormat(value, schema, fullName);
     } catch (err) {
-      const hasOrigin = !!schema._cvtGetOrigin;
-      const getter = (hasOrigin) ? schema._cvtGetOrigin() : false;
-      const getterValue = (hasOrigin && schema[getter]) ? schema[getter] : '';
-      throw new FORMAT_INVALID(fullName, err.message, getter, getterValue, value);
+      if (err instanceof LISTOFERRORS) {
+        err.message = `${fullName}: Custom format "${schema.format}" tried to validate something and failed:`;
+        err.errors.forEach((error, i) => {
+          err.message += `\n    ${i+1}) ${unroot(error.parent)}:` + ('\n' + error.why).replace(/(\n)/g, '$1    ');
+        });
+        throw err;
+      } else {
+        const hasOrigin = !!schema._cvtGetOrigin;
+        const getter = (hasOrigin) ? schema._cvtGetOrigin() : false;
+        const getterValue = (hasOrigin && schema[getter]) ? schema[getter] : '';
+        throw new FORMAT_INVALID(fullName, err.message, getter, getterValue, value);
+      }
     }
   };
 }

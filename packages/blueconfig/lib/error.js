@@ -14,6 +14,15 @@ class BLUECONFIG_ERROR extends Error {
 }
 
 
+class LISTOFERRORS extends BLUECONFIG_ERROR {
+  constructor(errors) {
+    super('List of several errors.');
+    this.errors = errors;
+    return this;
+  }
+}
+
+
 // =========================================
 // ============= BLUECONFIG ERROR =============
 // =========================================
@@ -106,6 +115,7 @@ class VALIDATE_FAILED extends BLUECONFIG_ERROR {
     super('Validate failed because wrong value(s):\n' + message);
     this.type = 'VALIDATE_FAILED';
     this.doc = 'You should try to change your config to respect the schema to continue.';
+    this.why = message
     return this;
   }
 }
@@ -126,6 +136,7 @@ class FORMAT_INVALID extends BLUECONFIG_ERROR {
 
 module.exports = {
   BLUECONFIG_ERROR,
+  LISTOFERRORS,
   // 1
   SCHEMA_INVALID,
   // 2
