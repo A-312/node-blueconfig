@@ -163,7 +163,7 @@ function validate(instance, schema, strictValidation) {
       try {
         instanceItem = walk(instance, name);
       } catch (err) {
-        let message = 'config parameter "' + name + '" missing from config, did you override its parent?';
+        let message = 'config parameter "' + unroot(name) + '" missing from config, did you override its parent?';
         if (err.lastPosition && err.type === 'PATH_INVALID') {
           message += ` Because ${err.why}.`;
         }
@@ -197,7 +197,7 @@ function validate(instance, schema, strictValidation) {
 
   if (strictValidation) {
     Object.keys(flatInstance).forEach(function(name) {
-      const err = new VALUE_INVALID("configuration param '" + name + "' not declared in the schema");
+      const err = new VALUE_INVALID("configuration param '" + unroot(name) + "' not declared in the schema");
       errors.undeclared.push(err);
     });
   }
@@ -543,7 +543,7 @@ function walk(obj, path, initializeMissing) {
       } else {
         const noCvtProp = (path) => path !== '_cvtProperties';
         throw new PATH_INVALID(stringifyPath(path.filter(noCvtProp)), stringifyPath(historic), {
-          path: stringifyPath(historic.slice(0, -1)),
+          path: unroot(stringifyPath(historic.slice(0, -1))),
           value: obj
         }); 
       }
@@ -604,7 +604,7 @@ const blueconfig = function blueconfig(def, opts) {
      * Exports all the properties (that is the keys and their current values) as JSON
      */
     getProperties: function() {
-      return cloneDeep(this._instance);
+      return cloneDeep(this._instance.root);
     },
 
     /**
@@ -613,9 +613,9 @@ const blueconfig = function blueconfig(def, opts) {
      * even if they aren't set, to avoid revealing any information.
      */
     toString: function() {
-      const clone = cloneDeep(this._instance);
+      const clone = cloneDeep(this._instance.root);
       this._sensitive.forEach(function(fullpath) {
-        const path = parsePath(fullpath);
+        const path = parsePath(unroot(fullpath));
         const childKey = path.pop();
         const parentKey = stringifyPath(path);
         const parent = walk(clone, parentKey);
@@ -628,7 +628,7 @@ const blueconfig = function blueconfig(def, opts) {
      * Exports the schema as JSON.
      */
     getSchema: function(debug) {
-      const schema = cloneDeep(this._schema);
+      const schema = cloneDeep(this._schemaRoot);
 
       return (debug) ? cloneDeep(schema) : convertSchema.call(this, schema);
     },
@@ -645,7 +645,7 @@ const blueconfig = function blueconfig(def, opts) {
      *     notation to reference nested values
      */
     get: function(path) {
-      const o = walk(this._instance, path);
+      const o = walk(this._instance.root, path);
       return cloneDeep(o);
     },
 
@@ -655,7 +655,7 @@ const blueconfig = function blueconfig(def, opts) {
      */
     getOrigin: function(path) {
       path = pathToSchemaPath(path, '_cvtGetOrigin');
-      const o = walk(this._schema._cvtProperties, path);
+      const o = walk(this._schemaRoot._cvtProperties, path);
       return o ? o() : null;
     },
 
@@ -691,7 +691,7 @@ const blueconfig = function blueconfig(def, opts) {
       // The default value for FOO.BAR.BAZ is stored in `_schema._cvtProperties` at:
       //   FOO._cvtProperties.BAR._cvtProperties.BAZ.default
       path = pathToSchemaPath(path, 'default');
-      const o = walk(this._schema._cvtProperties, path);
+      const o = walk(this._schemaRoot._cvtProperties, path);
       return cloneDeep(o);
     },
 
@@ -710,7 +710,7 @@ const blueconfig = function blueconfig(def, opts) {
         const r = this.get(path);
         const isRequired = (() => {
           try {
-            return !!walk(this._schema._cvtProperties, pathToSchemaPath(path, 'required'));
+            return !!walk(this._schemaRoot._cvtProperties, pathToSchemaPath(path, 'required'));
           } catch (e) {
             // undeclared property
             return false;
@@ -729,7 +729,7 @@ const blueconfig = function blueconfig(def, opts) {
      * exist, they will be initialized to empty objects
      */
     set: function(fullpath, value, priority, respectPriority) {
-      const mySchema = traverseSchema(this._schema, fullpath);
+      const mySchema = traverseSchema(this._schemaRoot, fullpath);
 
       if (!priority) {
         priority = 'value';
@@ -749,7 +749,7 @@ const blueconfig = function blueconfig(def, opts) {
       const path = parsePath(fullpath);
       const childKey = path.pop();
       const parentKey = stringifyPath(path);
-      const parent = walk(this._instance, parentKey, true);
+      const parent = walk(this._instance.root, parentKey, true);
 
       // respect priority 
       const canIChangeValue = (() => {
@@ -780,15 +780,15 @@ const blueconfig = function blueconfig(def, opts) {
     },
 
     /**
-     * Loads and merges a JavaScript object into config
+     * Merges a JavaScript object into config
      */
     load: function(obj) {
-      applyValues.call(this, obj, this._instance, this._schema);
+      applyValues.call(this, { root: obj }, this._instance, this._schema);
       return this;
     },
 
     /**
-     * Loads and merges one or multiple JSON configuration files into config
+     * Merges a JavaScript properties files into config
      */
     loadFile: function(paths) {
       if (!Array.isArray(paths)) paths = [paths];
@@ -802,6 +802,9 @@ const blueconfig = function blueconfig(def, opts) {
       return this;
     },
 
+    /**
+     * Merges a JavaScript object/files into config
+     */
     merge: function(sources) {
       if (!Array.isArray(sources)) sources = [sources];
       sources.forEach((config) => {
@@ -849,7 +852,7 @@ const blueconfig = function blueconfig(def, opts) {
               err_buf += '[' + err.type + '] ';
             }*/
             if (err.fullName) {
-              err_buf += err.fullName + ': ';
+              err_buf += unroot(err.fullName) + ': ';
             }
             if (err.message) {
               err_buf += err.message;
@@ -917,6 +920,10 @@ const blueconfig = function blueconfig(def, opts) {
     rv._def = def;
   }
 
+  rv._def = {
+    root: rv._def
+  };
+
   // The key `$~default` will be replaced by `default` during the schema parsing that allow
   // to use default key for config properties.
   const optsDefSub = (opts) ? opts.defaultSubstitute : false;
@@ -924,7 +931,10 @@ const blueconfig = function blueconfig(def, opts) {
 
   // build up current config from definition
   rv._schema = {
-    _cvtProperties: {}
+    _cvtProperties: {
+      // root key lets apply format on the config root tree
+      // root: { _cvtProperties: {} }
+    }
   };
 
   rv._getterAlreadyUsed = {};
@@ -938,12 +948,18 @@ const blueconfig = function blueconfig(def, opts) {
     parsingSchema.call(rv, key, rv._def[key], rv._schema._cvtProperties, key);
   });
 
+  rv._schemaRoot = rv._schema._cvtProperties.root;
+
   // config instance
   rv._instance = {};
   applyGetters.call(rv, rv._schema, rv._instance);
 
   return rv;
 };
+
+function unroot(text) {
+  return text.replace(/^root(\.|\[)/g, (_, b) => (b === '[') ? '[' : '');
+}
 
 /**
  * @returns sorted function which sorts array to newOrder
