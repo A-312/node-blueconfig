@@ -1,6 +1,6 @@
 {
   "name": "blueconfig",
-  "description": "Featureful configuration management library for Node.js (nested structure, schema validation, etc.)",
+  "description": "Fork of node-convict : Merge and validate your config depending of your schema, forked from node-convict.",
   "keywords": [
     "node-convict",
     "configuration",
