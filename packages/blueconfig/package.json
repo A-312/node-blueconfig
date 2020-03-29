@@ -2,6 +2,7 @@
   "name": "blueconfig",
   "description": "Featureful configuration management library for Node.js (nested structure, schema validation, etc.)",
   "keywords": [
+    "node-convict",
     "configuration",
     "config",
     "key value store",
