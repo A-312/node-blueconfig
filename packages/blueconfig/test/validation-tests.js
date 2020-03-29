@@ -283,7 +283,13 @@ describe('schema contains an object property with a custom format', function() {
     // init the hack (replace _cvtValidateFormat by our own function)
     expect(() => conf.validate(strictMode)).not.to.throw();
 
+    // hide error displaying
+    const error = global.console.error = () => {}
+
     // run the hack function
     expect(() => conf.validate(strictMode)).to.throw(message + ' \x1b[33;1m[/!\\ this is probably blueconfig internal error]\x1b[0m');
+    
+    // restart debug
+    global.console.error = error;
   });
 });

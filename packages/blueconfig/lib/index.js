@@ -869,6 +869,7 @@ const blueconfig = function blueconfig(def, opts) {
 
             if (!(err instanceof BLUECONFIG_ERROR)) {
               let warning = '[/!\\ this is probably blueconfig internal error]';
+              console.error(err);
               if (process.stdout.isTTY) {
                 warning = BOLD_YELLOW_TEXT + warning + RESET_TEXT;
               }
