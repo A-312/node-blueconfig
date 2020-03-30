@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>error.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h3>Tutorials</h3><ul><li><a href="tutorial-index_.html">index</a></li><li><a href="tutorial-tutorial1.html">Tutorial One</a></li></ul><h3>Classes</h3><ul><li><a href="BLUECONFIG_ERROR.html">BLUECONFIG_ERROR</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blueconfig">blueconfig</a></li><li><a href="global.html#isPort">isPort</a></li><li><a href="global.html#isWindowsNamedPipe">isWindowsNamedPipe</a></li><li><a href="global.html#sortGetters">sortGetters</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">error.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
+
+/**
+  * class parent allows to do:
+  * if (myError instanceof BLUECONFIG_ERROR) {
+  *   console.log('is blueconfig error');
+  * }
+ **/
+class BLUECONFIG_ERROR extends Error {
+  constructor(message) {
+    super(message);
+    return this;
+  }
+}
+
+
+class LISTOFERRORS extends BLUECONFIG_ERROR {
+  constructor(errors) {
+    super('List of several errors.');
+    this.errors = errors;
+    return this;
+  }
+}
+
+
+// =========================================
+// ============= BLUECONFIG ERROR =============
+// =========================================
+
+// new Error = Probably a blueconfig internal error
+
+// =========================================
+// ============= INSIDE ERROR ==============
+// ============= SCHEMA ERROR ==============
+// =========================================
+// This is probably a js/application problem.
+
+class SCHEMA_INVALID extends BLUECONFIG_ERROR {
+  constructor(fullName, message, value) {
+    super(`${fullName}: ${message}`);
+    this.fullName = fullName;
+    this.value = value;
+    this.type = 'SCHEMA_INVALID';
+    this.doc = 'You schema is not valid, edit your schema to continue.';
+    return this;
+  }
+}
+
+// =========================================
+// ============= INSIDE ERROR ==============
+// =============== JS ERROR ================ (with custom getter, format or parser)
+// ========================================= or wrong path with get/set/default/reset/getOrigin function.
+// This is probably a js/application problem.
+
+class CUSTOMISE_FAILED extends BLUECONFIG_ERROR {
+  constructor(message) {
+    super(message);
+    this.type = 'CUSTOMISE_FAILED';
+    this.doc = 'You try to add a getter/format/parser but you failed, fix your javascript code to continue.';
+    return this;
+  }
+}
+
+class INCORRECT_USAGE extends BLUECONFIG_ERROR {
+  constructor(message) {
+    super(message);
+    this.type = 'INCORRECT_USAGE';
+    this.doc = 'Incorrect usage of blueconfig function, maybe wrong parameter, fix your javascript code to continue.';
+    return this;
+  }
+}
+
+class PATH_INVALID extends BLUECONFIG_ERROR {
+  constructor(fullName, lastPosition, parent) {
+    let path = parent.path;
+    const state = (() => {
+      const type = typeof parent.value;
+      if (type !== 'object') {
+        return `a ${type}`;
+      } else if (parent.value === null) {
+        return 'null';
+      } else {
+        path = lastPosition;
+        return 'not defined';
+      }
+    })();
+    const why = `"${path}" is ${state}`;
+    super(`${fullName}: cannot find "${lastPosition}" property because ${why}.`);
+    this.fullName = fullName;
+    this.lastPosition = lastPosition;
+    this.why = why;
+    this.type = 'PATH_INVALID';
+    this.doc = 'To fix this error you should try to use an existing property path (take a look on the schema), edit your javascript file to continue.';
+    return this;
+  }
+}
+
+// =========================================
+// ============== USER ERROR ===============
+// === (values don't respect the schema) ===
+// =========================================
+// This is probably a config problem.
+
+class VALUE_INVALID extends BLUECONFIG_ERROR {
+  constructor(message) {
+    super(message);
+    this.type = 'VALUE_INVALID';
+    this.doc = 'You should try to change your config to respect the schema to continue.';
+    return this;
+  }
+}
+
+class VALIDATE_FAILED extends BLUECONFIG_ERROR {
+  constructor(message) {
+    super('Validate failed because wrong value(s):\n' + message);
+    this.type = 'VALIDATE_FAILED';
+    this.doc = 'You should try to change your config to respect the schema to continue.';
+    this.why = message
+    return this;
+  }
+}
+
+class FORMAT_INVALID extends BLUECONFIG_ERROR {
+  constructor(fullName, message, getter, getterValue, value) {
+    super(message);
+    this.fullName = fullName;
+    this.message = message;
+    this.getter = getter;
+    this.getterValue = getterValue;
+    this.value = value;
+    this.type = 'FORMAT_INVALID';
+    this.doc = 'You should try to change the property value to respect the schema to continue.';
+    return this;
+  }
+}
+
+module.exports = {
+  BLUECONFIG_ERROR,
+  LISTOFERRORS,
+  // 1
+  SCHEMA_INVALID,
+  // 2
+  CUSTOMISE_FAILED,
+  INCORRECT_USAGE,
+  PATH_INVALID,
+  // 2
+  VALUE_INVALID,
+  VALIDATE_FAILED,
+  FORMAT_INVALID
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Mar 30 2020 13:39:27 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
