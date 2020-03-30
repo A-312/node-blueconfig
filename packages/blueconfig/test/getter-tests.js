@@ -66,7 +66,7 @@ describe('blueconfig getters', function() {
       default: 'foo',
       plane: 'airbus'
     });
-    expect(() => conf.validate()).to.throw('ghost: not undefined: value was "No, you cannot.", getter was `answer_no="Too scared to ask"`');
+    expect(() => conf.validate()).to.throw('ghost: not undefined: value was "No, you cannot.", getter was `answer_no["Too scared to ask"]`');
   });
 
   const wrongOrder = ['default', 'value', 'env', 'arg', 'ghost', 'answer', 'answer_no', 'force'];
@@ -98,7 +98,7 @@ describe('blueconfig getters', function() {
       default: 'foo',
       plane: 'airbus'
     });
-    expect(() => conf.validate()).to.throw('ghost: not undefined: value was "No, you cannot.", getter was `answer_no="Too scared to ask"`');
+    expect(() => conf.validate()).to.throw('ghost: not undefined: value was "No, you cannot.", getter was `answer_no["Too scared to ask"]`');
   });
 
   it('must refresh getters and cached values', function() {
@@ -174,7 +174,7 @@ describe('blueconfig getters', function() {
         answer: 'Can I fly?'
       }
     };
-    expect(() => blueconfig(schema)).to.throw('bird: uses a already used value in "answer" getter (actual: "Can I fly?")');
+    expect(() => blueconfig(schema)).to.throw('bird: uses a already used getter keyname for "answer", actual: `answer["Can I fly?"]`');
   });
 
   it('must not rewrite an existing getter because I ask to force', function() {
