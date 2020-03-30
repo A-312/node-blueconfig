@@ -363,9 +363,9 @@ function parsingSchema(name, rawSchema, props, fullName) {
     }
   })();
   
-  schema._cvtValidateFormat = function(value) {
+  schema._cvtValidateFormat = (value) => {
     try {
-      newFormat(value, schema, fullName);
+      newFormat.call(this, value, schema, fullName);
     } catch (err) {
       if (err instanceof LISTOFERRORS) {
         err.message = `${fullName}: Custom format "${schema.format}" tried to validate something and failed:`;
