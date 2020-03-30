@@ -63,7 +63,7 @@ describe('blueconfig schema', function() {
       }
     };
 
-    expect(() => blueconfig(schema)).to.throw('bar: uses a already used value in "arg" getter (actual: "BAZ")');
+    expect(() => blueconfig(schema)).to.throw('bar: uses a already used getter keyname for "arg", actual: `arg["BAZ"]`');
   });
 
   it('requiredPropConf must be valid', function() {

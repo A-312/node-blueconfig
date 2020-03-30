@@ -221,7 +221,7 @@ const BUILT_INS = BUILT_IN_NAMES.map(function(name) {
 
 function parsingSchema(name, rawSchema, props, fullName) {
   if (name === '_cvtProperties') {
-    throw new SCHEMA_INVALID(fullName, "'_cvtProperties' is reserved word of blueconfig, it can be used like property name.");
+    throw new SCHEMA_INVALID(unroot(fullName), "'_cvtProperties' is reserved word of blueconfig, it can be used like property name.");
   }
 
   const countChildren = (rawSchema) ? Object.keys(rawSchema).length : 0;
@@ -257,7 +257,7 @@ function parsingSchema(name, rawSchema, props, fullName) {
     return;
   } else if (this._strictParsing && isObjNotNull(rawSchema) && !('default' in rawSchema)) {
     // throw an error instead use magic parsing
-    throw new SCHEMA_INVALID(fullName, 'default property is missing');
+    throw new SCHEMA_INVALID(unroot(fullName), 'default property is missing');
   // Magic parsing
   } else if (typeof rawSchema !== 'object' || rawSchema === null || isArray || countChildren === 0) {
     // Parses a shorthand value to a config property
@@ -283,8 +283,8 @@ function parsingSchema(name, rawSchema, props, fullName) {
           if (typeof usedOnlyOnce === 'function') {
             return usedOnlyOnce(value, schema, fullName, getterName);
           } else {
-            const errorMessage = `uses a already used value in "${getterName}" getter (actual: ${JSON.stringify(value)})`;
-            throw new SCHEMA_INVALID(fullName, errorMessage);
+            const errorMessage = `uses a already used getter keyname for "${getterName}", actual: \`${getterName}[${JSON.stringify(value)}]\``;
+            throw new SCHEMA_INVALID(unroot(fullName), errorMessage);
           }
         }
 
@@ -317,7 +317,7 @@ function parsingSchema(name, rawSchema, props, fullName) {
     } else if (typeof format === 'string') {
       // store declared type
       if (!types[format]) {
-        throw new SCHEMA_INVALID(fullName, `uses an unknown format type (actual: ${JSON.stringify(format)})`);
+        throw new SCHEMA_INVALID(unroot(fullName), `uses an unknown format type (actual: ${JSON.stringify(format)})`);
       }
       // use a predefined type
       return types[format];
@@ -336,7 +336,7 @@ function parsingSchema(name, rawSchema, props, fullName) {
       // Wrong type for format
       const errorMessage = 'uses an invalid format, it must be a format name, a function, an array or a known format type';
       const value = (format || '').toString() || 'is a ' + typeof format;
-      throw new SCHEMA_INVALID(fullName, `${errorMessage} (actual: ${JSON.stringify(value)})`);
+      throw new SCHEMA_INVALID(unroot(fullName), `${errorMessage} (actual: ${JSON.stringify(value)})`);
     } else if (!this._strictParsing && typeof schema.default !== 'undefined') {
       // Magic format: default format is the type of the default value (if strictParsing is not enabled)
       const defaultFormat = Object.prototype.toString.call(schema.default);
@@ -351,7 +351,7 @@ function parsingSchema(name, rawSchema, props, fullName) {
       };
     } else { // .format are missing
       const errorMessage = 'format property is missing';
-      throw new SCHEMA_INVALID(fullName, errorMessage);
+      throw new SCHEMA_INVALID(unroot(fullName), errorMessage);
     }
   })();
 
@@ -369,15 +369,19 @@ function parsingSchema(name, rawSchema, props, fullName) {
     } catch (err) {
       if (err instanceof LISTOFERRORS) {
         err.message = `${fullName}: Custom format "${schema.format}" tried to validate something and failed:`;
+
         err.errors.forEach((error, i) => {
           err.message += `\n    ${i+1}) ${unroot(error.parent)}:` + ('\n' + error.why).replace(/(\n)/g, '$1    ');
         });
+
         throw err;
       } else {
         const hasOrigin = !!schema._cvtGetOrigin;
-        const getter = (hasOrigin) ? schema._cvtGetOrigin() : false;
-        const getterValue = (hasOrigin && schema[getter]) ? schema[getter] : '';
-        throw new FORMAT_INVALID(fullName, err.message, getter, getterValue, value);
+        const name = (hasOrigin) ? schema._cvtGetOrigin() : false;
+        const keyname = (hasOrigin && schema[name]) ? schema[name] : '';
+        const getter = { name, keyname };
+
+        throw new FORMAT_INVALID(fullName, err.message, getter, value);
       }
     }
   };
@@ -410,11 +414,11 @@ function applyGetters(schema, node) {
           continue;
         }
         const getter = getterObj.getter;
-        const value = cloneDeep(mySchema[getterName]);
+        const keyname = cloneDeep(mySchema[getterName]);
         const stopPropagation = () => propagationAsked = true;
 
         // call getter
-        node[name] = getter.call(this, value, mySchema, stopPropagation);
+        node[name] = getter.call(this, keyname, mySchema, stopPropagation);
 
         if (typeof node[name] !== 'undefined' || propagationAsked) {
           // We use function because function are not saved/exported in schema
@@ -869,13 +873,16 @@ const blueconfig = function blueconfig(def, opts) {
 
             const hidden = !!sensitive.has(err.fullName);
             const value = (hidden) ? '[Sensitive]' : JSON.stringify(err.value);
-            const getterValue = (hidden) ? '[Sensitive]' : JSON.stringify(err.getterValue);
+            const getterValue = (hidden) ? '[Sensitive]' : JSON.stringify(err.getter && err.getter.keyname);
 
             if (err.value) {
               err_buf +=  ': value was ' + value;
-              if (err.getter) {
-                err_buf += ', getter was `' + err.getter;
-                err_buf += (err.getter !== 'value') ? '=' + getterValue + '`' : '`';
+
+              const getter = (err.getter) ? err.getter.name : false;
+
+              if (getter) {
+                err_buf += ', getter was `' + getter;
+                err_buf += (getter !== 'value') ? '[' + getterValue + ']`' : '`';
               }
             }
 
