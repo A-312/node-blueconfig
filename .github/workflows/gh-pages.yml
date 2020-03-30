@@ -15,8 +15,9 @@ jobs:
         run: |
           npm install
           npm run doc
+          echo "blueconfig.js.org" > "gh-pages/CNAME"
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages 👌
         uses: JamesIves/github-pages-deploy-action@3.4.2
         with:
           access_token: ${{ secrets.ACCESS_TOKEN }} 
