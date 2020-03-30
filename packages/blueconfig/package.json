@@ -30,7 +30,7 @@
   "files": [
     "lib"
   ],
-  "main": "lib/index.js",
+  "main": "lib/core.js",
   "dependencies": {
     "lodash.clonedeep": "4.5.0",
     "objectpath": "2.0.0",

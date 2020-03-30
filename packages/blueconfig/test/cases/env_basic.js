@@ -1,6 +1,6 @@
-'use strict';
 
-exports.formats = require('blueconfig-format-with-validator');
+
+exports.formats = require('blueconfig-format-with-validator')
 
 exports.conf = {
   ip: {
@@ -13,9 +13,9 @@ exports.conf = {
     format: 'port',
     env: 'PORT'
   }
-};
+}
 
 exports.env = {
   IP_ADDRESS: '10.0.1.101',
   PORT: 8080
-};
+}

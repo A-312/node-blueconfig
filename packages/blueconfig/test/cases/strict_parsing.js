@@ -1,4 +1,4 @@
-'use strict';
+
 
 exports.conf = {
   something: {
@@ -11,6 +11,6 @@ exports.conf = {
       format: 'String'
     }
   }
-};
+}
 
-exports.strictParsing = true;
+exports.strictParsing = true

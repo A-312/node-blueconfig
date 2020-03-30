@@ -2,7 +2,7 @@
  * blueconfig-format
  * Standard format for blueconfig
  */
-'use strict'
+
 
 function assert(assertion, err_msg) {
   if (!assertion) {
@@ -11,11 +11,11 @@ function assert(assertion, err_msg) {
 }
 
 function toInt(value) {
-  return (typeof value !== 'undefined') ? parseInt(value, 10) : value;
+  return (typeof value !== 'undefined') ? parseInt(value, 10) : value
 }
 
 function isWindowsNamedPipe(x) {
-  return String(x).includes('\\\\.\\pipe\\');
+  return String(x).includes('\\\\.\\pipe\\')
 }
 
 const int = {
@@ -64,8 +64,8 @@ const port_or_windows_named_pipe = {
       try {
         port.validate(value)
       } catch (err) { // change error message
-        assert(false, 'must be a windows named pipe or a number within range 0 - 65535');
-      }      
+        assert(false, 'must be a windows named pipe or a number within range 0 - 65535')
+      }
     }
   }
 }

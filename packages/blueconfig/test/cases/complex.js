@@ -1,4 +1,4 @@
-'use strict';
+
 
 exports.formats = require('blueconfig-format-with-moment')
 
@@ -49,8 +49,8 @@ exports.conf = {
   },
   disable_primary_support: false,
   enable_code_version: false,
-  default_lang: [ 'en-US' ],
-  supported_languages: [ 'en-US' ],
+  default_lang: ['en-US'],
+  supported_languages: ['en-US'],
   locale_directory: 'locale',
   express_log_format: 'default'
-};
+}

@@ -1,4 +1,3 @@
-'use strict';
 
 
 /**
@@ -6,7 +5,7 @@
  *
  * This class is Parent of all other Blueconfig errors, all errors are inherited of this one.
  *
- * @example 
+ * @example
  * if (myError instanceof BLUECONFIG_ERROR) {
  *   console.log('is blueconfig error');
  * }
@@ -20,8 +19,8 @@ class BLUECONFIG_ERROR extends Error {
    * @param {String}   message   Error message
    */
   constructor(message) {
-    super(message);
-    return this;
+    super(message)
+    return this
   }
 }
 
@@ -29,19 +28,19 @@ class BLUECONFIG_ERROR extends Error {
 /**
  * List of errors (should be loop/parsed on LISTOFERRORS.errors like an array). Can be usefull with custom format.
  *
- * @example 
- * blueconfig.addFormat({ 
- *   name: 'children', 
- *   validate: function(children, schema, fullname) { 
- *     Object.keys(children).forEach((keyname) => { 
- *       try { 
- *         const conf = blueconfig(schema.children).merge(children[keyname]).validate(); 
- *         this.set(keyname, conf.getProperties()); 
- *       } catch (err) { errors.push(err); } 
- *     }); 
- *  
- *     if (errors.length !== 0) { throw new LISTOFERRORS(errors) } 
- *   } 
+ * @example
+ * blueconfig.addFormat({
+ *   name: 'children',
+ *   validate: function(children, schema, fullname) {
+ *     Object.keys(children).forEach((keyname) => {
+ *       try {
+ *         const conf = blueconfig(schema.children).merge(children[keyname]).validate();
+ *         this.set(keyname, conf.getProperties());
+ *       } catch (err) { errors.push(err); }
+ *     });
+ *
+ *     if (errors.length !== 0) { throw new LISTOFERRORS(errors) }
+ *   }
  * });
  *
  * @extends BLUECONFIG_ERROR
@@ -54,7 +53,7 @@ class LISTOFERRORS extends BLUECONFIG_ERROR {
    * @param {BLUECONFIG_ERROR[]}   errors   List of errors
    */
   constructor(errors) {
-    super('List of several errors.');
+    super('List of several errors.')
 
     /**
      * List of errors
@@ -62,9 +61,9 @@ class LISTOFERRORS extends BLUECONFIG_ERROR {
      * @var errors
      * @memberof LISTOFERRORS
      */
-    this.errors = errors;
+    this.errors = errors
 
-    return this;
+    return this
   }
 }
 
@@ -95,7 +94,7 @@ class SCHEMA_INVALID extends BLUECONFIG_ERROR {
    * @param {String}   message    Error message
    */
   constructor(fullName, message) {
-    super(`${fullName}: ${message}`);
+    super(`${fullName}: ${message}`)
 
     /**
      * Return the full selector (e.g.: `base.path.name`)
@@ -103,12 +102,12 @@ class SCHEMA_INVALID extends BLUECONFIG_ERROR {
      * @var fullName
      * @memberof SCHEMA_INVALID
      */
-    this.fullName = fullName;
+    this.fullName = fullName
 
-    this.type = 'SCHEMA_INVALID';
-    this.doc = 'You schema is not valid, edit your schema to continue.';
+    this.type = 'SCHEMA_INVALID'
+    this.doc = 'You schema is not valid, edit your schema to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -131,12 +130,12 @@ class CUSTOMISE_FAILED extends BLUECONFIG_ERROR {
    * @param {String}   message    Error message
    */
   constructor(message) {
-    super(message);
+    super(message)
 
-    this.type = 'CUSTOMISE_FAILED';
-    this.doc = 'You try to add a getter/format/parser but you failed, fix your javascript code to continue.';
+    this.type = 'CUSTOMISE_FAILED'
+    this.doc = 'You try to add a getter/format/parser but you failed, fix your javascript code to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -153,12 +152,12 @@ class INCORRECT_USAGE extends BLUECONFIG_ERROR {
    * @param {String}   message    Error message
    */
   constructor(message) {
-    super(message);
+    super(message)
 
-    this.type = 'INCORRECT_USAGE';
-    this.doc = 'Wrong usage of blueconfig function, maybe wrong parameter, fix your javascript code to continue.';
+    this.type = 'INCORRECT_USAGE'
+    this.doc = 'Wrong usage of blueconfig function, maybe wrong parameter, fix your javascript code to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -179,21 +178,21 @@ class PATH_INVALID extends BLUECONFIG_ERROR {
    * @param {Object}   parent.value    Return the value of `parent`
    */
   constructor(fullName, lastPosition, parent) {
-    let path = parent.path;
+    let path = parent.path
     const state = (() => {
-      const type = typeof parent.value;
+      const type = typeof parent.value
       if (type !== 'object') {
-        return `a ${type}`;
+        return `a ${type}`
       } else if (parent.value === null) {
-        return 'null';
+        return 'null'
       } else {
-        path = lastPosition;
-        return 'not defined';
+        path = lastPosition
+        return 'not defined'
       }
-    })();
-    const why = `"${path}" is ${state}`;
+    })()
+    const why = `"${path}" is ${state}`
 
-    super(`${fullName}: cannot find "${lastPosition}" property because ${why}.`);
+    super(`${fullName}: cannot find "${lastPosition}" property because ${why}.`)
 
     /**
      * Return the full selector to the properties missing (e.g.: `base.path.name`)
@@ -201,7 +200,7 @@ class PATH_INVALID extends BLUECONFIG_ERROR {
      * @var fullName
      * @memberof PATH_INVALID
      */
-    this.fullName = fullName;
+    this.fullName = fullName
 
     /**
      * Return the nearest full selector before missed properties (e.g.: `base.path.name`)
@@ -209,7 +208,7 @@ class PATH_INVALID extends BLUECONFIG_ERROR {
      * @var lastPosition
      * @memberof PATH_INVALID
      */
-    this.lastPosition = lastPosition;
+    this.lastPosition = lastPosition
 
     /**
      * Error explanation
@@ -217,12 +216,12 @@ class PATH_INVALID extends BLUECONFIG_ERROR {
      * @var why
      * @memberof PATH_INVALID
      */
-    this.why = why;
+    this.why = why
 
-    this.type = 'PATH_INVALID';
-    this.doc = 'To fix this error you should try to use an existing property path (take a look on the schema), edit your javascript file to continue.';
+    this.type = 'PATH_INVALID'
+    this.doc = 'To fix this error you should try to use an existing property path (take a look on the schema), edit your javascript file to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -245,12 +244,12 @@ class VALUE_INVALID extends BLUECONFIG_ERROR {
    * @param {String}   message    Error message
    */
   constructor(message) {
-    super(message);
+    super(message)
 
-    this.type = 'VALUE_INVALID';
-    this.doc = 'You should try to change your config to respect the schema to continue.';
+    this.type = 'VALUE_INVALID'
+    this.doc = 'You should try to change your config to respect the schema to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -267,7 +266,7 @@ class VALIDATE_FAILED extends BLUECONFIG_ERROR {
    * @param {String}    explains    List of explained error why validate failed
    */
   constructor(explains) {
-    super('Validate failed because wrong value(s):\n' + explains);
+    super('Validate failed because wrong value(s):\n' + explains)
 
     /**
      * List of explained error why validate failed (defined with the first argument of the constructor)
@@ -276,10 +275,10 @@ class VALIDATE_FAILED extends BLUECONFIG_ERROR {
      */
     this.why = explains
 
-    this.type = 'VALIDATE_FAILED';
-    this.doc = 'You should try to change your config to respect the schema to continue.';
+    this.type = 'VALIDATE_FAILED'
+    this.doc = 'You should try to change your config to respect the schema to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -303,7 +302,7 @@ class FORMAT_INVALID extends BLUECONFIG_ERROR {
    * @param {String}   getter          Returned value by `Getter(keyname)`
    */
   constructor(fullName, message, getter, value) {
-    super(message);
+    super(message)
 
     /**
      * Return the full selector (e.g.: `base.path.name`)
@@ -311,13 +310,13 @@ class FORMAT_INVALID extends BLUECONFIG_ERROR {
      * @var fullName
      * @memberof FORMAT_INVALID
      */
-    this.fullName = fullName;
+    this.fullName = fullName
 
     /**
      * Return the nearest full selector before missed key (e.g.: `base.path.name`)
      *
      * @var getter
-     * @typedef {Object} 
+     * @typedef {Object}
      * @property {string} name Getter name
      * @property {string} value Getter keyname
      * @memberof FORMAT_INVALID
@@ -325,7 +324,7 @@ class FORMAT_INVALID extends BLUECONFIG_ERROR {
     this.getter = {
       name: getter.name,
       keyname: getter.keyname
-    };
+    }
 
     /**
      * Returned value by `this.getter`
@@ -333,12 +332,12 @@ class FORMAT_INVALID extends BLUECONFIG_ERROR {
      * @var value
      * @memberof FORMAT_INVALID
      */
-    this.value = value;
+    this.value = value
 
-    this.type = 'FORMAT_INVALID';
-    this.doc = 'You should try to change the property value to respect the schema to continue.';
+    this.type = 'FORMAT_INVALID'
+    this.doc = 'You should try to change the property value to respect the schema to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -355,4 +354,4 @@ module.exports = {
   VALUE_INVALID,
   VALIDATE_FAILED,
   FORMAT_INVALID
-};
+}

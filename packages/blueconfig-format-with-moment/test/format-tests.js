@@ -1,20 +1,20 @@
-'use strict';
 
-const chai = require('chai');
-const expect = chai.expect;
 
-const moment = require('moment');
+const chai = require('chai')
+const expect = chai.expect
 
-const new_require = require('../../blueconfig/test/new_require.js');
-const blueconfig = new_require('../../blueconfig/');
+const moment = require('moment')
+
+const new_require = require('../../blueconfig/test/new_require.js')
+const blueconfig = new_require('../../blueconfig/')
 
 describe('blueconfig formats', function() {
-  let conf;
+  let conf
 
   it('must add "duration" and "timestamp" format with blueconfig-format-with-moment', function() {
-    blueconfig.addFormat(require('../').duration);
-    blueconfig.addFormat(require('../').timestamp);
-  });
+    blueconfig.addFormat(require('../').duration)
+    blueconfig.addFormat(require('../').timestamp)
+  })
 
   it('must parse a config specification', function() {
     conf = blueconfig({
@@ -44,37 +44,37 @@ describe('blueconfig formats', function() {
           default: '12345'
         }
       }
-    });
-  });
+    })
+  })
 
   it('validates default schema', function() {
-    expect(() => conf.validate()).to.not.throw();
-  });
+    expect(() => conf.validate()).to.not.throw()
+  })
 
   it('successfully fails to validate incorrect values', function() {
-    conf.set('foo.duration4', '-7 days');
-    expect(() => conf.validate()).to.throw('must be a positive integer or human readable string');
+    conf.set('foo.duration4', '-7 days')
+    expect(() => conf.validate()).to.throw('must be a positive integer or human readable string')
 
-    conf.set('foo.duration5', 'zz-7zzdays');
-    expect(() => conf.validate()).to.throw('must be a positive integer or human readable string');
-  });
+    conf.set('foo.duration5', 'zz-7zzdays')
+    expect(() => conf.validate()).to.throw('must be a positive integer or human readable string')
+  })
 
   describe('predefined formats', function() {
     it('must handle timestamp', function() {
-      expect(conf.get('foo.date')).to.equal(moment('2013-05-05').valueOf());
-    });
+      expect(conf.get('foo.date')).to.equal(moment('2013-05-05').valueOf())
+    })
 
     it('must handle duration in milliseconds', function() {
-      expect(conf.get('foo.duration')).to.equal(604800000);
-      expect(conf.getOrigin('foo.duration')).to.equal('default');
-    });
+      expect(conf.get('foo.duration')).to.equal(604800000)
+      expect(conf.getOrigin('foo.duration')).to.equal('default')
+    })
 
     it('must handle duration in a human readable string', function() {
-      expect(conf.get('foo.duration2')).to.equal(60 * 5 * 1000);
-    });
+      expect(conf.get('foo.duration2')).to.equal(60 * 5 * 1000)
+    })
 
     it('must handle duration in milliseconds as a string', function() {
-      expect(conf.get('foo.duration3')).to.equal(12345);
-    });
-  });
-});
+      expect(conf.get('foo.duration3')).to.equal(12345)
+    })
+  })
+})
