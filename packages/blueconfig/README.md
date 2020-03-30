@@ -260,7 +260,7 @@ const config = blueconfig({
   },
   name: {
     doc: 'user name',
-    format: function check(val, schema) {
+    format: function check(val, schema, fullname) {
       if (typeof val.first_name !== 'string') {
         throw new TypeError(`first name '${val.first_name}' is not a string`);
       }
@@ -282,7 +282,7 @@ method that can be reused for many different properties:
 ```javascript
 blueconfig.addFormat({
   name: 'float-percent',
-  validate: function(val, schema) {
+  validate: function(val, schema, fullname) {
     if (val !== 0 && (!val || val > 1 || val < 0)) {
       throw new Error('must be a float between 0 and 1, inclusive');
     }
@@ -313,7 +313,7 @@ You can specify a custom format checking for array items:
 ```javascript
 blueconfig.addFormat({
   name: 'source-array',
-  validate: function(sources, schema) {
+  validate: function(sources, schema, fullname) {
     if (!Array.isArray(sources)) {
       throw new Error('must be of type Array');
     }
@@ -478,7 +478,7 @@ E.g.:
 ```javascript
 blueconfig.addFormat({
   name: 'float-percent',
-  validate: function(val, validate) {
+  validate: function(val, schema, fullname) {
     if (val !== 0 && (!val || val > 1 || val < 0)) {
       throw new Error('must be a float between 0 and 1, inclusive');
     }
@@ -852,9 +852,9 @@ You will find the properties that you defined in your schema (like `doc`, `defau
 
 Get the name of the getter which gets the current value. 
 
-### schema.\_cvtValidateFormat(value)
+### schema.\_cvtValidateFormat(value, schema, fullname)
 
-Calls the validate format function corresponding to `schema.format`, used by `config.validate(value)` to validate your schema. This function will throw an error if `value` doesn't have the correct format.
+Calls the validate format function corresponding to `schema.format`, used by `config.validate(value, schema, fullname)` to validate your schema. This function will throw an error if `value` doesn't have the correct format.
 
 ### schema.\_cvtCoerce(value)
 

@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [6.1.0] - 2019-03-29
+### Added
+ - Accept format in the root of a config tree
+
+### Changed
+ - Update package.json description and add tags. (= "Fork of node-convict", "node-convict") (@A-312)
+
+
 ## [6.0.2] - 2019-03-07
 ### Changed
  - Fix `lerna publish` (@A-312)

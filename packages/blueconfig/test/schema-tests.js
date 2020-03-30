@@ -85,9 +85,6 @@ describe('blueconfig schema', function() {
       }
     });
 
-    console.log(requiredStringandUndefined.getSchema());
-    console.log(requiredStringandUndefined.getSchema());
-
     const expected = 'Validate failed because wrong value(s):\n'
       + '  - foo.none: must be of type String\n'
       + '  - foo.none2: must be of type String';
