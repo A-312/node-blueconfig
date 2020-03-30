@@ -16,9 +16,10 @@ exports.formats = {
         throw new Error('must be of an Object not null');
       }
 
-      Object.keys(children).forEach(function(keyname) {
+      Object.keys(children).forEach((keyname) => {
         try {
-          blueconfig(schema.children).merge(children[keyname]).validate();
+          const conf = blueconfig(schema.children).merge(children[keyname]).validate();
+          this.set(keyname, conf.getProperties());
         } catch (err) {
           err.parent = fullname + '.' + keyname;
           errors.push(err);
@@ -50,8 +51,7 @@ exports.conf = {
 
     subregion: {
       format: 'String',
-      default: undefined,
-      required: true
+      default: 'Europe'
     }
   }
 };
@@ -64,8 +64,7 @@ exports.data = {
   },
   france: {
     name: 'France',
-    population: 65273511,
-    subregion: 'Western Europe'
+    population: 65273511
   },
   italy: {
     name: 'Italy',
