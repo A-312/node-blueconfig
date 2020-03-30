@@ -1,6 +1,6 @@
 {
   "opts": {
-    "destination": "./doc/",
+    "destination": "./gh-pages/",
     "tutorials": "./docs/",
     "template": "node_modules/docdash",
     "private": true
