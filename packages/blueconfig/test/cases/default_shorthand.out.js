@@ -1,14 +1,14 @@
-'use strict';
+
 
 module.exports = {
-  'bool': false,
-  'string': 'value',
-  'int': 1,
-  'float': 1.5,
-  'array': [1, 2, 3],
-  'object': {
-    'bool': true
+  bool: false,
+  string: 'value',
+  int: 1,
+  float: 1.5,
+  array: [1, 2, 3],
+  object: {
+    bool: true
   },
-  'null': null,
-  'emptyObject': {}
-};
+  null: null,
+  emptyObject: {}
+}

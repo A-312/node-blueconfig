@@ -1,17 +1,17 @@
-'use strict';
 
-const chai = require('chai');
-const expect = chai.expect;
 
-const new_require = require('../../blueconfig/test/new_require.js');
-const blueconfig = new_require('../../blueconfig/');
+const chai = require('chai')
+const expect = chai.expect
+
+const new_require = require('../../blueconfig/test/new_require.js')
+const blueconfig = new_require('../../blueconfig/')
 
 describe('blueconfig formats', function() {
-  let conf;
+  let conf
 
   it('must add formats ("email", "ipaddress" and "url") with blueconfig-format-with-validator', function() {
-    blueconfig.addFormats(require('../'));
-  });
+    blueconfig.addFormats(require('../'))
+  })
 
   it('must parse a config specification', function() {
     conf = blueconfig({
@@ -29,15 +29,15 @@ describe('blueconfig formats', function() {
           default: 'http://example.com'
         }
       }
-    });
-  });
+    })
+  })
 
   it('validates default schema', function() {
-    expect(() => conf.validate()).to.not.throw();
-  });
+    expect(() => conf.validate()).to.not.throw()
+  })
 
   it('successfully fails to validate incorrect values', function() {
-    conf.set('foo.email', ';aaaa;');
-    expect(() => conf.validate()).to.throw('must be an email address: value was ";aaaa;"');
-  });
-});
+    conf.set('foo.email', ';aaaa;')
+    expect(() => conf.validate()).to.throw('must be an email address: value was ";aaaa;"')
+  })
+})

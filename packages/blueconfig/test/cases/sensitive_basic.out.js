@@ -1,8 +1,8 @@
-'use strict';
+
 
 module.exports = {
-  'public': 'public',
-  'privateString': 'private',
-  'privateNat': 1,
-  'privateNull': null
-};
+  public: 'public',
+  privateString: 'private',
+  privateNat: 1,
+  privateNull: null
+}

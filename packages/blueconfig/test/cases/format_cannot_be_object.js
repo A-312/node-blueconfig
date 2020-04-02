@@ -1,4 +1,4 @@
-'use strict';
+
 
 exports.conf = {
   // default
@@ -6,4 +6,4 @@ exports.conf = {
     default: true,
     format: {}
   }
-};
+}

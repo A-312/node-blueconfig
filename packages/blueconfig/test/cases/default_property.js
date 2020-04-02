@@ -1,4 +1,4 @@
-'use strict';
+
 
 exports.conf = {
   // default
@@ -6,8 +6,8 @@ exports.conf = {
     default: 'myDefaultValue',
     format: 'String'
   }
-};
+}
 
 exports.data = {
   default: 'myNewValue'
-};
+}

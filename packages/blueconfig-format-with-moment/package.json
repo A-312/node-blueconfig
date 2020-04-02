@@ -17,7 +17,7 @@
   },
   "bugs": "https://github.com/A-312/node-blueconfig/issues",
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "scripts": {
     "posttest": "npm run lint",
@@ -35,7 +35,12 @@
   "devDependencies": {
     "blueconfig": "file:../blueconfig",
     "chai": "4.2.0",
-    "eslint": "6.5.1",
+    "eslint": "6.8.0",
+    "eslint-config-standard": "14.1.0",
+    "eslint-plugin-import": "2.20.1",
+    "eslint-plugin-node": "11.0.0",
+    "eslint-plugin-promise": "4.2.1",
+    "eslint-plugin-standard": "4.0.1",
     "mocha": "6.2.2"
   }
 }

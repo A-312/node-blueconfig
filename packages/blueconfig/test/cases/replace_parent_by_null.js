@@ -1,4 +1,4 @@
-'use strict';
+
 
 exports.conf = {
   first: {
@@ -11,7 +11,7 @@ exports.conf = {
       }
     }
   }
-};
+}
 
 exports.data = {
   first: {
@@ -19,4 +19,4 @@ exports.data = {
       third: null
     }
   }
-};
+}

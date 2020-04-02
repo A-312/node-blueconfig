@@ -1,37 +1,37 @@
-'use strict';
 
-const blueconfig = require('blueconfig');
-const LISTOFERRORS = require('blueconfig/lib/error.js').LISTOFERRORS;
+
+const blueconfig = require('blueconfig')
+const LISTOFERRORS = require('blueconfig/lib/error.js').LISTOFERRORS
 
 function isObjNotNull(obj) {
-  return typeof obj === 'object' && obj !== null;
+  return typeof obj === 'object' && obj !== null
 }
 
 exports.formats = {
   children: {
     validate: function(children, schema, fullname) {
-      const errors = [];
+      const errors = []
 
       if (!isObjNotNull(children)) {
-        throw new Error('must be of an Object not null');
+        throw new Error('must be of an Object not null')
       }
 
       Object.keys(children).forEach((keyname) => {
         try {
-          const conf = blueconfig(schema.children).merge(children[keyname]).validate();
-          this.set(keyname, conf.getProperties());
+          const conf = blueconfig(schema.children).merge(children[keyname]).validate()
+          this.set(keyname, conf.getProperties())
         } catch (err) {
-          err.parent = fullname + '.' + keyname;
-          errors.push(err);
+          err.parent = fullname + '.' + keyname
+          errors.push(err)
         }
-      });
+      })
 
       if (errors.length !== 0) {
         throw new LISTOFERRORS(errors)
       }
     }
   }
-};
+}
 
 exports.conf = {
   format: 'children',
@@ -54,7 +54,7 @@ exports.conf = {
       default: 'Europe'
     }
   }
-};
+}
 
 exports.data = {
   germany: {
@@ -71,4 +71,4 @@ exports.data = {
     population: 60461826,
     subregion: 2
   }
-};
+}

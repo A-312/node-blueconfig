@@ -1,4 +1,4 @@
-'use strict';
+
 
 exports.conf = {
   true: {
@@ -29,7 +29,7 @@ exports.conf = {
       default: null
     }
   }
-};
+}
 
 exports.data = {
   true: {
@@ -42,5 +42,5 @@ exports.data = {
     lower: 'false',
     mixed: 'False'
   }
-};
+}
 
