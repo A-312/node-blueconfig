@@ -2,8 +2,7 @@
  * blueconfig
  *
  * forked-from: node-config
- * forked-from: Configuration management with support for environmental variables, files,
- * forked-from: and validation.
+ * forked-from: Configuration management with support for environmental variables, files, and validation.
  */
 'use strict';
 
@@ -27,65 +26,9 @@ const VALUE_INVALID = cvtError.VALUE_INVALID;
 const VALIDATE_FAILED = cvtError.VALIDATE_FAILED;
 const FORMAT_INVALID = cvtError.FORMAT_INVALID;
 
-
-//>>>> format can be a:
-
-// - predefine type, as seen below
-// - an array of enumerated values, e.g. ["production", "development", "testing"]
-// - built-in JavaScript type, i.e. Object, Array, String, Number, Boolean, RegExp
-// - or if omitted, the Object.prototype.toString.call of the default value
-
-/**
- * Checks if x is a valid port
- *
- * @param {*} x
- * @returns {Boolean}
- */
-function isPort(x) {
-  return Number.isInteger(x) && x >= 0 && x <= 65535;
-}
-
-/**
- * Checks if x is a windows named pipe
- *
- * @see https://msdn.microsoft.com/en-us/library/windows/desktop/aa365783(v=vs.85).aspx
- * @param {*} x
- * @returns {Boolean}
- */
-function isWindowsNamedPipe(x) {
-  return String(x).includes('\\\\.\\pipe\\');
-}
-
-function assert(assertion, err_msg) {
-  if (!assertion) {
-    throw new Error(err_msg);
-    //        ^^^^^-- will be catch in _cvtValidateFormat and convert to FORMAT_INVALID Error.
-  }
-}
 const types = {
-  '*': function() { },
-  int: function(x) {
-    assert(Number.isInteger(x), 'must be an integer');
-  },
-  nat: function(x) {
-    assert(Number.isInteger(x) && x >= 0, 'must be a positive integer');
-  },
-  port: function(x) {
-    assert(isPort(x), 'ports must be within range 0 - 65535');
-  },
-  windows_named_pipe: function(x) {
-    assert(isWindowsNamedPipe(x), 'must be a valid pipe');
-  },
-  port_or_windows_named_pipe: function(x) {
-    if (!isWindowsNamedPipe(x)) {
-      assert(isPort(x), 'must be a windows named pipe or a number within range 0 - 65535');
-    }
-  }
+  '*': function() { }
 };
-// alias
-types.integer = types.int;
-
-//<<<< endformat
 
 const converters = new Map();
 
@@ -477,22 +420,13 @@ function traverseSchema(schema, path) {
   return o;
 }
 
-function isStr(value) {
-  return (typeof value === 'string');
-}
-
 function getCoerceMethod(format) {
+  const isStr = (value) => (typeof value === 'string');
+
   if (converters.has(format)) {
     return converters.get(format);
   }
   switch (format) {
-    case 'port':
-    case 'nat':
-    case 'integer':
-    case 'int':
-      return (v) => (typeof v !== 'undefined') ? parseInt(v, 10) : v;
-    case 'port_or_windows_named_pipe':
-      return (v) => (isWindowsNamedPipe(v)) ? v : parseInt(v, 10);
     case 'Number':
       return (v) => (isStr(v)) ? parseFloat(v) : v;
     case 'Boolean':
@@ -1121,6 +1055,8 @@ blueconfig.addFormats = function(formats) {
     blueconfig.addFormat(name, formats[name].validate, formats[name].coerce, formats[name].rewrite);
   });
 };
+
+blueconfig.addFormats(require('./format/standard-formats.js'));
 
 /**
  * Adds a new custom file parser

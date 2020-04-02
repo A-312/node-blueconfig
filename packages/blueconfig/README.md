@@ -1,10 +1,14 @@
 # Blueconfig
 
 [![NPM version](http://img.shields.io/npm/v/blueconfig.svg)](https://www.npmjs.org/package/blueconfig)
+[![Build Status](https://travis-ci.com/A-312/node-blueconfig.svg?branch=master)](https://travis-ci.com/A-312/node-blueconfig)
+[![Coverage Status](https://coveralls.io/repos/github/A-312/node-blueconfig/badge.svg?branch=master)](https://coveralls.io/github/A-312/node-blueconfig?branch=master)
 
-*This is a fork of node-convict*
+Blueconfig is schema validator for your config files on production or development environment. Blueconfig merges configs and validates them depending of a pattern called *schema*. Configs can be an object or a file (json, yaml...).
 
-Blueconfig expands on the standard pattern of configuring node.js applications in a way that is more robust and accessible to collaborators, who may have less interest in digging through imperative code in order to inspect or modify settings. By introducing a configuration schema, blueconfig gives project collaborators more **context** on each setting and enables **validation and early failures** for when configuration goes wrong.
+Introducing a configuration schema, blueconfig gives project collaborators more **context** on each setting and enables **validation and early failures** for when configuration goes wrong.
+
+*This is a fork of node-convict 5.x*
 
 
 ## Features
@@ -859,17 +863,3 @@ Calls the validate format function corresponding to `schema.format`, used by `co
 ### schema.\_cvtCoerce(value)
 
 Calls the `coerce` function corresponding to `schema.format`, used by getters to convert (generally a string) to its proper type (int, float, array...).
-
-## FAQ
-
-### How can I use blueconfig in a (browserify-based) browser context?
-
-Thanks to [browserify](http://browserify.org/), `blueconfig` can be used for web applications too. To do so,
-
-* Use [`brfs`](https://www.npmjs.com/package/brfs) to ensure the `fs.loadFileSync` schema-loading calls are inlined at build time rather than resolved at runtime (in Gulp, add `.transform(brfs)` to your browserify pipe).
-* To support *"loading configuration from a `http://foo.bar/some.json` URL"*, build a thin wrapper around blueconfig using your favorite http package (e.g. [`superagent`](https://visionmedia.github.io/superagent/)). Typically, in the success callback, call blueconfig's `merge()` on the body of the response.
-
-
-## Contributing
-
-Read the [Contributing](./CONTRIBUTING.md) doc.

@@ -17,7 +17,7 @@
   },
   "bugs": "https://github.com/A-312/node-blueconfig/issues",
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "scripts": {
     "posttest": "npm run lint",

@@ -1,4 +1,4 @@
-# Blueconfig-validator
+# Blueconfig-format-with-validator
 
 [![NPM version](http://img.shields.io/npm/v/blueconfig-format-with-validator.svg)](https://www.npmjs.org/package/blueconfig-format-with-validator)
 
@@ -43,7 +43,7 @@ var config = blueconfig({
 
 ### Validation
 
-Use [validator.js](https://github.com/chriso/node-validator#list-of-validation-methods) to validate:
+This package uses [validator.js](https://github.com/chriso/node-validator#list-of-validation-methods) to validate:
 
 * `email`
 * `ipaddress` - IPv4 and IPv6 addresses

@@ -1,4 +1,4 @@
-# Blueconfig-moment
+# Blueconfig-format-with-moment
 
 [![NPM version](http://img.shields.io/npm/v/blueconfig-format-with-moment.svg)](https://www.npmjs.org/package/blueconfig-format-with-moment)
 
@@ -33,7 +33,7 @@ var config = blueconfig({
 
 ### Validation
 
-Use [moment.js](http://momentjs.com/) to validate:
+This package uses [moment.js](http://momentjs.com/) to validate:
 
 * `duration` - milliseconds or a human readable string (e.g. 3000, "5 days")
 * `timestamp` - Unix timestamps or date strings recognized by [moment.js](http://momentjs.com/)
