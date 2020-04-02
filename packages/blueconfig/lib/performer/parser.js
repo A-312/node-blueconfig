@@ -4,6 +4,7 @@ const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
 /**
  * Class for configNode, created with blueprint class.
  *
+ * @private
  * @class
  */
 function Parser() {
@@ -28,10 +29,6 @@ Parser.prototype.parse = function(extension, data) {
 
 /**
  * Adds new custom file parsers
- *
- * @param    {Object[]}    parsers              Parser
- * @param    {string}      parsers.extension    Parser extension
- * @param    {function}    parsers.parse        Parser function
  */
 Parser.prototype.add = function(extension, parse) {
   if (typeof parse !== 'function') throw new CUSTOMISE_FAILED('Invalid parser.parse function')

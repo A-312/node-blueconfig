@@ -4,9 +4,11 @@ const cvtError = require('../error.js')
 const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
 const INCORRECT_USAGE = cvtError.INCORRECT_USAGE
 
+
 /**
  * Getter will parse specified keyname and use the only argument to get the wanted
  *
+ * @private
  * @class
  */
 function Getter() {
@@ -49,7 +51,6 @@ Getter.prototype.add = function(keyname, getter, usedOnlyOnce, rewrite) {
   }
 }
 
-// TODO: Deplace this function because is not a function of Getter
 /**
  * @returns Returns sorted function which sorts array to newOrder
  */

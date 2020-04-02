@@ -196,6 +196,34 @@ function parsingSchema(name, rawSchema, props, fullName) {
     }
   })()
 
+  /**
+   * Validate function, if the value is wrong throw: Error or [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html) if you have several error (see [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html) example)
+   *
+   * @callback ConfigObjectModel._cvtValidateFormat
+   *
+   * @example
+   * const int = {
+   *   name: 'int',
+   *   coerce: (value) => (typeof value !== 'undefined') ? parseInt(value, 10) : value,
+   *   validate: function(value) {
+   *     if (Number.isInteger(value)) {
+   *       throw new Error('must be an integer')
+   *     }
+   *   }
+   * }
+   *
+   *
+   * @param    {*}             value       Value of the property to validate
+   * @param    {schemaNode}    schema      schemaNode (= rules) of the property
+   * @param    {string}        fullName    Full property path
+   *
+   * @throws {Error}                      Throw Error will output a `FORMAT_INVALID` in your code
+   * @throws {ZCUSTOMERROR.LISTOFERRORS}  Throw [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html) usefull if you validate a children key.
+   *
+   * @this {ConfigObjectModel}
+   *
+   * @see ZCUSTOMERROR.LISTOFERRORS
+   */
   schema._cvtValidateFormat = (value) => {
     try {
       newFormat.call(this, value, schema, fullName)
@@ -237,6 +265,9 @@ const Blueconfig = function (def, opts) {
 
 /**
  * Gets array with getter name in the current order of priority
+ *
+ * @example
+ * blueconfig.getGettersOrder(); // ['default', 'value', 'env', 'arg', 'force']
  */
 Blueconfig.getGettersOrder = function() {
   return cloneDeep(Getter.storage.order)
@@ -244,7 +275,23 @@ Blueconfig.getGettersOrder = function() {
 
 
 /**
- * Orders getters
+ * Sorts getter priority, this function uses ascending order. It is recommanded to uses this function before init COM (with `blueconfig()`)
+ * or you should call `<COM>.refreshGetters()`.
+ *
+ * @see ConfigObjectModel.refreshGetters
+ *
+ * @example
+ * blueconfig.getGettersOrder();
+ * // ['default', 'value', 'env', 'arg', 'force']
+ * 
+ * // two ways to do:
+ * blueconfig.setGettersOrder(['default', 'value', 'arg', 'env', 'force']);
+ * blueconfig.setGettersOrder(['default', 'value', 'arg', 'env']); // force is optional and must be the last one
+ * 
+ * blueconfig.getGettersOrder();
+ * // ['default', 'value', 'arg', 'env', 'force']
+ *
+ * @param    {string[]}    newOrder       Value of the property to validate
  */
 Blueconfig.sortGetters = function(newOrder) {
   const sortFilter = Getter.sortGetters(Getter.storage.order, newOrder)
@@ -254,16 +301,62 @@ Blueconfig.sortGetters = function(newOrder) {
 
 
 /**
- * Adds new custom getter
+ * Adds a new custom getter. Getter function get value depending of the property name. In schema, the property name is a keyname of the schema.
+ *
+ * @example 
+ * convict.addGetter('aws', function(aws, schema, stopPropagation) { 
+ *   return aws.get(aws)
+ * }, false, true);
+ *
+ * @param {String|Object|Object[]}    name                String for Getter name, `Object/Object[]` or which contains arguments:
+ * @param    {String}           name.property             Getter name
+ * @param    {Function}         name.getter               *See below*
+ * @param    {Boolean}          [name.usedOnlyOnce=false] *See below*
+ * @param    {Boolean}          [name.rewrite=false]      *See below*
+ * @param    {ConfigObjectModel.getterCallback}   getter  Getter function get external value depending of the property name.
+ * @param    {Boolean}          [usedOnlyOnce=false]      `false` by default. If true, The value can't be reused by another `keyname=value`
+ * @param    {Boolean}          [rewrite=false]           Allow rewrite an existant format
  */
-Blueconfig.addGetter = function(keyname, getter, usedOnlyOnce, rewrite) {
-  if (typeof keyname === 'object') {
-    getter = keyname.getter
-    usedOnlyOnce = keyname.usedOnlyOnce
-    rewrite = keyname.rewrite
-    keyname = keyname.property
+Blueconfig.addGetter = function(property, getter, usedOnlyOnce, rewrite) {
+  if (typeof property === 'object') {
+    getter = property.getter
+    usedOnlyOnce = property.usedOnlyOnce
+    rewrite = property.rewrite
+    property = property.property
   }
-  Getter.add(keyname, getter, usedOnlyOnce, rewrite)
+  Getter.add(property, getter, usedOnlyOnce, rewrite)
+}
+
+
+/**
+ * Adds several getters
+ *
+ * @example
+ * // Example with the default env & arg getters:
+ * Blueconfig.addGetter({
+ *   env: {
+ *     getter: (value, schema) => schema._cvtCoerce(this.getEnv()[value])
+ *   },
+ *   arg: {
+ *     getter: function(value, schema, stopPropagation) {
+ *       const argv = parseArgs(this.getArgs(), { configuration: { 'dot-notation': false } })
+ *       return schema._cvtCoerce(argv[value])
+ *     },
+ *     usedOnlyOnce: true
+ *   }
+ * });
+ *
+ * @param {Object}    getters                               Array containing list of Getters/Object
+ * @param {Object}    getters.{name}                        {name} in `getters.{name}` is the getter name
+ * @param {Function}  getters.{name}.getter                 *See Blueconfig.addGetter*
+ * @param {Boolean}   [getters.{name}.usedOnlyOnce=false]   *See Blueconfig.addGetter*
+ * @param {Boolean}   [getters.{name}.rewrite=false]        *See Blueconfig.addGetter*
+ */
+Blueconfig.addGetters = function(getters) {
+  Object.keys(getters).forEach((property) => {
+    const child = getters[property]
+    this.addGetter(property, child.getter, child.usedOnlyOnce, child.rewrite)
+  })
 }
 
 
@@ -276,35 +369,20 @@ Blueconfig.addGetter = function(keyname, getter, usedOnlyOnce, rewrite) {
  *   coerce: (value) => (typeof value !== 'undefined') ? parseInt(value, 10) : value,
  *   validate: function(value) {
  *     if (Number.isInteger(value)) {
- *       throw new Error("must be an integer")
+ *       throw new Error('must be an integer')
  *     }
  *   }
  * })
- * @example
- * // Add several formats with: [Object, Object, Object, Object]
- * blueconfig.addFormat([
- *   require('blueconfig-format-with-validator').email,
- *   require('blueconfig-format-with-validator').ipaddress,
- *   require('blueconfig-format-with-validator').url,
- *   {
- *     name: 'token',
- *     validate: function(value) {
- *       if (!isToken(value)) {
- *         throw new Error(":(")
- *       }
- *     }
- *   }
- * ])
  *
  *
- * @param {String|Object|Object[]}       name            String for Format name, `Object/Object[]` or which contains arguments:
- * @param    {String}                    name.name       Format name
- * @param    {Function}                  name.validate   Format Validate function, should throw if the value is wrong `Error` or [`LISTOFERRORS` (see example)](./ZCUSTOMERROR.LISTOFERRORS.html)
- * @param    {Function}                  name.coerce     Format coerce
- * @param    {Boolean}                   name.rewrite    Format rewrite
- * @param    {_cvtValidateFormat}        validate        Validate function, should throw if the value is wrong `Error` or [`LISTOFERRORS` (see example)](./ZCUSTOMERROR.LISTOFERRORS.html)
- * @param {ConfigObjectModel._cvtCoerce} coerce          Coerce function to convert a value to a specified function
- * @param    {Boolean}                   rewrite         Allow rewrite an existant format
+ * @param {String|Object|Object[]}       name              String for Format name, `Object/Object[]` or which contains arguments:
+ * @param    {String}                    name.name         Format name
+ * @param    {Function}                  name.validate     *See below*
+ * @param    {Function}                  name.coerce       *See below*
+ * @param    {Boolean}               [name.rewrite=false]  *See below*
+ * @param {ConfigObjectModel._cvtValidateFormat}  validate Validate function, should throw if the value is wrong `Error` or [`LISTOFERRORS` (see example)](./ZCUSTOMERROR.LISTOFERRORS.html)
+ * @param {ConfigObjectModel._cvtCoerce} coerce            Coerce function to convert a value to a specified function (can be omitted)
+ * @param    {Boolean}                   [rewrite=false]   Allow rewrite an existant format
  */
 Blueconfig.addFormat = function(name, validate, coerce, rewrite) {
   if (typeof name === 'object') {
@@ -316,8 +394,54 @@ Blueconfig.addFormat = function(name, validate, coerce, rewrite) {
   Ruler.add(name, validate, coerce, rewrite)
 }
 
+
 /**
- * Adds a new custom Parsers
+ * Adds several formats
+ *
+ * @example
+ * // Add several formats with: [Object, Object, Object, Object]
+ * const vFormat = require('blueconfig-format-with-validator')
+ * blueconfig.addFormat({
+ *   email: vFormatemail,
+ *   ipaddress: vFormat.ipaddress,
+ *   url: vFormat.url,
+ *   token: {
+ *     validate: function(value) {
+ *       if (!isToken(value)) {
+ *         throw new Error(':(')
+ *       }
+ *     }
+ *   }
+ * })
+ *
+ * @see Blueconfig.addFormat
+ *
+ * @param {Object}    formats                        Array containing list of Formats/Object
+ * @param {Object}    formats.{name}                 {name} in `formats.{name}` is the format name
+ * @param {Function}  formats.{name}.validate        *See Blueconfig.addFormat*
+ * @param {Function}  formats.{name}.coerce          *See Blueconfig.addFormat*
+ * @param {Boolean}   [formats.{name}.rewrite=false] *See Blueconfig.addFormat*
+ */
+Blueconfig.addFormats = function(formats) {
+  Object.keys(formats).forEach((name) => {
+    this.addFormat(name, formats[name].validate, formats[name].coerce, formats[name].rewrite)
+  })
+}
+
+
+/**
+ * Adds new custom file parsers. JSON.parse will be used by default for unknown extension (default extension -> `*` => JSON). 
+ *
+ * @example
+ * blueconfig.addParser([
+ *  { extension: ['yaml', 'yml'], parse: require('yaml').safeLoad },
+ *  // will allow comment in json file
+ *  { extension: 'json5', parse: require('json5').parse }
+ * ]);
+ * 
+ * @param    {Object[]}    parsers              Parser
+ * @param    {string}      parsers.extension    Parser extension
+ * @param    {function}    parsers.parse        Parser function
  */
 Blueconfig.addParser = function(parsers) {
   if (!Array.isArray(parsers)) parsers = [parsers]
@@ -328,31 +452,6 @@ Blueconfig.addParser = function(parsers) {
     if (!parser.parse) throw new CUSTOMISE_FAILED('Missing parser.parse function')
 
     Parser.add(parser.extension, parser.parse)
-  })
-}
-
-
-/**
- * Adds new custom getters
- *
- * @param {Object} getters Array containing list of Getters/Object
- */
-Blueconfig.addGetters = function(getters) {
-  Object.keys(getters).forEach((property) => {
-    const child = getters[property]
-    this.addGetter(property, child.getter, child.usedOnlyOnce, child.rewrite)
-  })
-}
-
-
-/**
- * Adds several formats
- *
- * @param {Object} formats Array containing list of Formats/Object
- */
-Blueconfig.addFormats = function(formats) {
-  Object.keys(formats).forEach((name) => {
-    this.addFormat(name, formats[name].validate, formats[name].coerce, formats[name].rewrite)
   })
 }
 

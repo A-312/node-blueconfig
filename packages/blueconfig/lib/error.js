@@ -29,9 +29,19 @@ class BLUECONFIG_ERROR extends Error {
 
 /**
  * List of errors (should be loop/parsed on LISTOFERRORS.errors like an array). Can be usefull with custom format.
+ * 
+ *
+ * ```text
+ * Validate failed because wrong value(s): 
+ *   - root: Custom format "children" tried to validate something and failed: 
+ *     1) germany: 
+ *       - name: must be of type String: value was 1 
+ *     2) italy: 
+ *       - subregion: must be of type String: value was 2 
+ * ```
  *
  * @example
- * blueconfig.addFormat({
+ * blueconfig.addFormat({ // Allow to do: config.*.name, by example : config.app1.name, config.app2.name
  *   name: 'children',
  *   validate: function(children, schema, fullname) {
  *     Object.keys(children).forEach((keyname) => {

@@ -8,6 +8,7 @@ const isObjNotNull = utils.isObjNotNull
 /**
  * Apply values/getters on COM
  *
+ * @private
  * @class
  */
 function Apply() {
@@ -46,11 +47,31 @@ Apply.prototype.getters = function applyGetters(schema, node) {
           continue
         }
         const getter = getterObj.getter
-        const keyname = cloneDeep(mySchema[getterName])
+        const value = cloneDeep(mySchema[getterName])
         const stopPropagation = () => { propagationAsked = true }
 
+        /**
+         * Will get an external value depending of custom getter/code
+         *
+         * @callback ConfigObjectModel.getterCallback
+         *
+         * @example
+         * blueconfig.addGetter({
+         *   property: 'accept-undefined',
+         *   getter: (value, schema, stopPropagation) => fs.readFileSync(value, 'utf-8').toString(),
+         *   usedOnlyOnce: true // use file only once
+         * });
+         *
+         * @param    {*}           value       Value to coerce
+         * @param    {string}      mySchema    Value to coerce
+         * @param    {function}    value       Stop propagation (accept undefined value). By default,
+         *                                     undefined don't stop the getter queue, this mean Blueconfig
+         *                                     will continue to call other getter to find a value not undefined.
+         *
+         * @returns  {*}    value    Returns coerced value
+         */
         // call getter
-        node[name] = getter.call(this, keyname, mySchema, stopPropagation)
+        node[name] = getter.call(this, value, mySchema, stopPropagation)
 
         if (typeof node[name] !== 'undefined' || propagationAsked) {
           // We use function because function are not saved/exported in schema
@@ -83,8 +104,6 @@ Apply.prototype.values = function applyValues(from, to, schema) {
        * Coerce function to convert a value to a specified function.
        *
        * @callback ConfigObjectModel._cvtCoerce
-       * @param    {*}    value    Value to coerce
-       * @returns  {*}    value    Returns coerced value
        *
        * @example
        * const int = {
@@ -94,7 +113,10 @@ Apply.prototype.values = function applyValues(from, to, schema) {
        *     assert(Number.isInteger(value), 'must be an integer')
        *   }
        * }
-       * 
+       *
+       * @param    {*}    value    Value to coerce
+       *
+       * @returns  {*}    value    Returns coerced value
        */
       const coerce = (mySchema && mySchema._cvtCoerce) ? mySchema._cvtCoerce : (v) => v
       to[name] = coerce(from[name])
