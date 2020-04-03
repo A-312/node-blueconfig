@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   badusage: {
     default: 'string'

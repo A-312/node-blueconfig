@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   invalidCoercer: {
     format: 'invalidCoercer',

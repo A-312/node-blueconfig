@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   invalidFormat: {
     format: 1,

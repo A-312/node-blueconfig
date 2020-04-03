@@ -1,5 +1,3 @@
-
-
 module.exports = {
   zoo: {
     elephant: ['Patrick', 'Bob', 'Carlo'],

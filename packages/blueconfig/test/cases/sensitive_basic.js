@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   public: {
     format: String,

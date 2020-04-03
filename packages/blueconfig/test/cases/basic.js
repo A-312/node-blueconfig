@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   env: {
     format: ['production', 'local'],

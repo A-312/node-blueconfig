@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   int: {
     default: 8,

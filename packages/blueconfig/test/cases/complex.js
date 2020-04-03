@@ -1,5 +1,3 @@
-
-
 exports.formats = require('blueconfig-format-with-moment')
 
 exports.conf = {

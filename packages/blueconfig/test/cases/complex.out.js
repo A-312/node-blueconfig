@@ -1,5 +1,3 @@
-
-
 module.exports = {
   env: 'production',
   URL: 'https://browserid.org',

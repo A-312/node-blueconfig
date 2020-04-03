@@ -1,5 +1,3 @@
-
-
 module.exports = {
   object: {
     one: 1,

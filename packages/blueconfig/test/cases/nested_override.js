@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   object: {
     default: null,

@@ -1,5 +1,3 @@
-
-
 function new_require(packageName) {
   const path = require.resolve(packageName)
   const before = require.cache[path] || false

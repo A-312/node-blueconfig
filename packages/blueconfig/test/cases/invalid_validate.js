@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   invalidValidator: {
     format: 'invalidValidator',

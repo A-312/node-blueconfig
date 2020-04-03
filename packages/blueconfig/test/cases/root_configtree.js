@@ -1,5 +1,3 @@
-
-
 const blueconfig = require('blueconfig')
 const LISTOFERRORS = require('blueconfig/lib/error.js').LISTOFERRORS
 

@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   foo: {
     default: 'a',

@@ -1,5 +1,3 @@
-
-
 module.exports = {
   bool: false,
   string: 'value',

@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   prefix: {
     default: '/foo',

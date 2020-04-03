@@ -1,5 +1,3 @@
-
-
 /**
  * Custom Blueconfig errors are used to identify: Blueconfig internal error, Schema error or config error.
  *

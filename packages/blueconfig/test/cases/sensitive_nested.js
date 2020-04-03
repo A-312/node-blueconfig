@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   item: {
     format: String,
