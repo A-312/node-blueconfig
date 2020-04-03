@@ -103,10 +103,17 @@ describe('blueconfig schema', function() {
         env: 'BAR',
         arg: 'bar'
       }
-    }, { args: ['--bar', 'baz'], env: { FOO: 'foz' } })
+    }, {
+      args: ['--bar', 'baz'],
+      env: {
+        FOO: 'foz'
+      }
+    })
 
     expect(conf.getArgs()).to.deep.equal(['--bar', 'baz'])
-    expect(conf.getEnv()).to.deep.equal({ FOO: 'foz' })
+    expect(conf.getEnv()).to.deep.equal({
+      FOO: 'foz'
+    })
     expect(conf.get('bar')).to.equal('baz')
     expect(conf.get('foo')).to.equal('foz')
   })
@@ -119,14 +126,16 @@ describe('blueconfig schema', function() {
     // <<
 
     it('must be merge several configs', function() {
-      myOwnConf.merge([
-        { foo: 914 }
-      ])
+      myOwnConf.merge([{
+        foo: 914
+      }])
       expect(myOwnConf.get('foo')).to.be.equal(914)
-      myOwnConf.merge([
-        { foo: 9, zoo: 4 },
-        { foo: 10 }
-      ])
+      myOwnConf.merge([{
+        foo: 9,
+        zoo: 4
+      }, {
+        foo: 10
+      }])
       expect(myOwnConf.get('foo')).to.be.equal(10)
       expect(myOwnConf.get('zoo')).to.be.equal(4)
     })
@@ -205,29 +214,44 @@ describe('blueconfig schema', function() {
         foo: {
           _cvtProperties: {
             bar: {
-              default: 7,
-              format: 'Number',
-              _cvtCoerce: '[FunctionReplacement]',
-              _cvtValidateFormat: '[FunctionReplacement]',
-              _cvtGetOrigin: '[FunctionReplacement]'
+              _private: {
+                coerce: '[FunctionReplacement]',
+                fullpath: 'root.foo.bar',
+                origin: 'default',
+                validate: '[FunctionReplacement]'
+              },
+              attributes: {
+                default: 7,
+                format: 'Number'
+              }
             },
             baz: {
               _cvtProperties: {
                 bing: {
-                  default: 'foo',
-                  format: 'String',
-                  _cvtCoerce: '[FunctionReplacement]',
-                  _cvtValidateFormat: '[FunctionReplacement]',
-                  _cvtGetOrigin: '[FunctionReplacement]'
+                  _private: {
+                    coerce: '[FunctionReplacement]',
+                    fullpath: 'root.foo.baz.bing',
+                    origin: 'default',
+                    validate: '[FunctionReplacement]'
+                  },
+                  attributes: {
+                    default: 'foo',
+                    format: 'String'
+                  }
                 },
                 'name with spaces': {
                   _cvtProperties: {
                     name_with_underscores: {
-                      default: true,
-                      format: 'Boolean',
-                      _cvtCoerce: '[FunctionReplacement]',
-                      _cvtValidateFormat: '[FunctionReplacement]',
-                      _cvtGetOrigin: '[FunctionReplacement]'
+                      _private: {
+                        coerce: '[FunctionReplacement]',
+                        fullpath: 'root.foo.baz.name with spaces.name_with_underscores',
+                        origin: 'default',
+                        validate: '[FunctionReplacement]'
+                      },
+                      attributes: {
+                        default: true,
+                        format: 'Boolean'
+                      }
                     }
                   }
                 }
@@ -349,7 +373,11 @@ describe('blueconfig schema', function() {
         })
 
         it('must not be altered by calls to .merge()', function() {
-          myOwnConf.merge({ someObject: { five: 5 } })
+          myOwnConf.merge({
+            someObject: {
+              five: 5
+            }
+          })
 
           expect(myOwnConf.default('someObject')).to.deep.equal({})
           expect(() => myOwnConf.default('someObject.five')).to.throw('someObject.five.default: cannot find "someObject" property because "someObject" is not defined.')

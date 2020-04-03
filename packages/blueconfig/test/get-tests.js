@@ -116,8 +116,14 @@ describe('blueconfig get function', function() {
       const nodeSchemaExpected = {
         _cvtProperties: {
           default: {
-            default: 'myDefaultValue',
-            format: 'String'
+            _private: {
+              origin: 'default',
+              fullpath: 'root.[cvt]default'
+            },
+            attributes: {
+              default: 'myDefaultValue',
+              format: 'String'
+            }
           }
         }
       }

@@ -1,12 +1,12 @@
 const parsePath = require('objectpath').parse
 const stringifyPath = require('objectpath').stringify
 
-const cvtError = require('./../../error.js')
-const PATH_INVALID = cvtError.PATH_INVALID
-
 const utils = require('./utils.js')
 const isObjNotNull = utils.isObjNotNull
 const unroot = utils.unroot
+
+const cvtError = require('./../../error.js')
+const PATH_INVALID = cvtError.PATH_INVALID
 
 
 function walk(obj, path, initializeMissing) {

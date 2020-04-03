@@ -267,7 +267,8 @@ describe('schema contains an object property with a custom format', function() {
     blueconfig.addFormat('hack', function(name, schema) {
       // we prevent that error : will be catch in original _cvtValidateFormat function
       //                     and will be convert to FORMAT_INVALID Error.
-      schema._cvtValidateFormat = function(value) {
+      console.log()
+      this._schemaRoot._cvtProperties.object.validate = function(value) {
         throw new Error(message)
       }
     })

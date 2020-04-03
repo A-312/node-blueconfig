@@ -1,38 +1,31 @@
 const fs = require('fs')
 
 const cloneDeep = require('lodash.clonedeep')
-
 const parsePath = require('objectpath').parse
 const stringifyPath = require('objectpath').stringify
 
-const Apply = require('../performer/apply.js')
+const Apply = require('./../performer/apply.js')
+const SchemaNode = require('./schemanode.js')
 
-let Getter
-let Parser
-
-const validator = require('../performer/utils/validator.js')
-const utils = require('../performer/utils/utils.js')
-const walk = require('../performer/utils/walk.js')
+const parsingSchema = require('./../performer/utils/parsingschema.js')
+const validator = require('./../performer/utils/validator.js')
+const utils = require('./../performer/utils/utils.js')
+const walk = require('./../performer/utils/walk.js')
 
 const unroot = utils.unroot
-const isObjNotNull = utils.isObjNotNull
 
 const ALLOWED_OPTION_STRICT = 'strict'
 const ALLOWED_OPTION_WARN = 'warn'
 
-const cvtError = require('../error.js')
+const cvtError = require('./../error.js')
 
 const BLUECONFIG_ERROR = cvtError.BLUECONFIG_ERROR
-const LISTOFERRORS = cvtError.LISTOFERRORS
-// 1
-const SCHEMA_INVALID = cvtError.SCHEMA_INVALID
 // 2
 const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
 const INCORRECT_USAGE = cvtError.INCORRECT_USAGE
+const PATH_INVALID = cvtError.PATH_INVALID
 // 2
-const VALUE_INVALID = cvtError.VALUE_INVALID
 const VALIDATE_FAILED = cvtError.VALIDATE_FAILED
-const FORMAT_INVALID = cvtError.FORMAT_INVALID
 
 /**
  * Class for configNode, created with blueprint class.
@@ -42,9 +35,9 @@ const FORMAT_INVALID = cvtError.FORMAT_INVALID
 function ConfigObjectModel(rawSchema, options, scope) {
   this.options = options
 
-  Getter = scope.Getter
-  Parser = scope.Parser
-  const parsingSchema = scope.parsingSchema
+  this.Getter = scope.Getter
+  this.Parser = scope.Parser
+  this.Ruler = scope.Ruler
 
   this._strictParsing = !!(options && options.strictParsing)
   // The key `$~default` will be replaced by `default` during the schema parsing that allow
@@ -54,7 +47,7 @@ function ConfigObjectModel(rawSchema, options, scope) {
 
   // If the definition is a string treat it as an external schema file
   if (typeof rawSchema === 'string') {
-    rawSchema = parseFile(rawSchema)
+    rawSchema = parseFile.call(this, rawSchema)
   }
 
   rawSchema = {
@@ -73,7 +66,7 @@ function ConfigObjectModel(rawSchema, options, scope) {
   this._sensitive = new Set()
 
   // inheritance (own getter)
-  this._getters = cloneDeep(Getter.storage)
+  this._getters = cloneDeep(this.Getter.storage)
 
   Object.keys(rawSchema).forEach((key) => {
     parsingSchema.call(this, key, rawSchema[key], this._schema._cvtProperties, key)
@@ -144,23 +137,28 @@ ConfigObjectModel.prototype.getSchema = function(debug) {
   return (debug) ? cloneDeep(schema) : convertSchema.call(this, schema)
 }
 
-function convertSchema(nodeSchema, blueconfigProperties) {
-  if (!nodeSchema || typeof nodeSchema !== 'object' || Array.isArray(nodeSchema)) {
-    return nodeSchema
-  } else if (nodeSchema._cvtProperties) {
-    return convertSchema.call(this, nodeSchema._cvtProperties, true)
+function convertSchema(schemaObjectModel) {
+  if (!schemaObjectModel || typeof schemaObjectModel !== 'object' || Array.isArray(schemaObjectModel)) {
+    return schemaObjectModel
+  } else if (schemaObjectModel._cvtProperties) {
+    return convertSchema.call(this, schemaObjectModel._cvtProperties)
   } else {
-    const schema = Array.isArray(nodeSchema) ? [] : {}
+    let isSchemaNode = false
+    if (schemaObjectModel instanceof SchemaNode) {
+      schemaObjectModel = schemaObjectModel.attributes
+      isSchemaNode = true
+    }
+    const schema = Array.isArray(schemaObjectModel) ? [] : {}
 
-    Object.keys(nodeSchema).forEach((name) => {
+    Object.keys(schemaObjectModel).forEach((name) => {
       let keyname = name
-      if (typeof nodeSchema[name] === 'function') {
+      if (typeof schemaObjectModel[name] === 'function') {
         return
-      } else if (name === 'default' && blueconfigProperties) {
+      } else if (name === 'default' && !isSchemaNode) {
         keyname = this._defaultSubstitute
       }
 
-      schema[keyname] = convertSchema.call(this, nodeSchema[name])
+      schema[keyname] = convertSchema.call(this, schemaObjectModel[name])
     })
 
     return schema
@@ -191,23 +189,22 @@ ConfigObjectModel.prototype.get = function(path) {
  *     notation to reference nested values
  */
 ConfigObjectModel.prototype.getOrigin = function(path) {
-  path = pathToSchemaPath(path, '_cvtGetOrigin')
+  path = pathToSchemaPath(path)
   const o = walk(this._schemaRoot._cvtProperties, path)
-  return o ? o() : null
+  return o ? o.getOrigin() : null
 }
 
 
-function pathToSchemaPath(path, addKey) {
+function pathToSchemaPath(path, addPath) {
   const schemaPath = []
 
   path = parsePath(path)
-  path.forEach((property) => {
-    schemaPath.push(property)
-    schemaPath.push('_cvtProperties')
-  })
+  path.forEach((property) => schemaPath.push(property, '_cvtProperties'))
   schemaPath.splice(-1)
 
-  if (addKey) { schemaPath.push(addKey) }
+  if (addPath) {
+    parsePath(addPath).forEach((key) => schemaPath.push(key))
+  }
 
   return schemaPath
 }
@@ -217,7 +214,7 @@ function pathToSchemaPath(path, addKey) {
  * Gets array with getter name in the current order of priority
  */
 ConfigObjectModel.prototype.getGettersOrder = function(path) {
-  return cloneDeep(this._getters.order)
+  return [...this._getters.order]
 }
 
 
@@ -225,7 +222,7 @@ ConfigObjectModel.prototype.getGettersOrder = function(path) {
  * sorts getters
  */
 ConfigObjectModel.prototype.sortGetters = function(newOrder) {
-  const sortFilter = Getter.sortGetters(this._getters.order, newOrder)
+  const sortFilter = this.Getter.sortGetters(this._getters.order, newOrder)
 
   this._getters.order.sort(sortFilter)
 }
@@ -235,7 +232,7 @@ ConfigObjectModel.prototype.sortGetters = function(newOrder) {
  * Update local getters config with global config
  */
 ConfigObjectModel.prototype.refreshGetters = function() {
-  this._getters = cloneDeep(Getter.storage)
+  this._getters = cloneDeep(this.Getter.storage)
 
   Apply.getters.call(this, this._schema, this._instance)
 }
@@ -248,9 +245,18 @@ ConfigObjectModel.prototype.refreshGetters = function() {
 ConfigObjectModel.prototype.default = function(path) {
   // The default value for FOO.BAR.BAZ is stored in `_schema._cvtProperties` at:
   //   FOO._cvtProperties.BAR._cvtProperties.BAZ.default
-  path = pathToSchemaPath(path, 'default')
-  const o = walk(this._schemaRoot._cvtProperties, path)
-  return cloneDeep(o)
+  path = pathToSchemaPath(path)
+
+  try {
+    const prop = walk(this._schemaRoot._cvtProperties, path)
+    return cloneDeep(prop.attributes.default)
+  } catch (err) {
+    if (err instanceof PATH_INVALID) {
+      err.fullname += '.default'
+      throw new PATH_INVALID(err.fullname, err.lastPosition, err.parent)
+    }
+    throw err
+  }
 }
 
 
@@ -266,20 +272,31 @@ ConfigObjectModel.prototype.reset = function(prop_name) {
  * @returns Returns true if the property name is defined, or false otherwise
  */
 ConfigObjectModel.prototype.has = function(path) {
-  try {
-    const r = this.get(path)
-    const isRequired = (() => {
-      try {
-        return !!walk(this._schemaRoot._cvtProperties, pathToSchemaPath(path, 'required'))
-      } catch (e) {
+  const isRequired = (() => {
+    try {
+      const prop = walk(this._schemaRoot._cvtProperties, pathToSchemaPath(path))
+      return prop.attributes.required
+    } catch (err) {
+      if (err instanceof PATH_INVALID) {
         // undeclared property
         return false
+      } else {
+        // internal error
+        throw err
       }
-    })()
+    }
+  })()
+  try {
     // values that are set and required = false but undefined return false
-    return isRequired || typeof r !== 'undefined'
-  } catch (e) {
-    return false
+    return isRequired || typeof this.get(path) !== 'undefined'
+  } catch (err) {
+    if (err instanceof PATH_INVALID) {
+      // undeclared property
+      return false
+    } else {
+      // internal error
+      throw err
+    }
   }
 }
 
@@ -303,9 +320,6 @@ ConfigObjectModel.prototype.set = function(fullpath, value, priority, respectPri
     throw new INCORRECT_USAGE(errorMsg)
   }
 
-  // coercing
-  const coerce = (mySchema && mySchema._cvtCoerce) ? mySchema._cvtCoerce : (v) => v
-  value = coerce(value)
   // walk to the value
   const path = parsePath(fullpath)
   const childKey = path.pop()
@@ -320,8 +334,7 @@ ConfigObjectModel.prototype.set = function(fullpath, value, priority, respectPri
 
     const gettersOrder = this._getters.order
 
-    const bool = mySchema && mySchema._cvtGetOrigin
-    const lastG = bool && mySchema._cvtGetOrigin()
+    const lastG = mySchema && mySchema.getOrigin && mySchema.getOrigin()
 
     if (lastG && gettersOrder.indexOf(priority) < gettersOrder.indexOf(lastG)) {
       return false
@@ -332,9 +345,9 @@ ConfigObjectModel.prototype.set = function(fullpath, value, priority, respectPri
 
   // change the value
   if (canIChangeValue) {
-    parent[childKey] = value
-    if (mySchema) {
-      mySchema._cvtGetOrigin = () => priority
+    parent[childKey] = (mySchema && mySchema.coerce) ? mySchema.coerce(value) : value
+    if (mySchema && mySchema._private) {
+      mySchema._private.origin = priority
     }
   }
 
@@ -368,7 +381,9 @@ function traverseSchema(schema, path) {
  * @deprecated since v6.0.0, use `.merge(obj)` instead
  */
 ConfigObjectModel.prototype.load = function(obj) {
-  Apply.values.call(this, { root: obj }, this._instance, this._schema)
+  Apply.values.call(this, {
+    root: obj
+  }, this._instance, this._schema)
 
   return this
 }
@@ -383,7 +398,7 @@ ConfigObjectModel.prototype.loadFile = function(paths) {
   if (!Array.isArray(paths)) paths = [paths]
   paths.forEach((path) => {
     // Support empty config files #253
-    const json = parseFile(path)
+    const json = parseFile.call(this, path)
     if (json) {
       this.load(json)
     }
@@ -397,7 +412,7 @@ function parseFile(path) {
 
   // TODO: Get rid of the sync call
   // eslint-disable-next-line no-sync
-  return Parser.parse(extension, fs.readFileSync(path, 'utf-8'))
+  return this.Parser.parse(extension, fs.readFileSync(path, 'utf-8'))
 }
 
 /**
@@ -409,7 +424,7 @@ ConfigObjectModel.prototype.merge = function(sources) {
   if (!Array.isArray(sources)) sources = [sources]
   sources.forEach((config) => {
     if (typeof config === 'string') {
-      const json = parseFile(config)
+      const json = parseFile.call(this, config)
       if (json) {
         this.load(json)
       }
@@ -452,14 +467,14 @@ ConfigObjectModel.prototype.validate = function(options) {
         /* if (err.type) {
           err_buf += '[' + err.type + '] ';
         } */
-        if (err.fullName) {
-          err_buf += unroot(err.fullName) + ': '
+        if (err.fullname) {
+          err_buf += unroot(err.fullname) + ': '
         }
         if (err.message) {
           err_buf += err.message
         }
 
-        const hidden = !!sensitive.has(err.fullName)
+        const hidden = !!sensitive.has(err.fullname)
         const value = (hidden) ? '[Sensitive]' : JSON.stringify(err.value)
         const getterValue = (hidden) ? '[Sensitive]' : JSON.stringify(err.getter && err.getter.keyname)
 
@@ -505,7 +520,9 @@ ConfigObjectModel.prototype.validate = function(options) {
     }
 
     const output = output_err_bufs
-      .filter(function(str) { return str.length })
+      .filter(function(str) {
+        return str.length
+      })
       .join('\n')
 
     if (output.length) {

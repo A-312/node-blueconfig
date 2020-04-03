@@ -1,12 +1,13 @@
 const stringifyPath = require('objectpath').stringify
 
-const cvtError = require('./../../error.js')
-const VALUE_INVALID = cvtError.VALUE_INVALID
-
 const walk = require('./walk.js')
 const utils = require('./utils.js')
 const isObjNotNull = utils.isObjNotNull
 const unroot = utils.unroot
+
+const cvtError = require('./../../error.js')
+const VALUE_INVALID = cvtError.VALUE_INVALID
+
 
 function flatten(obj, useProperties) {
   const stack = Object.keys(obj).map((path) => [path])
@@ -84,7 +85,7 @@ function validator(instance, schema, strictValidation) {
     delete flatInstance[name]
 
     // ignore nested keys of schema 'object' properties
-    if (schemaItem.format === 'object' || typeof schemaItem.default === 'object') {
+    if (schemaItem.attributes.format === 'object' || typeof schemaItem.attributes.default === 'object') {
       Object.keys(flatInstance)
         .filter(function(key) {
           return key.lastIndexOf(name + '.', 0) === 0
@@ -93,10 +94,10 @@ function validator(instance, schema, strictValidation) {
         })
     }
 
-    if (schemaItem.required || !(typeof schemaItem.default === 'undefined' &&
-          instanceItem === schemaItem.default)) {
+    if (schemaItem.attributes.required || !(typeof schemaItem.attributes.default === 'undefined' &&
+          instanceItem === schemaItem.attributes.default)) {
       try {
-        schemaItem._cvtValidateFormat(instanceItem)
+        schemaItem.validate(instanceItem)
       } catch (err) {
         errors.invalid_type.push(err)
       }

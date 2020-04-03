@@ -106,7 +106,7 @@ describe('blueconfig formats', function() {
   })
 
   it('must throw with bad name', function() {
-    expect(() =>blueconfig.addFormat({ name: [], validate: () => {} })).to.throw('Error: Schema name must be a string (current: "object").')
+    expect(() => blueconfig.addFormat({ name: [], validate: () => {} })).to.throw('Schema name must be a string (current: "object").')
   })
 
   it('must add several formats with array', function() {

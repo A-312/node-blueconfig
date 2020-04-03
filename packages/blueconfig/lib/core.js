@@ -1,32 +1,4 @@
-/**
- * Blueconfig
- *
- * forked-from: node-config
- * forked-from: Configuration management with support for environmental variables, files, and validation.
- */
-
 const parseArgs = require('yargs-parser')
-const cloneDeep = require('lodash.clonedeep')
-const parsePath = require('objectpath').parse
-const stringifyPath = require('objectpath').stringify
-const cvtError = require('./error.js')
-
-const BLUECONFIG_ERROR = cvtError.BLUECONFIG_ERROR
-const LISTOFERRORS = cvtError.LISTOFERRORS
-// 1
-const SCHEMA_INVALID = cvtError.SCHEMA_INVALID
-// 2
-const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
-const INCORRECT_USAGE = cvtError.INCORRECT_USAGE
-// 2
-const VALUE_INVALID = cvtError.VALUE_INVALID
-const VALIDATE_FAILED = cvtError.VALIDATE_FAILED
-const FORMAT_INVALID = cvtError.FORMAT_INVALID
-
-const utils = require('./performer/utils/utils.js')
-const walk = utils.walk
-const isObjNotNull = utils.isObjNotNull
-const unroot = utils.unroot
 
 const ConfigObjectModel = require('./model/com.js')
 
@@ -37,228 +9,21 @@ const Getter = new GetterInterface()
 const RulerInterface = require('./performer/ruler.js')
 const Ruler = new RulerInterface()
 
-const converters = new Map()
+const cvtError = require('./error.js')
+const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
 
-const BUILT_INS_BY_NAME = {
-  Object: Object,
-  Array: Array,
-  String: String,
-  Number: Number,
-  Boolean: Boolean,
-  RegExp: RegExp
-}
-const BUILT_IN_NAMES = Object.keys(BUILT_INS_BY_NAME)
-const BUILT_INS = BUILT_IN_NAMES.map(function(name) {
-  return BUILT_INS_BY_NAME[name]
-})
-
-function parsingSchema(name, rawSchema, props, fullName) {
-  if (name === '_cvtProperties') {
-    throw new SCHEMA_INVALID(unroot(fullName), "'_cvtProperties' is reserved word of blueconfig, it can be used like property name.")
-  }
-
-  const countChildren = (rawSchema) ? Object.keys(rawSchema).length : 0
-  const isArray = (rawSchema) ? Array.isArray(rawSchema) : false
-  const hasFormat = (rawSchema) ? rawSchema.format : false
-
-  const isConfigPropFormat = (hasFormat && isObjNotNull(hasFormat) && !Array.isArray(hasFormat))
-
-  const filterName = (name) => {
-    return (name === this._defaultSubstitute) ? 'default' : name
-  } //                    ^^^^^^^^^^^^^^^^^^ = '$~default'
-
-  name = filterName(name)
-
-  // If the current schema (= rawSchema) :
-  //   - is an object not null and not an array ;
-  //   - is not a config property :
-  //         - has no `.default` ;
-  //         - has no `.format` or has `.format: [ isObject && notNull && notArray ]`
-  //   - has children.
-  // Then: recursively parsing like schema property.
-  if (isObjNotNull(rawSchema) && !isArray && countChildren > 0 &&
-    !('default' in rawSchema) &&
-    (!hasFormat || isConfigPropFormat)
-  ) {
-    props[name] = {
-      _cvtProperties: {}
-    }
-    Object.keys(rawSchema).forEach((key) => {
-      const path = fullName + '.' + key
-      parsingSchema.call(this, key, rawSchema[key], props[name]._cvtProperties, path)
-    })
-    return
-  } else if (this._strictParsing && isObjNotNull(rawSchema) && !('default' in rawSchema)) {
-    // throw an error instead use magic parsing
-    throw new SCHEMA_INVALID(unroot(fullName), 'default property is missing')
-  // Magic parsing
-  } else if (typeof rawSchema !== 'object' || rawSchema === null || isArray || countChildren === 0) {
-    // Parses a shorthand value to a config property
-    rawSchema = { default: rawSchema }
-  } else if (!('default' in rawSchema) && !isConfigPropFormat) {
-    // Set `.default` to undefined when it doesn't exist
-    rawSchema.default = (function() {})() // === undefined
-  }
-
-  const schema = cloneDeep(rawSchema)
-  props[name] = schema
-
-  Object.keys(schema).forEach((keyname) => {
-    if (this._getters.list[keyname]) {
-      const usedOnlyOnce = this._getters.list[keyname].usedOnlyOnce
-      if (usedOnlyOnce) {
-        if (!this._getterAlreadyUsed[keyname]) {
-          this._getterAlreadyUsed[keyname] = new Set()
-        }
-
-        const value = schema[keyname]
-        if (this._getterAlreadyUsed[keyname].has(value)) {
-          if (typeof usedOnlyOnce === 'function') {
-            return usedOnlyOnce(value, schema, fullName, keyname)
-          } else {
-            const errorMessage = `uses a already used getter keyname for "${keyname}", current: \`${keyname}[${JSON.stringify(value)}]\``
-            throw new SCHEMA_INVALID(unroot(fullName), errorMessage)
-          }
-        }
-
-        this._getterAlreadyUsed[keyname].add(schema[keyname])
-      }
-    }
-  })
-
-  // mark this property as sensitive
-  if (schema.sensitive === true) {
-    this._sensitive.add(fullName)
-  }
-
-  // store original format function
-  let format = schema.format
-  const newFormat = (() => {
-    if (BUILT_INS.indexOf(format) >= 0 || BUILT_IN_NAMES.indexOf(format) >= 0) {
-      // if the format property is a built-in JavaScript constructor,
-      // assert that the value is of that type
-      const Format = typeof format === 'string' ? BUILT_INS_BY_NAME[format] : format
-      const formatFormat = Object.prototype.toString.call(new Format())
-      const myFormat = Format.name
-      schema.format = format = myFormat
-      return (value) => {
-        if (formatFormat !== Object.prototype.toString.call(value)) {
-          throw new Error('must be of type ' + myFormat)
-          //        ^^^^^-- will be catch in _cvtValidateFormat and convert to FORMAT_INVALID Error.
-        }
-      }
-    } else if (typeof format === 'string') {
-      // store declared type
-      if (!Ruler.types.has(format)) {
-        throw new SCHEMA_INVALID(unroot(fullName), `uses an unknown format type (current: ${JSON.stringify(format)})`)
-      }
-      // use a predefined type
-      return Ruler.types.get(format)
-    } else if (Array.isArray(format)) {
-      // assert that the value is in the whitelist, example: ['a', 'b', 'c'].include(value)
-      const contains = (whitelist, value) => {
-        if (!whitelist.includes(value)) {
-          throw new Error('must be one of the possible values: ' + JSON.stringify(whitelist))
-          //        ^^^^^-- will be catch in _cvtValidateFormat and convert to FORMAT_INVALID Error.
-        }
-      }
-      return contains.bind(null, format)
-    } else if (typeof format === 'function') {
-      return format
-    } else if (format) {
-      // Wrong type for format
-      const errorMessage = 'uses an invalid format, it must be a format name, a function, an array or a known format type'
-      const value = (format || '').toString() || 'is a ' + typeof format
-      throw new SCHEMA_INVALID(unroot(fullName), `${errorMessage} (current: ${JSON.stringify(value)})`)
-    } else if (!this._strictParsing && typeof schema.default !== 'undefined') {
-      // Magic format: default format is the type of the default value (if strictParsing is not enabled)
-      const defaultFormat = Object.prototype.toString.call(schema.default)
-      const myFormat = defaultFormat.replace(/\[.* |]/g, '')
-      // Magic coerceing
-      schema.format = format = myFormat
-      return (value) => {
-        if (defaultFormat !== Object.prototype.toString.call(value)) {
-          throw new Error('must be of type ' + myFormat)
-          //        ^^^^^-- will be catch in _cvtValidateFormat and convert to FORMAT_INVALID Error.
-        }
-      }
-    } else { // .format are missing
-      const errorMessage = 'format property is missing'
-      throw new SCHEMA_INVALID(unroot(fullName), errorMessage)
-    }
-  })()
-
-  schema._cvtCoerce = (() => {
-    if (typeof format === 'string') {
-      return Ruler.getCoerceMethod(format)
-    } else {
-      return (v) => v
-    }
-  })()
-
-  /**
-   * Validate function, if the value is wrong throw: Error or [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html) if you have several error (see [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html) example)
-   *
-   * @callback ConfigObjectModel._cvtValidateFormat
-   *
-   * @example
-   * const int = {
-   *   name: 'int',
-   *   coerce: (value) => (typeof value !== 'undefined') ? parseInt(value, 10) : value,
-   *   validate: function(value) {
-   *     if (Number.isInteger(value)) {
-   *       throw new Error('must be an integer')
-   *     }
-   *   }
-   * }
-   *
-   *
-   * @param    {*}             value       Value of the property to validate
-   * @param    {schemaNode}    schema      schemaNode (= rules) of the property
-   * @param    {string}        fullName    Full property path
-   *
-   * @throws {Error}                      Throw Error will output a `FORMAT_INVALID` in your code
-   * @throws {ZCUSTOMERROR.LISTOFERRORS}  Throw [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html) usefull if you validate a children key.
-   *
-   * @this {ConfigObjectModel}
-   *
-   * @see ZCUSTOMERROR.LISTOFERRORS
-   */
-  schema._cvtValidateFormat = (value) => {
-    try {
-      newFormat.call(this, value, schema, fullName)
-    } catch (err) {
-      if (err instanceof LISTOFERRORS) {
-        err.message = `${fullName}: Custom format "${schema.format}" tried to validate something and failed:`
-
-        err.errors.forEach((error, i) => {
-          err.message += `\n    ${i + 1}) ${unroot(error.parent)}:` + ('\n' + error.why).replace(/(\n)/g, '$1    ')
-        })
-
-        throw err
-      } else {
-        const hasOrigin = !!schema._cvtGetOrigin
-        const name = (hasOrigin) ? schema._cvtGetOrigin() : false
-        const keyname = (hasOrigin && schema[name]) ? schema[name] : ''
-        const getter = { name, keyname }
-
-        throw new FORMAT_INVALID(fullName, err.message, getter, value)
-      }
-    }
-  }
-}
 
 /**
- * 
+ *
  * @returns Returns a ConfigObjectModel (= COM, Like DOM but not for Document, for Config)
  *
  * @class
  */
-const Blueconfig = function (def, opts) {
+const Blueconfig = function(def, opts) {
   return new ConfigObjectModel(def, opts, {
     Getter,
-    parsingSchema,
-    Parser
+    Parser,
+    Ruler
   })
 }
 
@@ -270,7 +35,7 @@ const Blueconfig = function (def, opts) {
  * blueconfig.getGettersOrder(); // ['default', 'value', 'env', 'arg', 'force']
  */
 Blueconfig.getGettersOrder = function() {
-  return cloneDeep(Getter.storage.order)
+  return [...Getter.storage.order]
 }
 
 
@@ -283,11 +48,11 @@ Blueconfig.getGettersOrder = function() {
  * @example
  * blueconfig.getGettersOrder();
  * // ['default', 'value', 'env', 'arg', 'force']
- * 
+ *
  * // two ways to do:
  * blueconfig.setGettersOrder(['default', 'value', 'arg', 'env', 'force']);
  * blueconfig.setGettersOrder(['default', 'value', 'arg', 'env']); // force is optional and must be the last one
- * 
+ *
  * blueconfig.getGettersOrder();
  * // ['default', 'value', 'arg', 'env', 'force']
  *
@@ -303,8 +68,8 @@ Blueconfig.sortGetters = function(newOrder) {
 /**
  * Adds a new custom getter. Getter function get value depending of the property name. In schema, the property name is a keyname of the schema.
  *
- * @example 
- * convict.addGetter('aws', function(aws, schema, stopPropagation) { 
+ * @example
+ * convict.addGetter('aws', function(aws, schema, stopPropagation) {
  *   return aws.get(aws)
  * }, false, true);
  *
@@ -440,7 +205,7 @@ Blueconfig.addFormats = function(formats) {
 
 
 /**
- * Adds new custom file parsers. JSON.parse will be used by default for unknown extension (default extension -> `*` => JSON). 
+ * Adds new custom file parsers. JSON.parse will be used by default for unknown extension (default extension -> `*` => JSON).
  *
  * @example
  * blueconfig.addParser([
@@ -448,7 +213,7 @@ Blueconfig.addFormats = function(formats) {
  *  // will allow comment in json file
  *  { extension: 'json5', parse: require('json5').parse }
  * ]);
- * 
+ *
  * @param    {Object[]}    parsers              Parser
  * @param    {string}      parsers.extension    Parser extension
  * @param    {function}    parsers.parse        Parser function
@@ -465,7 +230,7 @@ Blueconfig.addParser = function(parsers) {
   })
 }
 
-////////////////////////////////////////////
+/// /////////////////////////////////////////
 
 
 Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))

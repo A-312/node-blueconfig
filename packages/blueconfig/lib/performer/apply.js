@@ -1,7 +1,6 @@
 const cloneDeep = require('lodash.clonedeep')
 
 const utils = require('./utils/utils.js')
-const unroot = utils.unroot
 const isObjNotNull = utils.isObjNotNull
 
 /**
@@ -30,7 +29,7 @@ Apply.prototype.getters = function applyGetters(schema, node) {
       }
       applyGetters.call(this, mySchema, node[name])
     } else {
-      const currentOrigin = mySchema._cvtGetOrigin && mySchema._cvtGetOrigin()
+      const currentOrigin = mySchema.getOrigin()
       const currentLevel = (currentOrigin) ? this._getters.order.indexOf(currentOrigin) : 0
 
       for (let i = this._getters.order.length - 1; i >= 0; i--) {
@@ -42,11 +41,11 @@ Apply.prototype.getters = function applyGetters(schema, node) {
         const getterObj = this._getters.list[getterName]
         let propagationAsked = false // #224 accept undefined
 
-        if (!getterObj || !(getterName in mySchema)) {
+        if (!getterObj || !(getterName in mySchema.attributes)) {
           continue
         }
         const getter = getterObj.getter
-        const value = cloneDeep(mySchema[getterName])
+        const value = cloneDeep(mySchema.attributes[getterName])
         const stopPropagation = () => { propagationAsked = true }
 
         /**
@@ -69,12 +68,12 @@ Apply.prototype.getters = function applyGetters(schema, node) {
          *
          * @returns  {*}    value    Returns coerced value
          */
-        // call getter
-        node[name] = getter.call(this, value, mySchema, stopPropagation)
+        // call getter                        vvvvvvvvvvvvvvvvvvv Support prevent breakchanges
+        node[name] = getter.call(this, value, mySchema.attributes, stopPropagation)
 
         if (typeof node[name] !== 'undefined' || propagationAsked) {
           // We use function because function are not saved/exported in schema
-          mySchema._cvtGetOrigin = () => getterName
+          mySchema._private.origin = getterName
           break
         }
       }
@@ -92,8 +91,7 @@ Apply.prototype.values = function applyValues(from, to, schema) {
     const mySchema = (schema && schema._cvtProperties) ? schema._cvtProperties[name] : null
     // leaf
     if (Array.isArray(from[name]) || !isObjNotNull(from[name]) || !schema || schema.format === 'object') {
-      const bool = mySchema && mySchema._cvtGetOrigin
-      const lastG = bool && mySchema._cvtGetOrigin()
+      const lastG = mySchema && mySchema.getOrigin && mySchema.getOrigin()
 
       if (lastG && indexVal < this._getters.order.indexOf(lastG)) {
         return
@@ -117,10 +115,9 @@ Apply.prototype.values = function applyValues(from, to, schema) {
        *
        * @returns  {*}    value    Returns coerced value
        */
-      const coerce = (mySchema && mySchema._cvtCoerce) ? mySchema._cvtCoerce : (v) => v
-      to[name] = coerce(from[name])
+      to[name] = (mySchema && mySchema.coerce) ? mySchema.coerce(from[name]) : from[name]
       if (lastG) {
-        mySchema._cvtGetOrigin = () => 'value'
+        mySchema._private.origin = 'value'
       }
     } else {
       if (!isObjNotNull(to[name])) to[name] = {}

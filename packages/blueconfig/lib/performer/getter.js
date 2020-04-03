@@ -1,5 +1,3 @@
-const cloneDeep = require('lodash.clonedeep')
-
 const cvtError = require('../error.js')
 const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
 const INCORRECT_USAGE = cvtError.INCORRECT_USAGE
@@ -71,7 +69,7 @@ Getter.prototype.sortGetters = function(currentOrder, newOrder) {
   }
 
   // exact number of getter name (not less & not more)
-  const checkKey = cloneDeep(currentOrder)
+  const checkKey = [...currentOrder]
   for (let i = newOrder.length - 1; i >= 0; i--) {
     const index = checkKey.indexOf(newOrder[i])
     if (index !== -1) {
