@@ -1,1 +1,1 @@
-invalidFormat: uses an invalid format, it must be a format name, a function, an array or a known format type (actual: "1")
+invalidFormat: uses an invalid format, it must be a format name, a function, an array or a known format type (current: "1")

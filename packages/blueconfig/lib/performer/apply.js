@@ -1,7 +1,6 @@
 const cloneDeep = require('lodash.clonedeep')
 
-const utils = require('./utils.js')
-const walk = utils.walk
+const utils = require('./utils/utils.js')
 const unroot = utils.unroot
 const isObjNotNull = utils.isObjNotNull
 
@@ -31,11 +30,11 @@ Apply.prototype.getters = function applyGetters(schema, node) {
       }
       applyGetters.call(this, mySchema, node[name])
     } else {
-      const actualOrigin = mySchema._cvtGetOrigin && mySchema._cvtGetOrigin()
-      const actualLevel = (actualOrigin) ? this._getters.order.indexOf(actualOrigin) : 0
+      const currentOrigin = mySchema._cvtGetOrigin && mySchema._cvtGetOrigin()
+      const currentLevel = (currentOrigin) ? this._getters.order.indexOf(currentOrigin) : 0
 
       for (let i = this._getters.order.length - 1; i >= 0; i--) {
-        if (i < actualLevel) {
+        if (i < currentLevel) {
           break // stop if the current getter is higher
         }
 

@@ -5,14 +5,15 @@ const cloneDeep = require('lodash.clonedeep')
 const parsePath = require('objectpath').parse
 const stringifyPath = require('objectpath').stringify
 
-const Apply = require('./apply.js')
-const validator = require('./validator.js')
+const Apply = require('../performer/apply.js')
 
 let Getter
 let Parser
 
-const utils = require('./utils.js')
-const walk = utils.walk
+const validator = require('../performer/utils/validator.js')
+const utils = require('../performer/utils/utils.js')
+const walk = require('../performer/utils/walk.js')
+
 const unroot = utils.unroot
 const isObjNotNull = utils.isObjNotNull
 
@@ -90,12 +91,7 @@ function ConfigObjectModel(rawSchema, options, scope) {
 module.exports = ConfigObjectModel
 
 
-
-
-
-
-
-/////////////////////////////////////////////////////////------------------------------------
+/// //////////////////////////////////////////////////////------------------------------------
 /**
  * Parse constructor arguments.
  */
@@ -110,16 +106,7 @@ ConfigObjectModel.prototype.getArgs = function() {
 ConfigObjectModel.prototype.getEnv = function() {
   return (this.options && this.options.env) || process.env
 }
-/////////////////////////////////////////////////////////------------------------------------
-
-
-
-
-
-
-
-
-
+/// //////////////////////////////////////////////////////------------------------------------
 
 
 /**

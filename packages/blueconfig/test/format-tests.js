@@ -105,6 +105,37 @@ describe('blueconfig formats', function() {
     })
   })
 
+  it('must throw with bad name', function() {
+    expect(() =>blueconfig.addFormat({ name: [], validate: () => {} })).to.throw('Error: Schema name must be a string (current: "object").')
+  })
+
+  it('must add several formats with array', function() {
+    const blueconfig = new_require('../')
+
+    blueconfig.addFormats([
+      { name: 'bird1', validate: () => {} },
+      { name: 'bird2', validate: () => {} },
+      { name: 'bird3', validate: () => {} }
+    ])
+
+    const conf = blueconfig({
+      a: {
+        format: 'bird1',
+        default: 'ok'
+      },
+      b: {
+        format: 'bird2',
+        default: 'ok'
+      },
+      c: {
+        format: 'bird3',
+        default: 'ok'
+      }
+    })
+
+    expect(() => conf.validate()).to.not.throw()
+  })
+
   it('validates default schema', function() {
     expect(() => conf.validate()).to.not.throw()
   })
@@ -201,7 +232,7 @@ describe('blueconfig formats', function() {
       }
     }
 
-    expect(() => blueconfig(schema)).to.throw('foo: uses an unknown format type (actual: "unknown")')
+    expect(() => blueconfig(schema)).to.throw('foo: uses an unknown format type (current: "unknown")')
   })
 
   it('must accept undefined as a default', function() {

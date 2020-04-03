@@ -1,10 +1,10 @@
 const stringifyPath = require('objectpath').stringify
 
-const cvtError = require('./../error.js')
+const cvtError = require('./../../error.js')
 const VALUE_INVALID = cvtError.VALUE_INVALID
 
+const walk = require('./walk.js')
 const utils = require('./utils.js')
-const walk = utils.walk
 const isObjNotNull = utils.isObjNotNull
 const unroot = utils.unroot
 

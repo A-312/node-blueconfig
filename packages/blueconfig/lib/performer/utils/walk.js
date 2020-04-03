@@ -1,21 +1,13 @@
 const parsePath = require('objectpath').parse
 const stringifyPath = require('objectpath').stringify
 
-const Parser = require('../performer/parser.js')
-
-const cvtError = require('./../error.js')
+const cvtError = require('./../../error.js')
 const PATH_INVALID = cvtError.PATH_INVALID
 
-// With 'in': Prevent error: 'Cannot use 'in' operator to search for {key} in {value}'
-function isObjNotNull(obj) {
-  return typeof obj === 'object' && obj !== null
-}
+const utils = require('./utils.js')
+const isObjNotNull = utils.isObjNotNull
+const unroot = utils.unroot
 
-function unroot(text) {
-  return text.replace(/^root(\.|\[)/g, (_, b) => (b === '[') ? '[' : '')
-}
-
-// TRAVERSE
 
 function walk(obj, path, initializeMissing) {
   if (path) {
@@ -47,8 +39,4 @@ function walk(obj, path, initializeMissing) {
   return obj
 }
 
-module.exports = {
-  isObjNotNull,
-  unroot,
-  walk
-}
+module.exports = walk

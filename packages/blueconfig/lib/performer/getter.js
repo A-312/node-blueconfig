@@ -26,15 +26,18 @@ module.exports = Getter
  * Adds a new custom getter
  */
 Getter.prototype.add = function(keyname, getter, usedOnlyOnce, rewrite) {
+  if (typeof keyname !== 'string') {
+    throw new CUSTOMISE_FAILED('Getter keyname must be a string (current: "' + (typeof keyname) + '").')
+  }
   if (typeof getter !== 'function') {
     throw new CUSTOMISE_FAILED('Getter function for "' + keyname + '" must be a function.')
   }
   if (['_cvtCoerce', '_cvtValidateFormat', '_cvtGetOrigin', 'format', 'required', 'value', 'force'].includes(keyname)) {
-    throw new CUSTOMISE_FAILED('Getter name use a reservated word: ' + keyname)
+    throw new CUSTOMISE_FAILED('Getter keyname use a reservated word: ' + keyname)
   }
   if (this.storage.list[keyname] && !rewrite) {
     const advice = ' Set the 4th argument (rewrite) of `addGetter` at true to skip this error.'
-    throw new CUSTOMISE_FAILED('The getter property name "' + keyname + '" is already registered.' + advice)
+    throw new CUSTOMISE_FAILED('Getter keyname "' + keyname + '" is already registered.' + advice)
   }
 
   if (typeof usedOnlyOnce !== 'function') {

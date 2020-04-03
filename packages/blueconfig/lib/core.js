@@ -23,7 +23,7 @@ const VALUE_INVALID = cvtError.VALUE_INVALID
 const VALIDATE_FAILED = cvtError.VALIDATE_FAILED
 const FORMAT_INVALID = cvtError.FORMAT_INVALID
 
-const utils = require('./model/utils.js')
+const utils = require('./performer/utils/utils.js')
 const walk = utils.walk
 const isObjNotNull = utils.isObjNotNull
 const unroot = utils.unroot
@@ -116,7 +116,7 @@ function parsingSchema(name, rawSchema, props, fullName) {
           if (typeof usedOnlyOnce === 'function') {
             return usedOnlyOnce(value, schema, fullName, keyname)
           } else {
-            const errorMessage = `uses a already used getter keyname for "${keyname}", actual: \`${keyname}[${JSON.stringify(value)}]\``
+            const errorMessage = `uses a already used getter keyname for "${keyname}", current: \`${keyname}[${JSON.stringify(value)}]\``
             throw new SCHEMA_INVALID(unroot(fullName), errorMessage)
           }
         }
@@ -150,7 +150,7 @@ function parsingSchema(name, rawSchema, props, fullName) {
     } else if (typeof format === 'string') {
       // store declared type
       if (!Ruler.types.has(format)) {
-        throw new SCHEMA_INVALID(unroot(fullName), `uses an unknown format type (actual: ${JSON.stringify(format)})`)
+        throw new SCHEMA_INVALID(unroot(fullName), `uses an unknown format type (current: ${JSON.stringify(format)})`)
       }
       // use a predefined type
       return Ruler.types.get(format)
@@ -169,7 +169,7 @@ function parsingSchema(name, rawSchema, props, fullName) {
       // Wrong type for format
       const errorMessage = 'uses an invalid format, it must be a format name, a function, an array or a known format type'
       const value = (format || '').toString() || 'is a ' + typeof format
-      throw new SCHEMA_INVALID(unroot(fullName), `${errorMessage} (actual: ${JSON.stringify(value)})`)
+      throw new SCHEMA_INVALID(unroot(fullName), `${errorMessage} (current: ${JSON.stringify(value)})`)
     } else if (!this._strictParsing && typeof schema.default !== 'undefined') {
       // Magic format: default format is the type of the default value (if strictParsing is not enabled)
       const defaultFormat = Object.prototype.toString.call(schema.default)
@@ -308,23 +308,23 @@ Blueconfig.sortGetters = function(newOrder) {
  *   return aws.get(aws)
  * }, false, true);
  *
- * @param {String|Object|Object[]}    name                String for Getter name, `Object/Object[]` or which contains arguments:
- * @param    {String}           name.property             Getter name
+ * @param {String|Object}       name                      String for Getter name, `Object/Object[]` or which contains arguments:
+ * @param    {String}           name.name             Getter name
  * @param    {Function}         name.getter               *See below*
  * @param    {Boolean}          [name.usedOnlyOnce=false] *See below*
  * @param    {Boolean}          [name.rewrite=false]      *See below*
- * @param    {ConfigObjectModel.getterCallback}   getter  Getter function get external value depending of the property name.
+ * @param    {ConfigObjectModel.getterCallback}   getter  Getter function get external value depending of the name name.
  * @param    {Boolean}          [usedOnlyOnce=false]      `false` by default. If true, The value can't be reused by another `keyname=value`
  * @param    {Boolean}          [rewrite=false]           Allow rewrite an existant format
  */
-Blueconfig.addGetter = function(property, getter, usedOnlyOnce, rewrite) {
-  if (typeof property === 'object') {
-    getter = property.getter
-    usedOnlyOnce = property.usedOnlyOnce
-    rewrite = property.rewrite
-    property = property.property
+Blueconfig.addGetter = function(name, getter, usedOnlyOnce, rewrite) {
+  if (typeof name === 'object') {
+    getter = name.getter
+    usedOnlyOnce = name.usedOnlyOnce
+    rewrite = name.rewrite
+    name = name.name || name.property
   }
-  Getter.add(property, getter, usedOnlyOnce, rewrite)
+  Getter.add(name, getter, usedOnlyOnce, rewrite)
 }
 
 
@@ -333,7 +333,7 @@ Blueconfig.addGetter = function(property, getter, usedOnlyOnce, rewrite) {
  *
  * @example
  * // Example with the default env & arg getters:
- * Blueconfig.addGetter({
+ * Blueconfig.addGetters({
  *   env: {
  *     getter: (value, schema) => schema._cvtCoerce(this.getEnv()[value])
  *   },
@@ -346,16 +346,21 @@ Blueconfig.addGetter = function(property, getter, usedOnlyOnce, rewrite) {
  *   }
  * });
  *
- * @param {Object}    getters                               Array containing list of Getters/Object
+ * @param {Object|Object[]}    getters                      Object containing list of Getters/Object
  * @param {Object}    getters.{name}                        {name} in `getters.{name}` is the getter name
  * @param {Function}  getters.{name}.getter                 *See Blueconfig.addGetter*
  * @param {Boolean}   [getters.{name}.usedOnlyOnce=false]   *See Blueconfig.addGetter*
  * @param {Boolean}   [getters.{name}.rewrite=false]        *See Blueconfig.addGetter*
  */
 Blueconfig.addGetters = function(getters) {
-  Object.keys(getters).forEach((property) => {
-    const child = getters[property]
-    this.addGetter(property, child.getter, child.usedOnlyOnce, child.rewrite)
+  if (Array.isArray(getters)) {
+    return getters.forEach((child) => {
+      this.addGetter(child)
+    })
+  }
+  Object.keys(getters).forEach((name) => {
+    const child = getters[name]
+    this.addGetter(name, child.getter, child.usedOnlyOnce, child.rewrite)
   })
 }
 
@@ -375,7 +380,7 @@ Blueconfig.addGetters = function(getters) {
  * })
  *
  *
- * @param {String|Object|Object[]}       name              String for Format name, `Object/Object[]` or which contains arguments:
+ * @param {String|Object}                name              String for Format name, `Object/Object[]` or which contains arguments:
  * @param    {String}                    name.name         Format name
  * @param    {Function}                  name.validate     *See below*
  * @param    {Function}                  name.coerce       *See below*
@@ -401,8 +406,8 @@ Blueconfig.addFormat = function(name, validate, coerce, rewrite) {
  * @example
  * // Add several formats with: [Object, Object, Object, Object]
  * const vFormat = require('blueconfig-format-with-validator')
- * blueconfig.addFormat({
- *   email: vFormatemail,
+ * blueconfig.addFormats({ // add: email, ipaddress, url, token
+ *   email: vFormat.email,
  *   ipaddress: vFormat.ipaddress,
  *   url: vFormat.url,
  *   token: {
@@ -416,13 +421,18 @@ Blueconfig.addFormat = function(name, validate, coerce, rewrite) {
  *
  * @see Blueconfig.addFormat
  *
- * @param {Object}    formats                        Array containing list of Formats/Object
+ * @param {Object|Object[]}    formats               Object containing list of Object
  * @param {Object}    formats.{name}                 {name} in `formats.{name}` is the format name
  * @param {Function}  formats.{name}.validate        *See Blueconfig.addFormat*
  * @param {Function}  formats.{name}.coerce          *See Blueconfig.addFormat*
  * @param {Boolean}   [formats.{name}.rewrite=false] *See Blueconfig.addFormat*
  */
 Blueconfig.addFormats = function(formats) {
+  if (Array.isArray(formats)) {
+    return formats.forEach((child) => {
+      this.addFormat(child)
+    })
+  }
   Object.keys(formats).forEach((name) => {
     this.addFormat(name, formats[name].validate, formats[name].coerce, formats[name].rewrite)
   })

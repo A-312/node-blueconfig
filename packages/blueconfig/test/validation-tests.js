@@ -221,7 +221,7 @@ describe('schema contains an object property with a custom format', function() {
   }
 
   it('must throw if a nested object property has an undeclared format', function() {
-    expect(() => blueconfig(schemaWithFoo22Format)).to.throw('object: uses an unknown format type (actual: "foo22")')
+    expect(() => blueconfig(schemaWithFoo22Format)).to.throw('object: uses an unknown format type (current: "foo22")')
   })
 
   it('must not throw if an object property has a nested value and a custom format and after set a object property with a custom format', function() {
@@ -240,7 +240,7 @@ describe('schema contains an object property with a custom format', function() {
   it('must throw if a custom format foo is existing and if rewrite = false', function() {
     expect(() =>
       blueconfig.addFormat('foo22', function() {})
-    ).to.throw('The format name "foo22" is already registered. Set the 4th argument (rewrite) of `addFormat` at true to skip this error.')
+    ).to.throw('Format name "foo22" is already registered. Set the 4th argument (rewrite) of `addFormat` at true to skip this error.')
     expect(() =>
       blueconfig.addFormat('foo22', function() {}, null, true) // true = rewrite = throw
     ).to.not.throw()

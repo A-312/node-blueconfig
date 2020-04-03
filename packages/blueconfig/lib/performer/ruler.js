@@ -9,7 +9,7 @@ const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
  */
 function Ruler() {
   this.types = new Map()
-  this.types.set("*", () => {})
+  this.types.set('*', () => {})
   this.coerces = new Map()
 }
 
@@ -21,6 +21,9 @@ module.exports = Ruler
  * Adds a new custom format.
  */
 Ruler.prototype.add = function(name, validate, coerce, rewrite) {
+  if (typeof name !== 'string') {
+    throw new CUSTOMISE_FAILED('Schema name must be a string (current: "' + (typeof name) + '").')
+  }
   if (typeof validate !== 'function') {
     throw new CUSTOMISE_FAILED('Validation function for "' + name + '" must be a function.')
   }
@@ -30,7 +33,7 @@ Ruler.prototype.add = function(name, validate, coerce, rewrite) {
 
   if (this.types.has(name) && !rewrite) {
     const advice = ' Set the 4th argument (rewrite) of `addFormat` at true to skip this error.'
-    throw new CUSTOMISE_FAILED('The format name "' + name + '" is already registered.' + advice)
+    throw new CUSTOMISE_FAILED('Format name "' + name + '" is already registered.' + advice)
   }
 
   this.types.set(name, validate)
