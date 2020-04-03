@@ -1,4 +1,8 @@
 /**
+ * @namespace ZCUSTOMERROR
+ */
+
+/**
  * Custom Blueconfig errors are used to identify: Blueconfig internal error, Schema error or config error.
  *
  * This class is Parent of all other Blueconfig errors, all errors are inherited of this one.
@@ -10,7 +14,7 @@
  *
  * @extends Error
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class BLUECONFIG_ERROR extends Error {
   /**
@@ -44,7 +48,7 @@ class BLUECONFIG_ERROR extends Error {
  * @extends BLUECONFIG_ERROR
  *
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class LISTOFERRORS extends BLUECONFIG_ERROR {
   /**
@@ -84,7 +88,7 @@ class LISTOFERRORS extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class SCHEMA_INVALID extends BLUECONFIG_ERROR {
   /**
@@ -121,7 +125,7 @@ class SCHEMA_INVALID extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class CUSTOMISE_FAILED extends BLUECONFIG_ERROR {
   /**
@@ -143,7 +147,7 @@ class CUSTOMISE_FAILED extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class INCORRECT_USAGE extends BLUECONFIG_ERROR {
   /**
@@ -165,7 +169,7 @@ class INCORRECT_USAGE extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class PATH_INVALID extends BLUECONFIG_ERROR {
   /**
@@ -235,7 +239,7 @@ class PATH_INVALID extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class VALUE_INVALID extends BLUECONFIG_ERROR {
   /**
@@ -257,7 +261,7 @@ class VALUE_INVALID extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class VALIDATE_FAILED extends BLUECONFIG_ERROR {
   /**
@@ -288,7 +292,7 @@ class VALIDATE_FAILED extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class FORMAT_INVALID extends BLUECONFIG_ERROR {
   /**

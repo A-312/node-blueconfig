@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [6.1.0] - 2019-0x-xx
 ### Added
- - Accept format in the root of a config tree
+ - Accept format in the root of a config tree (@A-312)
 
 ### Changed
  - Update package.json description and add tags. (= "Fork of node-convict", "node-convict") (@A-312)
@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Breaking Change
 
 - [BREAKING] Coerce from strings to their proper types (NOT MORE) + code review on coercing (@A-312)
-- [BREAKING] Multi-packages split (@A-312)
+- [BREAKING] Multi-packages split / Format with moment and validator become two external packages `blueconfig-format-with-moment` and `blueconfig-format-with-validator` (Multi-packages split with Lerna).(@A-312)
 - Error are more human-readable (@A-312)
 - [BREAKING] Remove json5 dependency and make it an optional parser node-convict/#326 (@A-312)
 - [BREAKING] Improve parsing behavior and default property usage (@A-312):

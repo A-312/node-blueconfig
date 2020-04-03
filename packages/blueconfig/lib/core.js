@@ -1,11 +1,10 @@
 /**
- * blueconfig
+ * Blueconfig
  *
  * forked-from: node-config
  * forked-from: Configuration management with support for environmental variables, files, and validation.
  */
 
-const fs = require('fs')
 const parseArgs = require('yargs-parser')
 const cloneDeep = require('lodash.clonedeep')
 const parsePath = require('objectpath').parse
@@ -19,132 +18,26 @@ const SCHEMA_INVALID = cvtError.SCHEMA_INVALID
 // 2
 const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
 const INCORRECT_USAGE = cvtError.INCORRECT_USAGE
-const PATH_INVALID = cvtError.PATH_INVALID
 // 2
 const VALUE_INVALID = cvtError.VALUE_INVALID
 const VALIDATE_FAILED = cvtError.VALIDATE_FAILED
 const FORMAT_INVALID = cvtError.FORMAT_INVALID
 
-const types = {
-  '*': function() { }
-}
+const utils = require('./model/utils.js')
+const walk = utils.walk
+const isObjNotNull = utils.isObjNotNull
+const unroot = utils.unroot
+
+const ConfigObjectModel = require('./model/com.js')
+
+const ParserInterface = require('./performer/parser.js')
+const Parser = new ParserInterface()
+const GetterInterface = require('./performer/getter.js')
+const Getter = new GetterInterface()
+const RulerInterface = require('./performer/ruler.js')
+const Ruler = new RulerInterface()
 
 const converters = new Map()
-
-const getters = {
-  order: ['value', 'force'],
-  list: {}
-}
-
-const parsers_registry = { '*': JSON.parse }
-
-const ALLOWED_OPTION_STRICT = 'strict'
-const ALLOWED_OPTION_WARN = 'warn'
-
-function flatten(obj, useProperties) {
-  const stack = Object.keys(obj).map((path) => [path])
-  const entries = []
-
-  while (stack.length) {
-    const path = stack.shift()
-    let node = walk(obj, path)
-    // Is an object not null and not an array
-    if (isObjNotNull(node) && !Array.isArray(node)) {
-      if (useProperties) {
-        if ('_cvtProperties' in node) {
-          node = node._cvtProperties
-          path.push('_cvtProperties')
-        } else {
-          entries.push([path, node])
-          continue
-        }
-      }
-      const children = Object.keys(node)
-
-      // Don't filter out empty objects
-      if (children.length > 0) {
-        children.forEach(function(child) {
-          stack.push(path.concat(child))
-        })
-        continue
-      }
-    }
-    entries.push([path, node])
-  }
-
-  const flattened = {}
-  entries.forEach(function(entry) {
-    let path = entry[0]
-    const val = entry[1]
-
-    if (Array.isArray(path) === false) throw new Error('errror : ' + path)
-
-    if (useProperties) {
-      path = path.filter((property) => property !== '_cvtProperties')
-    }
-
-    flattened[stringifyPath(path)] = val
-  })
-
-  return flattened
-}
-
-function validate(instance, schema, strictValidation) {
-  const errors = {
-    undeclared: [],
-    invalid_type: [],
-    missing: []
-  }
-
-  const flatInstance = flatten(instance)
-  const flatSchema = flatten(schema._cvtProperties, true)
-
-  Object.keys(flatSchema).forEach(function(name) {
-    const schemaItem = flatSchema[name]
-    let instanceItem = flatInstance[name]
-    if (!(name in flatInstance)) {
-      try {
-        instanceItem = walk(instance, name)
-      } catch (err) {
-        let message = 'config parameter "' + unroot(name) + '" missing from config, did you override its parent?'
-        if (err.lastPosition && err.type === 'PATH_INVALID') {
-          message += ` Because ${err.why}.`
-        }
-        errors.missing.push(new VALUE_INVALID(message))
-        return
-      }
-    }
-    delete flatInstance[name]
-
-    // ignore nested keys of schema 'object' properties
-    if (schemaItem.format === 'object' || typeof schemaItem.default === 'object') {
-      Object.keys(flatInstance)
-        .filter(function(key) {
-          return key.lastIndexOf(name + '.', 0) === 0
-        }).forEach(function(key) {
-          delete flatInstance[key]
-        })
-    }
-
-    if (schemaItem.required || !(typeof schemaItem.default === 'undefined' &&
-          instanceItem === schemaItem.default)) {
-      try {
-        schemaItem._cvtValidateFormat(instanceItem)
-      } catch (err) {
-        errors.invalid_type.push(err)
-      }
-    }
-  })
-
-  if (strictValidation) {
-    Object.keys(flatInstance).forEach(function(name) {
-      const err = new VALUE_INVALID("configuration param '" + unroot(name) + "' not declared in the schema")
-      errors.undeclared.push(err)
-    })
-  }
-
-  return errors
-}
 
 const BUILT_INS_BY_NAME = {
   Object: Object,
@@ -172,7 +65,7 @@ function parsingSchema(name, rawSchema, props, fullName) {
 
   const filterName = (name) => {
     return (name === this._defaultSubstitute) ? 'default' : name
-  } //                   ^^^^^^^^^^^^^^^^^^ = '$~default'
+  } //                    ^^^^^^^^^^^^^^^^^^ = '$~default'
 
   name = filterName(name)
 
@@ -210,25 +103,25 @@ function parsingSchema(name, rawSchema, props, fullName) {
   const schema = cloneDeep(rawSchema)
   props[name] = schema
 
-  Object.keys(schema).forEach((getterName) => {
-    if (this._getters.list[getterName]) {
-      const usedOnlyOnce = this._getters.list[getterName].usedOnlyOnce
+  Object.keys(schema).forEach((keyname) => {
+    if (this._getters.list[keyname]) {
+      const usedOnlyOnce = this._getters.list[keyname].usedOnlyOnce
       if (usedOnlyOnce) {
-        if (!this._getterAlreadyUsed[getterName]) {
-          this._getterAlreadyUsed[getterName] = new Set()
+        if (!this._getterAlreadyUsed[keyname]) {
+          this._getterAlreadyUsed[keyname] = new Set()
         }
 
-        const value = schema[getterName]
-        if (this._getterAlreadyUsed[getterName].has(value)) {
+        const value = schema[keyname]
+        if (this._getterAlreadyUsed[keyname].has(value)) {
           if (typeof usedOnlyOnce === 'function') {
-            return usedOnlyOnce(value, schema, fullName, getterName)
+            return usedOnlyOnce(value, schema, fullName, keyname)
           } else {
-            const errorMessage = `uses a already used getter keyname for "${getterName}", actual: \`${getterName}[${JSON.stringify(value)}]\``
+            const errorMessage = `uses a already used getter keyname for "${keyname}", actual: \`${keyname}[${JSON.stringify(value)}]\``
             throw new SCHEMA_INVALID(unroot(fullName), errorMessage)
           }
         }
 
-        this._getterAlreadyUsed[getterName].add(schema[getterName])
+        this._getterAlreadyUsed[keyname].add(schema[keyname])
       }
     }
   })
@@ -256,11 +149,11 @@ function parsingSchema(name, rawSchema, props, fullName) {
       }
     } else if (typeof format === 'string') {
       // store declared type
-      if (!types[format]) {
+      if (!Ruler.types.has(format)) {
         throw new SCHEMA_INVALID(unroot(fullName), `uses an unknown format type (actual: ${JSON.stringify(format)})`)
       }
       // use a predefined type
-      return types[format]
+      return Ruler.types.get(format)
     } else if (Array.isArray(format)) {
       // assert that the value is in the whitelist, example: ['a', 'b', 'c'].include(value)
       const contains = (whitelist, value) => {
@@ -297,7 +190,7 @@ function parsingSchema(name, rawSchema, props, fullName) {
 
   schema._cvtCoerce = (() => {
     if (typeof format === 'string') {
-      return getCoerceMethod(format)
+      return Ruler.getCoerceMethod(format)
     } else {
       return (v) => v
     }
@@ -327,676 +220,151 @@ function parsingSchema(name, rawSchema, props, fullName) {
   }
 }
 
-function applyGetters(schema, node) {
-  const getters = this._getters
-
-  Object.keys(schema._cvtProperties).forEach((name) => {
-    const mySchema = schema._cvtProperties[name]
-    if (mySchema._cvtProperties) {
-      if (!node[name]) {
-        node[name] = {}
-      }
-      applyGetters.call(this, mySchema, node[name])
-    } else {
-      const actualOrigin = mySchema._cvtGetOrigin && mySchema._cvtGetOrigin()
-      const actualLevel = (actualOrigin) ? getters.order.indexOf(actualOrigin) : 0
-
-      for (let i = getters.order.length - 1; i >= 0; i--) {
-        if (i < actualLevel) {
-          break // stop if the current getter is higher
-        }
-
-        const getterName = getters.order[i] // getterName
-        const getterObj = getters.list[getterName]
-        let propagationAsked = false // #224 accept undefined
-
-        if (!getterObj || !(getterName in mySchema)) {
-          continue
-        }
-        const getter = getterObj.getter
-        const keyname = cloneDeep(mySchema[getterName])
-        const stopPropagation = () => { propagationAsked = true }
-
-        // call getter
-        node[name] = getter.call(this, keyname, mySchema, stopPropagation)
-
-        if (typeof node[name] !== 'undefined' || propagationAsked) {
-          // We use function because function are not saved/exported in schema
-          mySchema._cvtGetOrigin = () => getterName
-          break
-        }
-      }
-    }
-  })
-}
-
-// With 'in': Prevent error: 'Cannot use 'in' operator to search for {key} in {value}'
-function isObjNotNull(obj) {
-  return typeof obj === 'object' && obj !== null
-}
-
-function applyValues(from, to, schema) {
-  const getters = this._getters
-
-  const indexVal = getters.order.indexOf('value')
-  Object.keys(from).forEach((name) => {
-    const mySchema = (schema && schema._cvtProperties) ? schema._cvtProperties[name] : null
-    // leaf
-    if (Array.isArray(from[name]) || !isObjNotNull(from[name]) || !schema || schema.format === 'object') {
-      const bool = mySchema && mySchema._cvtGetOrigin
-      const lastG = bool && mySchema._cvtGetOrigin()
-
-      if (lastG && indexVal < getters.order.indexOf(lastG)) {
-        return
-      }
-      const coerce = (mySchema && mySchema._cvtCoerce) ? mySchema._cvtCoerce : (v) => v
-      to[name] = coerce(from[name])
-      if (lastG) {
-        mySchema._cvtGetOrigin = () => 'value'
-      }
-    } else {
-      if (!isObjNotNull(to[name])) to[name] = {}
-      applyValues.call(this, from[name], to[name], mySchema)
-    }
-  })
-}
-
-function traverseSchema(schema, path) {
-  const ar = parsePath(path)
-  let o = schema
-  while (ar.length > 0) {
-    const k = ar.shift()
-    if (o && o._cvtProperties && o._cvtProperties[k]) {
-      o = o._cvtProperties[k]
-    } else {
-      o = null
-      break
-    }
-  }
-
-  return o
-}
-
-function getCoerceMethod(format) {
-  const isStr = (value) => (typeof value === 'string')
-
-  if (converters.has(format)) {
-    return converters.get(format)
-  }
-  switch (format) {
-    case 'Number':
-      return (v) => (isStr(v)) ? parseFloat(v) : v
-    case 'Boolean':
-      return (v) => (isStr(v)) ? (String(v).toLowerCase() !== 'false') : v
-    case 'Array':
-      return (v) => (isStr(v)) ? v.split(',') : v
-    case 'Object':
-      return (v) => (isStr(v)) ? JSON.parse(v) : v
-    case 'RegExp':
-      return (v) => (isStr(v)) ? new RegExp(v) : v
-    default:
-      // for eslint "Expected a default case"
-  }
-
-  return (v) => v
-}
-
-function loadFile(path) {
-  const segments = path.split('.')
-  const extension = segments.length > 1 ? segments.pop() : ''
-  const parse = parsers_registry[extension] || parsers_registry['*']
-
-  // TODO Get rid of the sync call
-  // eslint-disable-next-line no-sync
-  return parse(fs.readFileSync(path, 'utf-8'))
-}
-
-function pathToSchemaPath(path, addKey) {
-  const schemaPath = []
-
-  path = parsePath(path)
-  path.forEach((property) => {
-    schemaPath.push(property)
-    schemaPath.push('_cvtProperties')
-  })
-  schemaPath.splice(-1)
-
-  if (addKey) { schemaPath.push(addKey) }
-
-  return schemaPath
-}
-
-function walk(obj, path, initializeMissing) {
-  if (path) {
-    path = Array.isArray(path) ? path : parsePath(path)
-    const sibling = path.slice(0)
-    const historic = []
-    while (sibling.length) {
-      const key = sibling.shift()
-
-      if (key !== '_cvtProperties') {
-        historic.push(key)
-      }
-
-      if (initializeMissing && obj[key] == null) {
-        obj[key] = {}
-        obj = obj[key]
-      } else if (isObjNotNull(obj) && key in obj) {
-        obj = obj[key]
-      } else {
-        const noCvtProp = (path) => path !== '_cvtProperties'
-        throw new PATH_INVALID(stringifyPath(path.filter(noCvtProp)), stringifyPath(historic), {
-          path: unroot(stringifyPath(historic.slice(0, -1))),
-          value: obj
-        })
-      }
-    }
-  }
-
-  return obj
-}
-
-function convertSchema(nodeSchema, blueconfigProperties) {
-  if (!nodeSchema || typeof nodeSchema !== 'object' || Array.isArray(nodeSchema)) {
-    return nodeSchema
-  } else if (nodeSchema._cvtProperties) {
-    return convertSchema.call(this, nodeSchema._cvtProperties, true)
-  } else {
-    const schema = Array.isArray(nodeSchema) ? [] : {}
-
-    Object.keys(nodeSchema).forEach((name) => {
-      let keyname = name
-      if (typeof nodeSchema[name] === 'function') {
-        return
-      } else if (name === 'default' && blueconfigProperties) {
-        keyname = this._defaultSubstitute
-      }
-
-      schema[keyname] = convertSchema.call(this, nodeSchema[name])
-    })
-
-    return schema
-  }
-}
-
 /**
- * @returns a config object
+ * 
+ * @returns Returns a ConfigObjectModel (= COM, Like DOM but not for Document, for Config)
+ *
+ * @class
  */
-const blueconfig = function blueconfig(def, opts) {
-  // TODO: Rename this `rv` variable (supposedly "return value") into something
-  // more meaningful.   ^^ --> rv != blueconfig (-> rv is local & blueconfig is global)
-  const rv = {
-    /**
-     * Gets the array of process arguments, using the override passed to the
-     * blueconfig function or process.argv if no override was passed.
-     */
-    getArgs: function() {
-      return (opts && opts.args) || process.argv.slice(2)
-    },
-
-    /**
-     * Gets the environment variable map, using the override passed to the
-     * blueconfig function or process.env if no override was passed.
-     */
-    getEnv: function() {
-      return (opts && opts.env) || process.env
-    },
-
-    /**
-     * Exports all the properties (that is the keys and their current values) as JSON
-     */
-    getProperties: function() {
-      return cloneDeep(this._instance.root)
-    },
-
-    /**
-     * Exports all the properties (that is the keys and their current values) as
-     * a JSON string, with sensitive values masked. Sensitive values are masked
-     * even if they aren't set, to avoid revealing any information.
-     */
-    toString: function() {
-      const clone = cloneDeep(this._instance.root)
-      this._sensitive.forEach(function(fullpath) {
-        const path = parsePath(unroot(fullpath))
-        const childKey = path.pop()
-        const parentKey = stringifyPath(path)
-        const parent = walk(clone, parentKey)
-        parent[childKey] = '[Sensitive]'
-      })
-      return JSON.stringify(clone, null, 2)
-    },
-
-    /**
-     * Exports the schema as JSON.
-     */
-    getSchema: function(debug) {
-      const schema = cloneDeep(this._schemaRoot)
-
-      return (debug) ? cloneDeep(schema) : convertSchema.call(this, schema)
-    },
-
-    /**
-     * Exports the schema as a JSON string
-     */
-    getSchemaString: function(debug) {
-      return JSON.stringify(this.getSchema(debug), null, 2)
-    },
-
-    /**
-     * @returns the current value of the name property. name can use dot
-     *     notation to reference nested values
-     */
-    get: function(path) {
-      const o = walk(this._instance.root, path)
-      return cloneDeep(o)
-    },
-
-    /**
-     * @returns the current getter name of the name value origin. name can use dot
-     *     notation to reference nested values
-     */
-    getOrigin: function(path) {
-      path = pathToSchemaPath(path, '_cvtGetOrigin')
-      const o = walk(this._schemaRoot._cvtProperties, path)
-      return o ? o() : null
-    },
-
-    /**
-     * Gets array with getter name in the current order of priority
-     */
-    getGettersOrder: function(path) {
-      return cloneDeep(this._getters.order)
-    },
-
-    /**
-     * sorts getters
-     */
-    sortGetters: function(newOrder) {
-      const sortFilter = sortGetters(this._getters.order, newOrder)
-
-      this._getters.order.sort(sortFilter)
-    },
-
-    /**
-     * Update local getters config with global config
-     */
-    refreshGetters: function() {
-      this._getters = cloneDeep(getters)
-      applyGetters.call(this, this._schema, this._instance)
-    },
-
-    /**
-     * @returns the default value of the name property. name can use dot
-     *     notation to reference nested values
-     */
-    default: function(path) {
-      // The default value for FOO.BAR.BAZ is stored in `_schema._cvtProperties` at:
-      //   FOO._cvtProperties.BAR._cvtProperties.BAZ.default
-      path = pathToSchemaPath(path, 'default')
-      const o = walk(this._schemaRoot._cvtProperties, path)
-      return cloneDeep(o)
-    },
-
-    /**
-     * Resets a property to its default value as defined in the schema
-     */
-    reset: function(prop_name) {
-      this.set(prop_name, this.default(prop_name), 'default', false)
-    },
-
-    /**
-     * @returns true if the property name is defined, or false otherwise
-     */
-    has: function(path) {
-      try {
-        const r = this.get(path)
-        const isRequired = (() => {
-          try {
-            return !!walk(this._schemaRoot._cvtProperties, pathToSchemaPath(path, 'required'))
-          } catch (e) {
-            // undeclared property
-            return false
-          }
-        })()
-        // values that are set and required = false but undefined return false
-        return isRequired || typeof r !== 'undefined'
-      } catch (e) {
-        return false
-      }
-    },
-
-    /**
-     * Sets the value of name to value. name can use dot notation to reference
-     * nested values, e.g. "database.port". If objects in the chain don't yet
-     * exist, they will be initialized to empty objects
-     */
-    set: function(fullpath, value, priority, respectPriority) {
-      const mySchema = traverseSchema(this._schemaRoot, fullpath)
-
-      if (!priority) {
-        priority = 'value'
-      } else if (typeof priority !== 'string') {
-        priority = 'force'
-      } else if (!this._getters.list[priority] && !['value', 'force'].includes(priority)) {
-        throw new INCORRECT_USAGE('unknown getter: ' + priority)
-      } else if (!mySchema) { // no schema and custom priority = impossible
-        const errorMsg = 'you cannot set priority because "' + fullpath + '" not declared in the schema'
-        throw new INCORRECT_USAGE(errorMsg)
-      }
-
-      // coercing
-      const coerce = (mySchema && mySchema._cvtCoerce) ? mySchema._cvtCoerce : (v) => v
-      value = coerce(value)
-      // walk to the value
-      const path = parsePath(fullpath)
-      const childKey = path.pop()
-      const parentKey = stringifyPath(path)
-      const parent = walk(this._instance.root, parentKey, true)
-
-      // respect priority
-      const canIChangeValue = (() => {
-        if (!respectPriority) { // -> false or not declared -> always change
-          return true
-        }
-
-        const gettersOrder = this._getters.order
-
-        const bool = mySchema && mySchema._cvtGetOrigin
-        const lastG = bool && mySchema._cvtGetOrigin()
-
-        if (lastG && gettersOrder.indexOf(priority) < gettersOrder.indexOf(lastG)) {
-          return false
-        }
-
-        return true
-      })()
-
-      // change the value
-      if (canIChangeValue) {
-        parent[childKey] = value
-        if (mySchema) {
-          mySchema._cvtGetOrigin = () => priority
-        }
-      }
-
-      return this
-    },
-
-    /**
-     * Merges a JavaScript object into config
-     */
-    load: function(obj) {
-      applyValues.call(this, { root: obj }, this._instance, this._schema)
-      return this
-    },
-
-    /**
-     * Merges a JavaScript properties files into config
-     */
-    loadFile: function(paths) {
-      if (!Array.isArray(paths)) paths = [paths]
-      paths.forEach((path) => {
-        // Support empty config files #253
-        const json = loadFile(path)
-        if (json) {
-          this.load(json)
-        }
-      })
-      return this
-    },
-
-    /**
-     * Merges a JavaScript object/files into config
-     */
-    merge: function(sources) {
-      if (!Array.isArray(sources)) sources = [sources]
-      sources.forEach((config) => {
-        if (typeof config === 'string') {
-          const json = loadFile(config)
-          if (json) {
-            this.load(json)
-          }
-        } else {
-          this.load(config)
-        }
-      })
-      return this
-    },
-
-    /**
-     * Validates config against the schema used to initialize it
-     */
-    validate: function(options) {
-      options = options || {}
-
-      options.allowed = options.allowed || ALLOWED_OPTION_WARN
-
-      if (options.output && typeof options.output !== 'function') {
-        throw new CUSTOMISE_FAILED('options.output is optionnal and must be a function.')
-      }
-
-      const output_function = options.output || global.console.log
-
-      const errors = validate(this._instance, this._schema, options.allowed)
-
-      // Write 'Warning:' in bold and in yellow
-      const BOLD_YELLOW_TEXT = '\x1b[33;1m'
-      const RESET_TEXT = '\x1b[0m'
-
-      if (errors.invalid_type.length + errors.undeclared.length + errors.missing.length) {
-        const sensitive = this._sensitive
-
-        const fillErrorBuffer = function(errors) {
-          const messages = []
-          errors.forEach(function(err) {
-            let err_buf = '  - '
-
-            /* if (err.type) {
-              err_buf += '[' + err.type + '] ';
-            } */
-            if (err.fullName) {
-              err_buf += unroot(err.fullName) + ': '
-            }
-            if (err.message) {
-              err_buf += err.message
-            }
-
-            const hidden = !!sensitive.has(err.fullName)
-            const value = (hidden) ? '[Sensitive]' : JSON.stringify(err.value)
-            const getterValue = (hidden) ? '[Sensitive]' : JSON.stringify(err.getter && err.getter.keyname)
-
-            if (err.value) {
-              err_buf += ': value was ' + value
-
-              const getter = (err.getter) ? err.getter.name : false
-
-              if (getter) {
-                err_buf += ', getter was `' + getter
-                err_buf += (getter !== 'value') ? '[' + getterValue + ']`' : '`'
-              }
-            }
-
-            if (!(err instanceof BLUECONFIG_ERROR)) {
-              let warning = '[/!\\ this is probably blueconfig internal error]'
-              console.error(err)
-              if (process.stdout.isTTY) {
-                warning = BOLD_YELLOW_TEXT + warning + RESET_TEXT
-              }
-              err_buf += ' ' + warning
-            }
-
-            messages.push(err_buf)
-          })
-          return messages
-        }
-
-        const types_err_buf = fillErrorBuffer(errors.invalid_type).join('\n')
-        const params_err_buf = fillErrorBuffer(errors.undeclared).join('\n')
-        const missing_err_buf = fillErrorBuffer(errors.missing).join('\n')
-
-        const output_err_bufs = [types_err_buf, missing_err_buf]
-
-        if (options.allowed === ALLOWED_OPTION_WARN && params_err_buf.length) {
-          let warning = 'Warning:'
-          if (process.stdout.isTTY) {
-            warning = BOLD_YELLOW_TEXT + warning + RESET_TEXT
-          }
-          output_function(warning + '\n' + params_err_buf)
-        } else if (options.allowed === ALLOWED_OPTION_STRICT) {
-          output_err_bufs.push(params_err_buf)
-        }
-
-        const output = output_err_bufs
-          .filter(function(str) { return str.length })
-          .join('\n')
-
-        if (output.length) {
-          throw new VALIDATE_FAILED(output)
-        }
-      }
-      return this
-    }
-  }
-
-  // If the definition is a string treat it as an external schema file
-  if (typeof def === 'string') {
-    rv._def = loadFile(def)
-  } else {
-    rv._def = def
-  }
-
-  rv._def = {
-    root: rv._def
-  }
-
-  // The key `$~default` will be replaced by `default` during the schema parsing that allow
-  // to use default key for config properties.
-  const optsDefSub = (opts) ? opts.defaultSubstitute : false
-  rv._defaultSubstitute = (typeof optsDefSub !== 'string') ? '$~default' : optsDefSub
-
-  // build up current config from definition
-  rv._schema = {
-    _cvtProperties: {
-      // root key lets apply format on the config root tree
-      // root: { _cvtProperties: {} }
-    }
-  }
-
-  rv._getterAlreadyUsed = {}
-  rv._sensitive = new Set()
-
-  rv._strictParsing = !!(opts && opts.strictParsing)
-  // inheritance (own getter)
-  rv._getters = cloneDeep(getters)
-
-  Object.keys(rv._def).forEach((key) => {
-    parsingSchema.call(rv, key, rv._def[key], rv._schema._cvtProperties, key)
+const Blueconfig = function (def, opts) {
+  return new ConfigObjectModel(def, opts, {
+    Getter,
+    parsingSchema,
+    Parser
   })
-
-  rv._schemaRoot = rv._schema._cvtProperties.root
-
-  // config instance
-  rv._instance = {}
-  applyGetters.call(rv, rv._schema, rv._instance)
-
-  return rv
 }
 
-function unroot(text) {
-  return text.replace(/^root(\.|\[)/g, (_, b) => (b === '[') ? '[' : '')
-}
-
-/**
- * @returns sorted function which sorts array to newOrder
- */
-function sortGetters(currentOrder, newOrder) {
-  if (!Array.isArray(newOrder)) {
-    throw new INCORRECT_USAGE('Invalid argument: newOrder must be an array.')
-  }
-
-  // 'force' must be at the end or not given
-  const forceOrder = newOrder.indexOf('force')
-  if (forceOrder !== -1 && forceOrder !== newOrder.length - 1) {
-    throw new INCORRECT_USAGE('Invalid order: force cannot be sorted.')
-  } else if (forceOrder !== newOrder.length - 1) {
-    newOrder.push('force')
-  }
-
-  // exact number of getter name (not less & not more)
-  const checkKey = cloneDeep(currentOrder)
-  for (let i = newOrder.length - 1; i >= 0; i--) {
-    const index = checkKey.indexOf(newOrder[i])
-    if (index !== -1) {
-      checkKey.splice(index, 1)
-    } else {
-      throw new INCORRECT_USAGE('Invalid order: unknown getter: ' + newOrder[i])
-    }
-  }
-  if (checkKey.length !== 0) {
-    const message = (checkKey.length <= 1) ? 'a getter is ' : 'several getters are '
-    throw new INCORRECT_USAGE('Invalid order: ' + message + 'missed: ' + checkKey.join(', '))
-  }
-
-  return (a, b) => newOrder.indexOf(a) - newOrder.indexOf(b)
-}
 
 /**
  * Gets array with getter name in the current order of priority
  */
-blueconfig.getGettersOrder = function() {
-  return cloneDeep(getters.order)
+Blueconfig.getGettersOrder = function() {
+  return cloneDeep(Getter.storage.order)
 }
+
 
 /**
  * Orders getters
  */
-blueconfig.sortGetters = function(newOrder) {
-  const sortFilter = sortGetters(getters.order, newOrder)
+Blueconfig.sortGetters = function(newOrder) {
+  const sortFilter = Getter.sortGetters(Getter.storage.order, newOrder)
 
-  getters.order.sort(sortFilter)
+  Getter.storage.order.sort(sortFilter)
+}
+
+
+/**
+ * Adds new custom getter
+ */
+Blueconfig.addGetter = function(keyname, getter, usedOnlyOnce, rewrite) {
+  if (typeof keyname === 'object') {
+    getter = keyname.getter
+    usedOnlyOnce = keyname.usedOnlyOnce
+    rewrite = keyname.rewrite
+    keyname = keyname.property
+  }
+  Getter.add(keyname, getter, usedOnlyOnce, rewrite)
+}
+
+
+/**
+ * Adds a new custom format. Validate function and coerce function will be used to validate COM property with `format` type.
+ *
+ * @example
+ * BluePrint.addFormat({
+ *   name: 'int',
+ *   coerce: (value) => (typeof value !== 'undefined') ? parseInt(value, 10) : value,
+ *   validate: function(value) {
+ *     if (Number.isInteger(value)) {
+ *       throw new Error("must be an integer")
+ *     }
+ *   }
+ * })
+ * @example
+ * // Add several formats with: [Object, Object, Object, Object]
+ * blueconfig.addFormat([
+ *   require('blueconfig-format-with-validator').email,
+ *   require('blueconfig-format-with-validator').ipaddress,
+ *   require('blueconfig-format-with-validator').url,
+ *   {
+ *     name: 'token',
+ *     validate: function(value) {
+ *       if (!isToken(value)) {
+ *         throw new Error(":(")
+ *       }
+ *     }
+ *   }
+ * ])
+ *
+ *
+ * @param {String|Object|Object[]}       name            String for Format name, `Object/Object[]` or which contains arguments:
+ * @param    {String}                    name.name       Format name
+ * @param    {Function}                  name.validate   Format Validate function, should throw if the value is wrong `Error` or [`LISTOFERRORS` (see example)](./ZCUSTOMERROR.LISTOFERRORS.html)
+ * @param    {Function}                  name.coerce     Format coerce
+ * @param    {Boolean}                   name.rewrite    Format rewrite
+ * @param    {_cvtValidateFormat}        validate        Validate function, should throw if the value is wrong `Error` or [`LISTOFERRORS` (see example)](./ZCUSTOMERROR.LISTOFERRORS.html)
+ * @param {ConfigObjectModel._cvtCoerce} coerce          Coerce function to convert a value to a specified function
+ * @param    {Boolean}                   rewrite         Allow rewrite an existant format
+ */
+Blueconfig.addFormat = function(name, validate, coerce, rewrite) {
+  if (typeof name === 'object') {
+    validate = name.validate
+    coerce = name.coerce
+    rewrite = name.rewrite
+    name = name.name
+  }
+  Ruler.add(name, validate, coerce, rewrite)
 }
 
 /**
- * Adds a new custom getter
+ * Adds a new custom Parsers
  */
-blueconfig.addGetter = function(property, getter, usedOnlyOnce, rewrite) {
-  if (typeof property === 'object') {
-    getter = property.getter
-    usedOnlyOnce = property.usedOnlyOnce
-    rewrite = property.rewrite
-    property = property.property
-  }
-  if (typeof getter !== 'function') {
-    throw new CUSTOMISE_FAILED('Getter function for "' + property + '" must be a function.')
-  }
-  if (['_cvtCoerce', '_cvtValidateFormat', '_cvtGetOrigin', 'format', 'required', 'value', 'force'].includes(property)) {
-    throw new CUSTOMISE_FAILED('Getter name use a reservated word: ' + property)
-  }
-  if (getters.list[property] && !rewrite) {
-    const advice = ' Set the 4th argument (rewrite) of `addGetter` at true to skip this error.'
-    throw new CUSTOMISE_FAILED('The getter property name "' + property + '" is already registered.' + advice)
-  }
+Blueconfig.addParser = function(parsers) {
+  if (!Array.isArray(parsers)) parsers = [parsers]
 
-  if (typeof usedOnlyOnce !== 'function') {
-    usedOnlyOnce = !!usedOnlyOnce
-  }
+  parsers.forEach((parser) => {
+    if (!parser) throw new CUSTOMISE_FAILED('Invalid parser')
+    if (!parser.extension) throw new CUSTOMISE_FAILED('Missing parser.extension')
+    if (!parser.parse) throw new CUSTOMISE_FAILED('Missing parser.parse function')
 
-  if (!getters.list[property]) {
-    // add before the last key (= force), force must always be the last key
-    getters.order.splice(getters.order.length - 1, 0, property)
-  }
-  getters.list[property] = {
-    usedOnlyOnce: usedOnlyOnce,
-    getter: getter
-  }
+    Parser.add(parser.extension, parser.parse)
+  })
 }
 
-blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
-blueconfig.sortGetters(['default', 'value']) // set default before value
-blueconfig.addGetter('env', function(value, schema, stopPropagation) {
+
+/**
+ * Adds new custom getters
+ *
+ * @param {Object} getters Array containing list of Getters/Object
+ */
+Blueconfig.addGetters = function(getters) {
+  Object.keys(getters).forEach((property) => {
+    const child = getters[property]
+    this.addGetter(property, child.getter, child.usedOnlyOnce, child.rewrite)
+  })
+}
+
+
+/**
+ * Adds several formats
+ *
+ * @param {Object} formats Array containing list of Formats/Object
+ */
+Blueconfig.addFormats = function(formats) {
+  Object.keys(formats).forEach((name) => {
+    this.addFormat(name, formats[name].validate, formats[name].coerce, formats[name].rewrite)
+  })
+}
+
+////////////////////////////////////////////
+
+
+Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
+Blueconfig.sortGetters(['default', 'value']) // set default before value
+Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
   return schema._cvtCoerce(this.getEnv()[value])
 })
-blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
+Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
   const argv = parseArgs(this.getArgs(), {
     configuration: {
       'dot-notation': false
@@ -1005,73 +373,7 @@ blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
   return schema._cvtCoerce(argv[value])
 }, true)
 
-/**
- * Adds new custom getters
- */
-blueconfig.addGetters = function(getters) {
-  Object.keys(getters).forEach(function(property) {
-    const child = getters[property]
-    blueconfig.addGetter(property, child.getter, child.usedOnlyOnce, child.rewrite)
-  })
-}
 
+Blueconfig.addFormats(require('./format/standard-formats.js'))
 
-/**
- * Adds a new custom format
- */
-blueconfig.addFormat = function(name, validate, coerce, rewrite) {
-  if (typeof name === 'object') {
-    validate = name.validate
-    coerce = name.coerce
-    rewrite = name.rewrite
-    name = name.name
-  }
-  if (typeof validate !== 'function') {
-    throw new CUSTOMISE_FAILED('Validation function for "' + name + '" must be a function.')
-  }
-  if (coerce && typeof coerce !== 'function') {
-    throw new CUSTOMISE_FAILED('Coerce function for "' + name + '" must be a function.')
-  }
-
-  if (types[name] && !rewrite) {
-    const advice = ' Set the 4th argument (rewrite) of `addFormat` at true to skip this error.'
-    throw new CUSTOMISE_FAILED('The format name "' + name + '" is already registered.' + advice)
-  }
-
-  types[name] = validate
-  if (coerce) converters.set(name, coerce)
-}
-
-/**
- * Adds new custom formats
- */
-blueconfig.addFormats = function(formats) {
-  Object.keys(formats).forEach(function(name) {
-    blueconfig.addFormat(name, formats[name].validate, formats[name].coerce, formats[name].rewrite)
-  })
-}
-
-blueconfig.addFormats(require('./format/standard-formats.js'))
-
-/**
- * Adds a new custom file parser
- */
-blueconfig.addParser = function(parsers) {
-  if (!Array.isArray(parsers)) parsers = [parsers]
-
-  parsers.forEach(function(parser) {
-    if (!parser) throw new CUSTOMISE_FAILED('Invalid parser')
-    if (!parser.extension) throw new CUSTOMISE_FAILED('Missing parser.extension')
-    if (!parser.parse) throw new CUSTOMISE_FAILED('Missing parser.parse function')
-
-    if (typeof parser.parse !== 'function') throw new CUSTOMISE_FAILED('Invalid parser.parse function')
-
-    const extensions = !Array.isArray(parser.extension) ? [parser.extension] : parser.extension
-    extensions.forEach(function(extension) {
-      if (typeof extension !== 'string') throw new CUSTOMISE_FAILED('Invalid parser.extension')
-      parsers_registry[extension] = parser.parse
-    })
-  })
-}
-
-module.exports = blueconfig
+module.exports = Blueconfig
