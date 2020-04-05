@@ -4,8 +4,9 @@ const cloneDeep = require('lodash.clonedeep')
 const parsePath = require('objectpath').parse
 const stringifyPath = require('objectpath').stringify
 
-const Apply = require('./../performer/apply.js')
 const SchemaNode = require('./schemanode.js')
+
+const Apply = require('./../performer/apply.js')
 
 const parsingSchema = require('./../performer/utils/parsingschema.js')
 const validator = require('./../performer/utils/validator.js')
@@ -34,6 +35,8 @@ const VALIDATE_FAILED = cvtError.VALIDATE_FAILED
  */
 function ConfigObjectModel(rawSchema, options, scope) {
   this.options = options
+
+  scope = scope || {}
 
   this.Getter = scope.Getter
   this.Parser = scope.Parser

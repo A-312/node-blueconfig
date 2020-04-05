@@ -1,9 +1,9 @@
 const cloneDeep = require('lodash.clonedeep')
 
-const utils = require('../performer/utils/utils.js')
+const utils = require('./../performer/utils/utils.js')
 const unroot = utils.unroot
 
-const cvtError = require('../error.js')
+const cvtError = require('./../error.js')
 
 const LISTOFERRORS = cvtError.LISTOFERRORS
 const FORMAT_INVALID = cvtError.FORMAT_INVALID

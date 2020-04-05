@@ -1,4 +1,4 @@
-const cvtError = require('../error.js')
+const cvtError = require('./../error.js')
 const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
 
 /**
