@@ -1,13 +1,8 @@
-const parseArgs = require('yargs-parser')
-
 const ConfigObjectModel = require('./model/com.js')
 
 const ParserInterface = require('./performer/parser.js')
-const Parser = new ParserInterface()
 const GetterInterface = require('./performer/getter.js')
-const Getter = new GetterInterface()
 const RulerInterface = require('./performer/ruler.js')
-const Ruler = new RulerInterface()
 
 const cvtError = require('./error.js')
 const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
@@ -19,11 +14,25 @@ const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
  *
  * @class
  */
-const Blueconfig = function(def, opts) {
-  return new ConfigObjectModel(def, opts, {
-    Getter,
-    Parser,
-    Ruler
+const Blueconfig = function() {
+  this.initPerformer()
+}
+
+module.exports = Blueconfig
+
+
+Blueconfig.prototype.initPerformer = function() {
+  this.Parser = new ParserInterface()
+  this.Getter = new GetterInterface()
+  this.Ruler = new RulerInterface()
+}
+
+
+Blueconfig.prototype.init = function(rawSchema, options) {
+  return new ConfigObjectModel(rawSchema, options, {
+    Parser: this.Parser,
+    Getter: this.Getter,
+    Ruler: this.Ruler
   })
 }
 
@@ -34,8 +43,8 @@ const Blueconfig = function(def, opts) {
  * @example
  * blueconfig.getGettersOrder(); // ['default', 'value', 'env', 'arg', 'force']
  */
-Blueconfig.getGettersOrder = function() {
-  return [...Getter.storage.order]
+Blueconfig.prototype.getGettersOrder = function() {
+  return [...this.Getter.storage.order]
 }
 
 
@@ -58,10 +67,10 @@ Blueconfig.getGettersOrder = function() {
  *
  * @param    {string[]}    newOrder       Value of the property to validate
  */
-Blueconfig.sortGetters = function(newOrder) {
-  const sortFilter = Getter.sortGetters(Getter.storage.order, newOrder)
+Blueconfig.prototype.sortGetters = function(newOrder) {
+  const sortFilter = this.Getter.sortGetters(this.Getter.storage.order, newOrder)
 
-  Getter.storage.order.sort(sortFilter)
+  this.Getter.storage.order.sort(sortFilter)
 }
 
 
@@ -82,14 +91,14 @@ Blueconfig.sortGetters = function(newOrder) {
  * @param    {Boolean}          [usedOnlyOnce=false]      `false` by default. If true, The value can't be reused by another `keyname=value`
  * @param    {Boolean}          [rewrite=false]           Allow rewrite an existant format
  */
-Blueconfig.addGetter = function(name, getter, usedOnlyOnce, rewrite) {
+Blueconfig.prototype.addGetter = function(name, getter, usedOnlyOnce, rewrite) {
   if (typeof name === 'object') {
     getter = name.getter
     usedOnlyOnce = name.usedOnlyOnce
     rewrite = name.rewrite
     name = name.name || name.property
   }
-  Getter.add(name, getter, usedOnlyOnce, rewrite)
+  this.Getter.add(name, getter, usedOnlyOnce, rewrite)
 }
 
 
@@ -117,7 +126,7 @@ Blueconfig.addGetter = function(name, getter, usedOnlyOnce, rewrite) {
  * @param {Boolean}   [getters.{name}.usedOnlyOnce=false]   *See Blueconfig.addGetter*
  * @param {Boolean}   [getters.{name}.rewrite=false]        *See Blueconfig.addGetter*
  */
-Blueconfig.addGetters = function(getters) {
+Blueconfig.prototype.addGetters = function(getters) {
   if (Array.isArray(getters)) {
     return getters.forEach((child) => {
       this.addGetter(child)
@@ -154,14 +163,14 @@ Blueconfig.addGetters = function(getters) {
  * @param {ConfigObjectModel._cvtCoerce} coerce            Coerce function to convert a value to a specified function (can be omitted)
  * @param    {Boolean}                   [rewrite=false]   Allow rewrite an existant format
  */
-Blueconfig.addFormat = function(name, validate, coerce, rewrite) {
+Blueconfig.prototype.addFormat = function(name, validate, coerce, rewrite) {
   if (typeof name === 'object') {
     validate = name.validate
     coerce = name.coerce
     rewrite = name.rewrite
     name = name.name
   }
-  Ruler.add(name, validate, coerce, rewrite)
+  this.Ruler.add(name, validate, coerce, rewrite)
 }
 
 
@@ -192,7 +201,7 @@ Blueconfig.addFormat = function(name, validate, coerce, rewrite) {
  * @param {Function}  formats.{name}.coerce          *See Blueconfig.addFormat*
  * @param {Boolean}   [formats.{name}.rewrite=false] *See Blueconfig.addFormat*
  */
-Blueconfig.addFormats = function(formats) {
+Blueconfig.prototype.addFormats = function(formats) {
   if (Array.isArray(formats)) {
     return formats.forEach((child) => {
       this.addFormat(child)
@@ -218,7 +227,7 @@ Blueconfig.addFormats = function(formats) {
  * @param    {string}      parsers.extension    Parser extension
  * @param    {function}    parsers.parse        Parser function
  */
-Blueconfig.addParser = function(parsers) {
+Blueconfig.prototype.addParser = function(parsers) {
   if (!Array.isArray(parsers)) parsers = [parsers]
 
   parsers.forEach((parser) => {
@@ -226,28 +235,6 @@ Blueconfig.addParser = function(parsers) {
     if (!parser.extension) throw new CUSTOMISE_FAILED('Missing parser.extension')
     if (!parser.parse) throw new CUSTOMISE_FAILED('Missing parser.parse function')
 
-    Parser.add(parser.extension, parser.parse)
+    this.Parser.add(parser.extension, parser.parse)
   })
 }
-
-/// /////////////////////////////////////////
-
-
-Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
-Blueconfig.sortGetters(['default', 'value']) // set default before value
-Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
-  return schema._cvtCoerce(this.getEnv()[value])
-})
-Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
-  const argv = parseArgs(this.getArgs(), {
-    configuration: {
-      'dot-notation': false
-    }
-  })
-  return schema._cvtCoerce(argv[value])
-}, true)
-
-
-Blueconfig.addFormats(require('./format/standard-formats.js'))
-
-module.exports = Blueconfig
