@@ -615,6 +615,20 @@ function parseFile(path) {
  *   'port': 80
  * })
  *
+ * @example
+ * // If you set contentType to data, blueconfig will parse array like config and not like several config.
+ * config.merge([
+ *   {'ip': 'test'},
+ *   {'ip': '127.0.0.1'},
+ *   {'ip': 80}
+ * ], 'data').getProperties() // === [{'ip': 'test'}, {'ip': '127.0.0.1'}, {'ip': 80}]
+ *
+ * config.merge([
+ *   {'ip': 'test'},
+ *   {'ip': '127.0.0.1'},
+ *   {'ip': 80}
+ * ]).getProperties() // === {'ip': 80}
+ *
  * // Merges one or multiple JSON configuration files into `config`.
  * config.merge('./config/' + conf.get('env') + '.json')
  *
@@ -622,20 +636,22 @@ function parseFile(path) {
  * config.merge(process.env.CONFIG_FILES.split(','))
  * // -> where env.CONFIG_FILES=/path/to/production.json,/path/to/secrets.json,/path/to/sitespecific.json
  *
- * @params   {object|string|string[]}   sources    Configs will be merged
+ * @params   {object|string|string[]}      sources    Configs will be merged
+ * @params   {string}    [contentType]
+ * Accept: `data` or `filepath`. If you set contentType to data, blueconfig will parse array like config and not like several config.
  *
  * @return   {this}
  */
-ConfigObjectModel.prototype.merge = function(sources) {
-  if (!Array.isArray(sources)) sources = [sources]
+ConfigObjectModel.prototype.merge = function(sources, contentType) {
+  if (!Array.isArray(sources) || contentType === 'data') sources = [sources]
   sources.forEach((config) => {
-    if (typeof config === 'string') {
+    if (typeof config !== 'string' || contentType === 'data') {
+      this.load(config)
+    } else {
       const json = parseFile.call(this, config)
       if (json) {
         this.load(json)
       }
-    } else {
-      this.load(config)
     }
   })
   return this
