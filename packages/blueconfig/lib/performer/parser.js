@@ -2,7 +2,7 @@ const cvtError = require('./../error.js')
 const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
 
 /**
- * Class for configNode, created with blueprint class.
+ * Load and parse file with parser
  *
  * @private
  * @class

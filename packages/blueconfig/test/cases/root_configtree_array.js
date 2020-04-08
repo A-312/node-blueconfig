@@ -1,23 +1,19 @@
 const blueconfig = require('blueconfig')
 const LISTOFERRORS = require('blueconfig/lib/error.js').LISTOFERRORS
 
-function isObjNotNull(obj) {
-  return typeof obj === 'object' && obj !== null
-}
-
 exports.formats = {
-  children: {
+  'Object[]': {
     validate: function(children, schema, fullname) {
       const errors = []
 
-      if (!isObjNotNull(children)) {
-        throw new Error('must be an Object not null')
+      if (!Array.isArray(children)) {
+        throw new Error('must be an Array')
       }
 
-      Object.keys(children).forEach((keyname) => {
+      children.forEach((child, keyname) => {
         try {
           const conf = blueconfig(schema.children).merge(children[keyname]).validate()
-          this.set(keyname, conf.getProperties())
+          this.set(fullname + '.' + keyname, conf.getProperties())
         } catch (err) {
           err.parent = fullname + '.' + keyname
           errors.push(err)
@@ -32,21 +28,19 @@ exports.formats = {
 }
 
 exports.conf = {
-  format: 'children',
-  default: {},
+  format: 'Object[]',
+  default: [],
   children: {
-    // conf.{country-name}.xxx:
+    // conf[].xxx:
     name: {
       format: 'String',
       default: undefined,
       required: true
     },
-
     population: {
       format: 'int',
       default: 0
     },
-
     subregion: {
       format: 'String',
       default: 'Europe'
@@ -54,19 +48,18 @@ exports.conf = {
   }
 }
 
-exports.data = {
-  germany: {
-    name: 1,
-    population: '83783942 persons',
-    subregion: 'Western Europe'
-  },
-  france: {
-    name: 'France',
-    population: 65273511
-  },
-  italy: {
-    name: 'Italy',
-    population: 60461826,
-    subregion: 2
-  }
-}
+exports.dataType = 'data'
+exports.data = [{
+  name: 1,
+  population: '83783942 persons',
+  subregion: 'Western Europe'
+},
+{
+  name: 'France',
+  population: 65273511
+},
+{
+  name: 'Italy',
+  population: 60461826,
+  subregion: 2
+}]

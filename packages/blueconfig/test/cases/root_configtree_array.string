@@ -1,0 +1,15 @@
+[{
+    "name": 1,
+    "population": "83783942 persons",
+    "subregion": "Western Europe"
+  },
+  {
+    "name": "France",
+    "population": 65273511,
+    "subregion": "Europe"
+  },
+  {
+    "name": "Italy",
+    "population": 60461826,
+    "subregion": 2
+}]

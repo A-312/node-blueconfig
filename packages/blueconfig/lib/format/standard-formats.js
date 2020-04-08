@@ -1,4 +1,4 @@
-/**
+/*
  * blueconfig-format
  * Standard format for blueconfig
  */

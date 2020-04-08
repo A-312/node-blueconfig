@@ -1,14 +1,17 @@
 {
   "name": "blueconfig",
-  "description": "Fork of node-convict : Merge and validate your config depending of your schema, forked from node-convict.",
+  "description": "Merge and validate your config depending of your schema, forked from node-convict.",
   "keywords": [
     "node-convict",
     "configuration",
     "config",
-    "key value store",
     "schema",
     "nested",
-    "validation"
+    "validation",
+    "customize",
+    "yaml",
+    "json",
+    "validate"
   ],
   "version": "6.0.2",
   "license": "Apache-2.0",

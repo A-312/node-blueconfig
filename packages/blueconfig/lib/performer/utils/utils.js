@@ -4,7 +4,7 @@ function isObjNotNull(obj) {
 }
 
 function unroot(text) {
-  return text.replace(/^root(\.|\[)/g, (_, b) => (b === '[') ? '[' : '')
+  return text.replace(/^(?:root(\.|\[)?|\.(.+))/g, (_, b, c) => c || ((b === '[') ? '[' : ''))
 }
 
 module.exports = {

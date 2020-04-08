@@ -29,7 +29,7 @@ const PATH_INVALID = cvtError.PATH_INVALID
 const VALIDATE_FAILED = cvtError.VALIDATE_FAILED
 
 /**
- * Class for configNode, created with blueprint class. This class is declared by `const config = blueconfig(schema)`.
+ * Class for configNode, created with blueconfig class. This class is declared by `const config = blueconfig(schema)`.
  *
  * The global getter config will be cloned to local config. You must refresh getters configs if you apply global change to local
  * (configuration instance).
@@ -182,7 +182,7 @@ ConfigObjectModel.prototype.toString = function() {
 ConfigObjectModel.prototype.getSchema = function(debug) {
   const schema = cloneDeep(this._schemaRoot)
 
-  return (debug) ? cloneDeep(schema) : convertSchema.call(this, schema)
+  return (debug) ? schema : convertSchema.call(this, schema)
 }
 
 function convertSchema(schemaObjectModel) {
@@ -447,6 +447,7 @@ ConfigObjectModel.prototype.has = function(name) {
  * @example
  * config.set('property.that.may.not.exist.yet', 'some value')
  * config.get('property.that.may.not.exist.yet')
+ * config.get('.property.that.may.not.exist.yet') // For path which start with `.` are ignored
  * // "some value"
  *
  * config.set('color', 'green', true) // getter: 'force'
@@ -488,6 +489,8 @@ ConfigObjectModel.prototype.has = function(name) {
  * @return   {this}
  */
 ConfigObjectModel.prototype.set = function(name, value, priority, respectPriority) {
+  name = name.replace(/^\.(.+)$/, '$1') // fix fast `root` & `unroot` issue (devfriendly)
+
   const mySchema = traverseSchema(this._schemaRoot, name)
 
   if (!priority) {
@@ -536,7 +539,7 @@ ConfigObjectModel.prototype.set = function(name, value, priority, respectPriorit
 }
 
 
-/**
+/*
  * Get the selected property for COM.set(...)
  */
 function traverseSchema(schema, path) {
@@ -559,7 +562,7 @@ function traverseSchema(schema, path) {
 /**
  * Merges a JavaScript object into config
  *
- * @deprecated since v6.0.0, use `.merge(obj)` instead
+ * @deprecated since v6.0.0, use `.merge(obj)` instead or strict way: `.merge(obj, 'data')`
  *
  * @param    {object}    obj    Load object
  *
@@ -577,7 +580,7 @@ ConfigObjectModel.prototype.load = function(obj) {
 /**
  * Merges a JavaScript properties files into config
  *
- * @deprecated since v6.0.0, use `.merge(filepath|filepath[])` instead
+ * @deprecated since v6.0.0, use `.merge(string|string[])` instead or strict way: `.merge(string|string[], 'filepath')`
  *
  * @param    {string|string[]}    paths    Config file paths
  *
@@ -721,7 +724,7 @@ ConfigObjectModel.prototype.validate = function(options) {
           err_buf += err.message
         }
 
-        const hidden = !!sensitive.has(err.fullname)
+        const hidden = !!sensitive.has('root.' + err.fullname)
         const value = (hidden) ? '[Sensitive]' : JSON.stringify(err.value)
         const getterValue = (hidden) ? '[Sensitive]' : JSON.stringify(err.getter && err.getter.keyname)
 

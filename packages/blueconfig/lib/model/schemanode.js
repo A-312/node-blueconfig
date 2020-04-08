@@ -10,7 +10,7 @@ const FORMAT_INVALID = cvtError.FORMAT_INVALID
 
 
 /**
- * Class for configNode, created with blueprint class.
+ * SchemaNode is rules for property
  *
  * @class
  */
@@ -128,7 +128,7 @@ module.exports = SchemaNode
  */
 SchemaNode.prototype.validate = function(value) {
   const schema = this.attributes
-  const fullpath = this._private.fullpath
+  const fullpath = unroot(this._private.fullpath)
   try {
     /**
      * Validates function, should throw when value is not valid. Throws [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html)
@@ -164,7 +164,7 @@ SchemaNode.prototype.validate = function(value) {
     this._private.validate(value, schema, fullpath)
   } catch (err) {
     if (err instanceof LISTOFERRORS) {
-      err.message = `${fullpath}: Custom format "${schema.format}" tried to validate something and failed:`
+      err.message = `${fullpath || 'root'}: Custom format "${schema.format}" tried to validate something and failed:`
 
       err.errors.forEach((error, i) => {
         err.message += `\n    ${i + 1}) ${unroot(error.parent)}:` + ('\n' + error.why).replace(/(\n)/g, '$1    ')

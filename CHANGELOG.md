@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
  - Update package.json description and add tags. (= "Fork of node-convict", "node-convict") (@A-312)
+ - Add doc with jsdoc (@A-312)
+ - Full code review & rewriting code with class and inheritance (@A-312)
+ - Blueconfig can be load without default getters/formats `require('blueconfig/lib/core.js')` (@A-312)
 
 
 ## [6.0.2] - 2019-03-07
