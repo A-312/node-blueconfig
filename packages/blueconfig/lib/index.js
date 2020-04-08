@@ -3,7 +3,11 @@ const parseArgs = require('yargs-parser')
 const Core = require('./core.js')
 
 /* >> HACK TO KEEP THE SAME BEHAVIOR (= STATIC OBJECT) AND PREVENT BREAK CHANGE */
-/* SORRY IF YOU HAVE HEART ATTACK WHILE YOU READING THIS LINE */
+/* SORRY IF YOU HAVE HEART ATTACK WHILE YOU READING THIS LINE ;-) I had no choice in writing this… */
+
+/*
+ * @returns {Blueconfig}
+ */
 const Blueconfig = function(rawSchema, options) {
   return Blueconfig.init(rawSchema, options)
 }

@@ -26,6 +26,18 @@
       "Namespaces",
       "Mixins",
       "Interfaces"
+    ],
+    "scripts": [
+      "custom.css"
     ]
+  },
+  "templates": {
+    "default": {
+      "staticFiles": {
+        "include": [
+          "./docs/custom.css"
+        ]
+      }
+    }
   }
 }

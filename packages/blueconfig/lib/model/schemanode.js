@@ -12,7 +12,6 @@ const FORMAT_INVALID = cvtError.FORMAT_INVALID
 /**
  * Class for configNode, created with blueprint class.
  *
- * @private
  * @class
  */
 function SchemaNode(rawSchema) {
@@ -25,17 +24,22 @@ function SchemaNode(rawSchema) {
   }
 
   /**
-   * Actualy schema is the public object given in the API
+   * Is the public object given in the second argument of [validateCallback](./SchemaNode.html#.validateCallback)
+   *
+   * @memberOf SchemaNode
+   * @type {SchemaNode.schema}
+   */
+  this.attributes = schema
+
+  /**
+   * Is the public object given in the second argument of [validateCallback](./SchemaNode.html#.validateCallback)
    *
    * @name schema
    * @memberOf SchemaNode
+   * @type {SchemaNode.schema}
    *
    * @class
-   *
-   * @deprecated `schema.default` will become `schemaNode.getAttributes('default')`
    */
-
-  this.attributes = schema
 
   /**
    * Attributes are: schema.default, schema.format, schema.doc, schema.env, schema.arg...
@@ -44,63 +48,71 @@ function SchemaNode(rawSchema) {
    * @memberOf SchemaNode.schema
    *
    * @instance
-   * @deprecated `schema.default` will become `schemaNode.getAttributes('default')`
    */
   // this.attributes.schema
 
+
   /**
-   * Get origin
+   * Gets origin
    *
    * @name _cvtGetOrigin
    * @memberOf SchemaNode.schema
    *
    * @instance
-   * @deprecated `schema._cvtGetOrigin` will become `schemaNode.getOrigin()` and `schema.default` will become `schemaNode.getAttributes('default')`
+   * @see SchemaNode.getOrigin
+   *
+   * @returns  {string}    value    Getter name which origin of the value
    */
   Object.defineProperty(this.attributes, '_cvtGetOrigin', {
     enumerable: false,
     configurable: false,
     writable: true,
     value: () => {
-      return this._private.origin
+      return this.getOrigin()
     }
   })
 
 
   /**
-   * Validate config property
+   * Validates config property
    *
    * @name _cvtValidateFormat
    * @memberOf SchemaNode.schema
    *
-   * @instance
-   * @deprecated `schema._cvtValidateFormat` will become `schemaNode.validate()` and `schema.default` will become `schemaNode.getAttributes('default')`
+   * @see SchemaNode.validate
+   *
+   * @param    {*}             value       Value of the property to validate
    */
   Object.defineProperty(this.attributes, '_cvtValidateFormat', {
     enumerable: false,
     configurable: false,
     writable: false,
     value: (value) => {
-      this._private.validate(value)
+      this.validate(value)
     }
   })
 
 
   /**
-   * Coerce config property
+   * Coerces config property
    *
    * @name _cvtCoerce
    * @memberOf SchemaNode.schema
    *
    * @instance
-   * @deprecated `schema._cvtCoerce` will become `schemaNode.coerce()` and `schema.default` will become `schemaNode.getAttributes('default')`
+   * @see SchemaNode.coerce
+   *
+   * @param    {*}    value    Value to coerce
+   *
+   * @returns  {*}    value    Returns coerced value
+   *
    */
   Object.defineProperty(this.attributes, '_cvtCoerce', {
     enumerable: false,
     configurable: false,
     writable: false,
     value: (value) => {
-      return this._private.coerce(value)
+      return this.coerce(value)
     }
   })
 }
@@ -109,10 +121,46 @@ function SchemaNode(rawSchema) {
 module.exports = SchemaNode
 
 
+/**
+ * Validates value, will call [validateCallback](./SchemaNode.html#.validateCallback)
+ *
+ * @param    {*}             value       Value of the property to validate
+ */
 SchemaNode.prototype.validate = function(value) {
   const schema = this.attributes
   const fullpath = this._private.fullpath
   try {
+    /**
+     * Validates function, should throw when value is not valid. Throws [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html)
+     * if you have several error (see [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html) example)
+     *
+     * Validate functions are declared with `addFormat`, and corresponding to `format` property.
+     *
+     * @callback SchemaNode.validateCallback
+     *
+     * @example
+     * Blueconfig.addFormat({
+     *   name: 'int',
+     *   coerce: (value) => (typeof value !== 'undefined') ? parseInt(value, 10) : value,
+     *   validate: function(value, schema, fullpath) {
+     *     if (Number.isInteger(value)) {
+     *       throw new Error('must be an integer')
+     *     }
+     *   }
+     * })
+     *
+     *
+     * @param    {*}             value       Value of the property to validate
+     * @param    {schemaNode}    schema      schemaNode (= rules) of the property
+     * @param    {string}        fullpath    Full property path
+     *
+     * @throws {Error}                       Throw [Error()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/Error), `Error`s are transformed to `FORMAT_INVALID`.
+     * @throws {ZCUSTOMERROR.LISTOFERRORS}   Throw [LISTOFERRORS()](./ZCUSTOMERROR.LISTOFERRORS.html) usefull if you validate a children key.
+     *
+     * @this {ConfigObjectModel}
+     *
+     * @see ZCUSTOMERROR.LISTOFERRORS
+     */
     this._private.validate(value, schema, fullpath)
   } catch (err) {
     if (err instanceof LISTOFERRORS) {
@@ -135,11 +183,36 @@ SchemaNode.prototype.validate = function(value) {
 }
 
 
+/**
+ * Converts a value to a specified function. Coerce functions are declared with `addFormat`, and corresponding to `format` property.
+ *
+ * @example
+ * Blueconfig.addFormat({
+ *   name: 'int',
+ *   coerce: (value) => (typeof value !== 'undefined') ? parseInt(value, 10) : value,
+ *   validate: function(value) {
+ *     assert(Number.isInteger(value), 'must be an integer')
+ *   }
+ * })
+ *
+ * @param    {*}    value    Value to coerce
+ *
+ * @returns  {*}    value    Returns coerced value
+ *
+ * @memberof SchemaNode
+ */
 SchemaNode.prototype.coerce = function(value) {
   return this._private.coerce(value)
 }
 
 
+/**
+ * Returns the name of the getter which gets the current value.
+ *
+ * @memberof SchemaNode
+ *
+ * @returns  {string}    value    Getter name which origin of the value
+ */
 SchemaNode.prototype.getOrigin = function() {
   return this._private.origin
 }

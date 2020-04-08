@@ -29,7 +29,36 @@ const PATH_INVALID = cvtError.PATH_INVALID
 const VALIDATE_FAILED = cvtError.VALIDATE_FAILED
 
 /**
- * Class for configNode, created with blueprint class.
+ * Class for configNode, created with blueprint class. This class is declared by `const config = blueconfig(schema)`.
+ *
+ * The global getter config will be cloned to local config. You must refresh getters configs if you apply global change to local
+ * (configuration instance).
+ *
+ * @example
+ * const config = blueconfig({
+ *   env: {
+ *     doc: 'The applicaton environment.',
+ *     format: ['production', 'development', 'test'],
+ *     default: 'development',
+ *     env: 'NODE_ENV'
+ *   },
+ *   log_file_path: {
+ *     'doc': 'Log file path',
+ *     'format': String,
+ *     'default': '/tmp/app.log'
+ *   }
+ * });
+ * // or
+ * config = blueconfig('/some/path/to/a/config-schema.json');
+ *
+ * @param   {string|object}   rawSchema    Schema object or a path to a schema JSON file
+ *
+ * @param   {object}   [options]    Options:
+ *
+ * @param   {object}    [options.env]     Override `process.env` if specified using an object `{'NODE_ENV': 'production'}`.
+ * @param   {string[]}  [options.args]    Override `process.argv` if specified using an array `['--argname', 'value']` or a string `--argname value`.
+ * @param   {string}    [options.defaultSubstitute]    Override `'$~default'`, this value will be replaced by `'default'` during the schema parsing.
+ * @param   {string}    [options.strictParsing]        Throw an error if `default` or `format` properties are omitted.
  *
  * @class
  */
@@ -87,9 +116,13 @@ function ConfigObjectModel(rawSchema, options, scope) {
 module.exports = ConfigObjectModel
 
 
-/// //////////////////////////////////////////////////////------------------------------------
 /**
  * Parse constructor arguments.
+ * Returns the list of process arguments (not including the launcher and application file arguments).
+ * Defaults to process.argv unless an override is specified using the args key of the second (options)
+ * argument of the blueconfig function.
+ *
+ * @return    {string[]}    Returns custom args {options.args} or `process.argv.slice(2)`
  */
 ConfigObjectModel.prototype.getArgs = function() {
   return (this.options && this.options.args) || process.argv.slice(2)
@@ -98,15 +131,21 @@ ConfigObjectModel.prototype.getArgs = function() {
 /**
  * Gets the environment variable map, using the override passed to the
  * blueconfig function or process.env if no override was passed.
+ *
+ * Returns the list of environment variables. Defaults to process.env unless an override is specified using the env key of
+ * the second argument (options) argument of the blueconfig function.
+ *
+ * @return    {object}    Returns custom args {options.env} or `process.env`
  */
 ConfigObjectModel.prototype.getEnv = function() {
   return (this.options && this.options.env) || process.env
 }
-/// //////////////////////////////////////////////////////------------------------------------
 
 
 /**
- * Exports all the properties (that is the keys and their current values) as JSON
+ * Exports all the properties (that is the keys and their current values)
+ *
+ * @return    {object}    Returns properties
  */
 ConfigObjectModel.prototype.getProperties = function() {
   return cloneDeep(this._instance.root)
@@ -117,6 +156,8 @@ ConfigObjectModel.prototype.getProperties = function() {
  * Exports all the properties (that is the keys and their current values) as
  * a JSON string, with sensitive values masked. Sensitive values are masked
  * even if they aren't set, to avoid revealing any information.
+ *
+ * @return    {string}    Returns properties as a JSON string
  */
 ConfigObjectModel.prototype.toString = function() {
   const clone = cloneDeep(this._instance.root)
@@ -132,7 +173,11 @@ ConfigObjectModel.prototype.toString = function() {
 
 
 /**
- * Exports the schema as JSON.
+ * Exports the schema (as blueconfig understands your schema, may be more strict).
+ *
+ * @param    {boolean}    {debug=false}    When debug is true, returns Schema Node Model (as stored in blueconfig database).
+ *
+ * @return    {object}    Returns schema object
  */
 ConfigObjectModel.prototype.getSchema = function(debug) {
   const schema = cloneDeep(this._schemaRoot)
@@ -170,7 +215,11 @@ function convertSchema(schemaObjectModel) {
 
 
 /**
- * Exports the schema as a JSON string
+ * Exports the schema as a JSON string.
+ *
+ * @param    {boolean}    {debug=false}    When debug is true, returns Schema Node Model (as stored in blueconfig database).
+ *
+ * @return    {string}    Returns schema as a JSON string
  */
 ConfigObjectModel.prototype.getSchemaString = function(debug) {
   return JSON.stringify(this.getSchema(debug), null, 2)
@@ -178,8 +227,22 @@ ConfigObjectModel.prototype.getSchemaString = function(debug) {
 
 
 /**
- * @returns Returns the current value of the name property. name can use dot
- *     notation to reference nested values
+ * Returns the current getter name of the `name` value origin. `name` can use dot notation to reference nested values.
+ *
+ * @example
+ * config.get('db.host')
+ * // or
+ * config.get('db').host
+ * // also
+ * config.get('db[0]')
+ * // with dot:
+ * config.get('db["www.airbus.com"]') { 'db': { 'www.airbus.com': 'air company'} }
+ * // in the first level
+ * config.get("['site.fr']") // { 'site.fr': 'french site' }
+ *
+ * @param    {string}    name    Target property, `name` can use dot notation to reference
+ *
+ * @return   {*}     Returns the current `value` of the name property
  */
 ConfigObjectModel.prototype.get = function(path) {
   const o = walk(this._instance.root, path)
@@ -188,8 +251,14 @@ ConfigObjectModel.prototype.get = function(path) {
 
 
 /**
- * @returns Returns the current getter name of the name value origin. name can use dot
- *     notation to reference nested values
+ * Returns the current getter name of the `name` value origin. `name` can use dot notation to reference nested values.
+ *
+ * @example
+ * config.getOrigin('db.host')
+ *
+ * @param    {string}    name    Target property, `name` can use dot notation to reference
+ *
+ * @return   {string}     Returns the getter name with is the current origin of the value.
  */
 ConfigObjectModel.prototype.getOrigin = function(path) {
   path = pathToSchemaPath(path)
@@ -214,7 +283,11 @@ function pathToSchemaPath(path, addPath) {
 
 
 /**
- * Gets array with getter name in the current order of priority
+ * Returns getter order. Local (configuration instance) version of blueconfig.sortGetters().
+ *
+ * @see Blueconfig.getGettersOrder
+ *
+ * @return    {string[]}    Returns current getter order
  */
 ConfigObjectModel.prototype.getGettersOrder = function(path) {
   return [...this._getters.order]
@@ -222,17 +295,55 @@ ConfigObjectModel.prototype.getGettersOrder = function(path) {
 
 
 /**
- * sorts getters
+ * Sorts getter depending of array order, priority uses ascending order.
+ *
+ * Local (configuration instance) version of blueconfig.sortGetters().
+ *
+ * @see Blueconfig.sortGetters
+ *
+ * @example
+ * config.sortGetters(['default', 'value', 'env', 'arg', 'force'])
+ *
+ * @param    {string[]}    newOrder    The new getter order
+ *
+ * @return   {this}
  */
 ConfigObjectModel.prototype.sortGetters = function(newOrder) {
   const sortFilter = this.Getter.sortGetters(this._getters.order, newOrder)
 
   this._getters.order.sort(sortFilter)
+
+  return this
 }
 
 
 /**
- * Update local getters config with global config
+ * Reclone global getters config to local getters config and update configuration
+ * object value depending on new getters' order.
+ *
+ * `value` set with `.merge()`/`.set()` will be replaced by schema/getter value depending
+ * of Origin priority.
+ *
+ * @example
+ * blueconfig.getGettersOrder() // ['default', 'value', 'env', 'arg', 'force']
+ *
+ * const config = blueconfig(schema) // will clone: ['default', 'value', 'env', 'arg', 'force']
+ *
+ * // ### Two ways to do:
+ * // 1) Global change
+ * blueconfig.sortGetters(['value', 'default', 'arg', 'env', 'force'])
+ *
+ * config.getGettersOrder() // ['default', 'value', 'env', 'arg', 'force']
+ * blueconfig.getGettersOrder() // ['value', 'default', 'arg', 'env', 'force']
+ *
+ * // apply global change on local
+ * config.refreshGetters() // refresh and apply global change to local
+ *
+ * config.getGettersOrder() // ['value', 'default', 'arg', 'env', 'force']
+ * // 2) Local change
+ * config.sortGetters(['default', 'value', 'env', 'arg', 'force'])
+ * config.getGettersOrder() // ['default', 'value', 'env', 'arg', 'force']
+ * blueconfig.getGettersOrder() // ['value', 'default', 'arg', 'env', 'force']
  */
 ConfigObjectModel.prototype.refreshGetters = function() {
   this._getters = cloneDeep(this.Getter.storage)
@@ -242,8 +353,14 @@ ConfigObjectModel.prototype.refreshGetters = function() {
 
 
 /**
- * @returns Returns the default value of the name property. name can use dot
- *     notation to reference nested values
+ * Returns the default value of the `name` property (defined in the schema). `name` can use dot notation to reference nested values.
+ *
+ * @example
+ * config.default('db.host')
+ *
+ * @param    {string}    name    Target property, `name` can use dot notation to reference
+ *
+ * @return   {*}     Returns the default value.
  */
 ConfigObjectModel.prototype.default = function(path) {
   // The default value for FOO.BAR.BAZ is stored in `_schema._cvtProperties` at:
@@ -265,19 +382,37 @@ ConfigObjectModel.prototype.default = function(path) {
 
 /**
  * Resets a property to its default value as defined in the schema
+ *
+ * @example
+ * config.reset('db.host')
+ *
+ * @param    {string}    name    Target property, `name` can use dot notation to reference
+ *
+ * @return   {this}
  */
-ConfigObjectModel.prototype.reset = function(prop_name) {
-  this.set(prop_name, this.default(prop_name), 'default', false)
+ConfigObjectModel.prototype.reset = function(name) {
+  this.set(name, this.default(name), 'default', false)
+
+  return this
 }
 
 
 /**
- * @returns Returns true if the property name is defined, or false otherwise
+ * Checks if the property `name` is set.
+ *
+ * @example
+ * if (config.has('db.host')) {
+ * // Your code
+ * }
+ *
+ * @param    {string}    name    Target property, `name` can use dot notation to reference
+ *
+ * @return   {boolean}           Returns `true` if the property `name` is defined, or `false` otherwise.
  */
-ConfigObjectModel.prototype.has = function(path) {
+ConfigObjectModel.prototype.has = function(name) {
   const isRequired = (() => {
     try {
-      const prop = walk(this._schemaRoot._cvtProperties, pathToSchemaPath(path))
+      const prop = walk(this._schemaRoot._cvtProperties, pathToSchemaPath(name))
       return prop.attributes.required
     } catch (err) {
       if (err instanceof PATH_INVALID) {
@@ -289,9 +424,10 @@ ConfigObjectModel.prototype.has = function(path) {
       }
     }
   })()
+
   try {
     // values that are set and required = false but undefined return false
-    return isRequired || typeof this.get(path) !== 'undefined'
+    return isRequired || typeof this.get(name) !== 'undefined'
   } catch (err) {
     if (err instanceof PATH_INVALID) {
       // undeclared property
@@ -305,12 +441,54 @@ ConfigObjectModel.prototype.has = function(path) {
 
 
 /**
- * Sets the value of name to value. name can use dot notation to reference
- * nested values, e.g. "database.port". If objects in the chain don't yet
- * exist, they will be initialized to empty objects
+ * Sets the value `name` to value.
+ *
+ *
+ * @example
+ * config.set('property.that.may.not.exist.yet', 'some value')
+ * config.get('property.that.may.not.exist.yet')
+ * // "some value"
+ *
+ * config.set('color', 'green', true) // getter: 'force'
+ * // .get('color') --> 'green'
+ *
+ * config.set('color', 'orange', false, true) // getter: 'value' and respectPriority = true
+ * // value will be not change because  ^^^^ respectPriority = true and value priority < force priority
+ * // .get('color') --> 'green'
+ *
+ * config.set('color', 'pink', false) // getter: 'value'
+ * // value will change because respectPriority is not active.
+ * // .get('color') --> 'pink'
+ *
+ * config.set('color', 'green', true) // getter: 'force'
+ * // .get('color') --> 'green'
+ *
+ * config.merge({color: 'blue'}) // getter: 'value'
+ * // value will not change because value priority < force priority
+ * // .get('color') --> 'green'
+ *
+ *
+ * @param    {string}    name
+ * Target property, `name` can use dot notation to reference nested values, e.g. `"db.name"`.
+ * If objects in the chain don't yet exist, they will be initialized to empty objects.
+ *
+ * @param    {string}    [priority=false]
+ * Optional, can be a boolean or getter name (a string). You must declare this property in
+ * the schema to use this option. `set` will change the property getter origin depending on
+ * `priority` value:
+ *  - `false`: priority set to `value`.
+ *  - `true`: priority set to `force`, can be only changed if you do another `.set(name, value)`.
+ *    Make sure that `.refreshGetters()` will not overwrite your value.
+ *  - `<string>`: must be a getter name (e.g.: `default`, `env`, `arg`).
+ *
+ * @param    {string}    [respectPriority=false]
+ * Optional, if this argument is `true` this function will change the value only if `priority`
+ * is higher than or equal to the property getter origin.
+ *
+ * @return   {this}
  */
-ConfigObjectModel.prototype.set = function(fullpath, value, priority, respectPriority) {
-  const mySchema = traverseSchema(this._schemaRoot, fullpath)
+ConfigObjectModel.prototype.set = function(name, value, priority, respectPriority) {
+  const mySchema = traverseSchema(this._schemaRoot, name)
 
   if (!priority) {
     priority = 'value'
@@ -319,12 +497,12 @@ ConfigObjectModel.prototype.set = function(fullpath, value, priority, respectPri
   } else if (!this._getters.list[priority] && !['value', 'force'].includes(priority)) {
     throw new INCORRECT_USAGE('unknown getter: ' + priority)
   } else if (!mySchema) { // no schema and custom priority = impossible
-    const errorMsg = 'you cannot set priority because "' + fullpath + '" not declared in the schema'
+    const errorMsg = 'you cannot set priority because "' + name + '" not declared in the schema'
     throw new INCORRECT_USAGE(errorMsg)
   }
 
   // walk to the value
-  const path = parsePath(fullpath)
+  const path = parsePath(name)
   const childKey = path.pop()
   const parentKey = stringifyPath(path)
   const parent = walk(this._instance.root, parentKey, true)
@@ -382,6 +560,10 @@ function traverseSchema(schema, path) {
  * Merges a JavaScript object into config
  *
  * @deprecated since v6.0.0, use `.merge(obj)` instead
+ *
+ * @param    {object}    obj    Load object
+ *
+ * @return   {this}
  */
 ConfigObjectModel.prototype.load = function(obj) {
   Apply.values.call(this, {
@@ -396,6 +578,10 @@ ConfigObjectModel.prototype.load = function(obj) {
  * Merges a JavaScript properties files into config
  *
  * @deprecated since v6.0.0, use `.merge(filepath|filepath[])` instead
+ *
+ * @param    {string|string[]}    paths    Config file paths
+ *
+ * @return   {this}
  */
 ConfigObjectModel.prototype.loadFile = function(paths) {
   if (!Array.isArray(paths)) paths = [paths]
@@ -421,7 +607,24 @@ function parseFile(path) {
 /**
  * Merges a JavaScript object/files into config
  *
- * @params   {Object|string|string[]}   sources    Configs will be merged
+ * @example
+ * // Loads/merges a JavaScript object into `config`.
+ * config.merge({
+ *   'env': 'test',
+ *   'ip': '127.0.0.1',
+ *   'port': 80
+ * })
+ *
+ * // Merges one or multiple JSON configuration files into `config`.
+ * config.merge('./config/' + conf.get('env') + '.json')
+ *
+ * // Or, merging multiple files at once.
+ * config.merge(process.env.CONFIG_FILES.split(','))
+ * // -> where env.CONFIG_FILES=/path/to/production.json,/path/to/secrets.json,/path/to/sitespecific.json
+ *
+ * @params   {object|string|string[]}   sources    Configs will be merged
+ *
+ * @return   {this}
  */
 ConfigObjectModel.prototype.merge = function(sources) {
   if (!Array.isArray(sources)) sources = [sources]
@@ -440,7 +643,32 @@ ConfigObjectModel.prototype.merge = function(sources) {
 
 
 /**
- * Validates config against the schema used to initialize it
+ * Validates the config considering the schema (iterates each `SchemaNode.validate()` in your config).
+ * All errors are collected and thrown or displayed at once.
+ *
+ * @example
+ * config.validate({
+ *   allowed: 'strict',
+ *   output: require('debug')('blueconfig:validate:error')
+ * })
+ *
+ *
+ * @memberof ConfigObjectModel
+ *
+ * @param   {object}   [options]    Options, accepts: `options.allow` and `options.output`:
+ *
+ * @param   {string}   [options.allowed=warn]
+ * Any properties specified in config files that are not declared in the schema will
+ * print a warning or throw an error depending on this setting:
+ *  - `'warn'`: is the default behavior, will print a warning.
+ *  - `'strict'`: will throw errors. This is to ensure that the schema and the config
+ *    files are sync.
+ *
+ * @param   {string}   [options.output]
+ * You can replace the default output `console.log` by your own output function.
+ * You can use [debug module](https://www.npmjs.com/package/debug) like the example.
+ *
+ * @return   {this}
  */
 ConfigObjectModel.prototype.validate = function(options) {
   options = options || {}
@@ -468,7 +696,7 @@ ConfigObjectModel.prototype.validate = function(options) {
         let err_buf = '  - '
 
         /* if (err.type) {
-          err_buf += '[' + err.type + '] ';
+          err_buf += '[' + err.type + '] '
         } */
         if (err.fullname) {
           err_buf += unroot(err.fullname) + ': '
@@ -533,8 +761,4 @@ ConfigObjectModel.prototype.validate = function(options) {
     }
   }
   return this
-}
-
-ConfigObjectModel.prototype.applyValues = function(from, to, schema) {
-  Apply.values.call(this, from, to, schema)
 }

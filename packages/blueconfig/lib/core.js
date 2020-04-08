@@ -9,8 +9,7 @@ const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
 
 
 /**
- *
- * @returns Returns a ConfigObjectModel (= COM, Like DOM but not for Document, for Config)
+ * @return Returns a ConfigObjectModel (= COM, Like DOM but not for Document, for Config)
  *
  * @class
  */
@@ -42,6 +41,8 @@ Blueconfig.prototype.init = function(rawSchema, options) {
  *
  * @example
  * blueconfig.getGettersOrder(); // ['default', 'value', 'env', 'arg', 'force']
+ *
+ * @return    {string[]}    Returns current getter order
  */
 Blueconfig.prototype.getGettersOrder = function() {
   return [...this.Getter.storage.order]
@@ -59,18 +60,22 @@ Blueconfig.prototype.getGettersOrder = function() {
  * // ['default', 'value', 'env', 'arg', 'force']
  *
  * // two ways to do:
- * blueconfig.setGettersOrder(['default', 'value', 'arg', 'env', 'force']);
- * blueconfig.setGettersOrder(['default', 'value', 'arg', 'env']); // force is optional and must be the last one
+ * blueconfig.sortGetters(['default', 'value', 'arg', 'env', 'force']);
+ * blueconfig.sortGetters(['default', 'value', 'arg', 'env']); // force is optional and must be the last one
  *
  * blueconfig.getGettersOrder();
  * // ['default', 'value', 'arg', 'env', 'force']
  *
  * @param    {string[]}    newOrder       Value of the property to validate
+ *
+ * @return   {this}
  */
 Blueconfig.prototype.sortGetters = function(newOrder) {
   const sortFilter = this.Getter.sortGetters(this.Getter.storage.order, newOrder)
 
   this.Getter.storage.order.sort(sortFilter)
+
+  return this
 }
 
 
@@ -90,6 +95,8 @@ Blueconfig.prototype.sortGetters = function(newOrder) {
  * @param    {ConfigObjectModel.getterCallback}   getter  Getter function get external value depending of the name name.
  * @param    {Boolean}          [usedOnlyOnce=false]      `false` by default. If true, The value can't be reused by another `keyname=value`
  * @param    {Boolean}          [rewrite=false]           Allow rewrite an existant format
+ *
+ * @return   {this}
  */
 Blueconfig.prototype.addGetter = function(name, getter, usedOnlyOnce, rewrite) {
   if (typeof name === 'object') {
@@ -99,6 +106,8 @@ Blueconfig.prototype.addGetter = function(name, getter, usedOnlyOnce, rewrite) {
     name = name.name || name.property
   }
   this.Getter.add(name, getter, usedOnlyOnce, rewrite)
+
+  return this
 }
 
 
@@ -125,17 +134,23 @@ Blueconfig.prototype.addGetter = function(name, getter, usedOnlyOnce, rewrite) {
  * @param {Function}  getters.{name}.getter                 *See Blueconfig.addGetter*
  * @param {Boolean}   [getters.{name}.usedOnlyOnce=false]   *See Blueconfig.addGetter*
  * @param {Boolean}   [getters.{name}.rewrite=false]        *See Blueconfig.addGetter*
+ *
+ * @return   {this}
  */
 Blueconfig.prototype.addGetters = function(getters) {
   if (Array.isArray(getters)) {
-    return getters.forEach((child) => {
+    getters.forEach((child) => {
       this.addGetter(child)
     })
+
+    return this
   }
   Object.keys(getters).forEach((name) => {
     const child = getters[name]
     this.addGetter(name, child.getter, child.usedOnlyOnce, child.rewrite)
   })
+
+  return this
 }
 
 
@@ -159,9 +174,11 @@ Blueconfig.prototype.addGetters = function(getters) {
  * @param    {Function}                  name.validate     *See below*
  * @param    {Function}                  name.coerce       *See below*
  * @param    {Boolean}               [name.rewrite=false]  *See below*
- * @param {ConfigObjectModel._cvtValidateFormat}  validate Validate function, should throw if the value is wrong `Error` or [`LISTOFERRORS` (see example)](./ZCUSTOMERROR.LISTOFERRORS.html)
- * @param {ConfigObjectModel._cvtCoerce} coerce            Coerce function to convert a value to a specified function (can be omitted)
+ * @param {SchemaNode.validateCallback}  validate          Validate function, should throw if the value is wrong `Error` or [`LISTOFERRORS` (see example)](./ZCUSTOMERROR.LISTOFERRORS.html)
+ * @param {SchemaNode.coerce}            coerce            Coerce function to convert a value to a specified function (can be omitted)
  * @param    {Boolean}                   [rewrite=false]   Allow rewrite an existant format
+ *
+ * @return   {this}
  */
 Blueconfig.prototype.addFormat = function(name, validate, coerce, rewrite) {
   if (typeof name === 'object') {
@@ -171,6 +188,8 @@ Blueconfig.prototype.addFormat = function(name, validate, coerce, rewrite) {
     name = name.name
   }
   this.Ruler.add(name, validate, coerce, rewrite)
+
+  return this
 }
 
 
@@ -200,16 +219,22 @@ Blueconfig.prototype.addFormat = function(name, validate, coerce, rewrite) {
  * @param {Function}  formats.{name}.validate        *See Blueconfig.addFormat*
  * @param {Function}  formats.{name}.coerce          *See Blueconfig.addFormat*
  * @param {Boolean}   [formats.{name}.rewrite=false] *See Blueconfig.addFormat*
+ *
+ * @return   {this}
  */
 Blueconfig.prototype.addFormats = function(formats) {
   if (Array.isArray(formats)) {
-    return formats.forEach((child) => {
+    formats.forEach((child) => {
       this.addFormat(child)
     })
+
+    return this
   }
   Object.keys(formats).forEach((name) => {
     this.addFormat(name, formats[name].validate, formats[name].coerce, formats[name].rewrite)
   })
+
+  return this
 }
 
 
@@ -226,6 +251,8 @@ Blueconfig.prototype.addFormats = function(formats) {
  * @param    {Object[]}    parsers              Parser
  * @param    {string}      parsers.extension    Parser extension
  * @param    {function}    parsers.parse        Parser function
+ *
+ * @return   {this}
  */
 Blueconfig.prototype.addParser = function(parsers) {
   if (!Array.isArray(parsers)) parsers = [parsers]
@@ -237,4 +264,6 @@ Blueconfig.prototype.addParser = function(parsers) {
 
     this.Parser.add(parser.extension, parser.parse)
   })
+
+  return this
 }

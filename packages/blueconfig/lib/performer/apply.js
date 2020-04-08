@@ -56,7 +56,7 @@ Apply.prototype.getters = function applyGetters(schema, node) {
          * @example
          * blueconfig.addGetter({
          *   property: 'accept-undefined',
-         *   getter: (value, schema, stopPropagation) => fs.readFileSync(value, 'utf-8').toString(),
+         *   getter: (value, schema, stopPropagation) => schema._cvtCoerce(fs.readFileSync(value, 'utf-8').toString()),
          *   usedOnlyOnce: true // use file only once
          * });
          *
@@ -97,24 +97,6 @@ Apply.prototype.values = function applyValues(from, to, schema) {
         return
       }
 
-      /**
-       * Coerce function to convert a value to a specified function.
-       *
-       * @callback ConfigObjectModel._cvtCoerce
-       *
-       * @example
-       * const int = {
-       *   name: 'int',
-       *   coerce: (value) => (typeof value !== 'undefined') ? parseInt(value, 10) : value,
-       *   validate: function(value) {
-       *     assert(Number.isInteger(value), 'must be an integer')
-       *   }
-       * }
-       *
-       * @param    {*}    value    Value to coerce
-       *
-       * @returns  {*}    value    Returns coerced value
-       */
       to[name] = (mySchema && mySchema.coerce) ? mySchema.coerce(from[name]) : from[name]
       if (lastG) {
         mySchema._private.origin = 'value'

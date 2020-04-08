@@ -163,34 +163,6 @@ function parsingSchema(name, rawSchema, schemaObjectModel, fullpath) {
     schemaNode._private.coerce = this.Ruler.getCoerceMethod(format)
   }
 
-  /**
-   * Validate function, if the value is wrong throw: Error or [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html) if you have several error (see [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html) example)
-   *
-   * @callback ConfigObjectModel._cvtValidateFormat
-   *
-   * @example
-   * const int = {
-   *   name: 'int',
-   *   coerce: (value) => (typeof value !== 'undefined') ? parseInt(value, 10) : value,
-   *   validate: function(value) {
-   *     if (Number.isInteger(value)) {
-   *       throw new Error('must be an integer')
-   *     }
-   *   }
-   * }
-   *
-   *
-   * @param    {*}             value       Value of the property to validate
-   * @param    {schemaNode}    schema      schemaNode (= rules) of the property
-   * @param    {string}        fullpath    Full property path
-   *
-   * @throws {Error}                       Throw Error will output a `FORMAT_INVALID` in your code
-   * @throws {ZCUSTOMERROR.LISTOFERRORS}   Throw [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html) usefull if you validate a children key.
-   *
-   * @this {ConfigObjectModel}
-   *
-   * @see ZCUSTOMERROR.LISTOFERRORS
-   */
   schemaNode._private.validate = newFormat.bind(this)
 
   schemaNode._private.fullpath = fullpath
