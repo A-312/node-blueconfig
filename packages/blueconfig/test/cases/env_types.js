@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   boolTrue: {
     default: null,
@@ -51,7 +49,7 @@ exports.conf = {
     format: RegExp,
     env: 'REGEXP'
   }
-};
+}
 
 exports.env = {
   BOOLTRUE: 'true',
@@ -64,4 +62,4 @@ exports.env = {
   ARRAY: 'a,b,c',
   OBJECT: '{"foo": "bar"}',
   REGEXP: '^foo$'
-};
+}

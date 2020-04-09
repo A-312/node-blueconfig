@@ -1,0 +1,33 @@
+#main > section > article > * {
+  margin-left: 31px;
+}
+
+#main > section > article > div.container-overview,
+#main > section > article > h1,
+#main > section > article > h2,
+#main > section > article > h3 {
+  margin-left: 0;
+}
+
+#main > section > article > h3.subsection-title,
+#main > section > article > h4.name {
+  margin-top: 80px;
+}
+
+#main > section > article > div.container-overview > *,
+#main > section > article > h4.name,
+#main > section > article > h4.name + dl.details {
+  margin-left: 11px;
+}
+
+#main > section > article > h5 {
+  margin-left: 21px;
+}
+
+#main > section > article > h3.subsection-title + h4.name {
+  margin-top: 20px;
+}
+
+code {
+  overflow: auto;
+}

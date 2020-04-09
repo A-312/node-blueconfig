@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   foo: {
     default: 'a',
@@ -7,10 +5,10 @@ exports.conf = {
     env: 'FOO',
     arg: 'foo'
   }
-};
+}
 
 exports.env = {
   FOO: 'c'
-};
+}
 
-exports.argv = '--foo d';
+exports.argv = '--foo d'

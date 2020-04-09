@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   foo: {
     default: 'a',
@@ -10,9 +8,9 @@ exports.conf = {
     default: 'a',
     format: String,
     env: 'FOO'
-  },
-};
+  }
+}
 
 exports.env = {
   FOO: 'b'
-};
+}

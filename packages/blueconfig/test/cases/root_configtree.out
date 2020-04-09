@@ -1,0 +1,6 @@
+Validate failed because wrong value(s):
+  - root: Custom format "children" tried to validate something and failed:
+    1) germany:
+      - name: must be of type String: value was 1
+    2) italy:
+      - subregion: must be of type String: value was 2, getter was `value`

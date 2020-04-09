@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
-  'arr': [ 'a', 'b', 'c' ]
-};
+  arr: ['a', 'b', 'c']
+}

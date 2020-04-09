@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   public: {
     format: 'nat',
@@ -12,4 +10,4 @@ exports.conf = {
     doc: 'A sensitive value',
     sensitive: true
   }
-};
+}

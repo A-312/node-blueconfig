@@ -1,8 +1,6 @@
-'use strict';
-
 module.exports = {
-  'env':'local',
-  'URL':'https://browserid.org',
-  'var_path':'/home/browserid/var',
-  'use_minified_resources': false
-};
+  env: 'local',
+  URL: 'https://browserid.org',
+  var_path: '/home/browserid/var',
+  use_minified_resources: false
+}

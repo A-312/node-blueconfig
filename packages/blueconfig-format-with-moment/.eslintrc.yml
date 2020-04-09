@@ -1,4 +1,4 @@
-extends: eslint:recommended
+extends: standard
 
 env:
   es6: true
@@ -26,6 +26,13 @@ rules:
   indent: [2, 2, { "SwitchCase": 1 }]
   quotes: [2, single, avoid-escape]
   new-cap: 2
-  camelcase: 0
+  camelcase: off
   no-underscore-dangle: 0
-  space-before-function-paren: [1, "never"]
+  no-multiple-empty-lines:
+    - error
+    - { "max": 2 }
+  space-before-function-paren:
+    - error
+    - anonymous: never
+      named: never
+      asyncArrow: always

@@ -1,15 +1,13 @@
-'use strict';
-
 exports.conf = {
   top: {
     middle: {
-      leaf: 'foo',
+      leaf: 'foo'
     }
   }
-};
+}
 
 exports.data = {
   top: {
     middle: true
   }
-};
+}

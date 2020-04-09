@@ -1,8 +1,6 @@
-'use strict';
-
 module.exports = {
-  'item': 'public',
-  'parent': {
-    'item': 'private'
+  item: 'public',
+  parent: {
+    item: 'private'
   }
-};
+}

@@ -1,11 +1,9 @@
-'use strict';
-
 exports.conf = {
   foo: {
     default: 'a',
     format: String
   }
-};
+}
 
 exports.data = {
   bar: false
@@ -13,4 +11,4 @@ exports.data = {
 
 exports.validate = {
   allowed: 'strict'
-};
+}

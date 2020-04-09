@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   foo: {
     bar: {
@@ -8,8 +6,8 @@ exports.conf = {
       env: 'BAR'
     }
   }
-};
+}
 
 exports.env = {
   BAR: 'c' // hey!  that's not an allowable value!
-};
+}

@@ -1,5 +1,3 @@
-'use strict';
-
 module.exports = {
-  'foo': 'c'
-};
+  foo: 'c'
+}

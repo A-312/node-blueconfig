@@ -1,6 +1,4 @@
-'use strict';
-
-exports.formats = require('blueconfig-format-with-validator');
+exports.formats = require('blueconfig-format-with-validator')
 
 exports.conf = {
   ip: {
@@ -8,4 +6,4 @@ exports.conf = {
     format: 'ipaddress',
     arg: 'ip-address'
   }
-};
+}

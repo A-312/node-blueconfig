@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   int: {
     default: 8,
@@ -10,8 +8,8 @@ exports.conf = {
     default: '8',
     env: ''
   }
-};
+}
 
 exports.env = {
   INT: '7'
-};
+}

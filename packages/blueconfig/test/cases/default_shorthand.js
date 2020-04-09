@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   bool: false,
   string: 'value',
@@ -11,4 +9,4 @@ exports.conf = {
   },
   null: null,
   emptyObject: {}
-};
+}

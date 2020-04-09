@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   top: {
     middle: {
@@ -11,4 +9,4 @@ exports.conf = {
     },
     internal_leaf: 'baz'
   }
-};
+}

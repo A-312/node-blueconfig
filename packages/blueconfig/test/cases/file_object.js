@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   single: {
     format: Object,
@@ -12,7 +10,7 @@ exports.conf = {
       default: {}
     }
   }
-};
+}
 exports.data = {
   single: {
     test: 2,
@@ -23,4 +21,4 @@ exports.data = {
       nestedValue: 'Value'
     }
   }
-};
+}

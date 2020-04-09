@@ -1,8 +1,6 @@
-'use strict';
-
 module.exports = {
-  'object': {
-    'one': 1,
-    'two': 2
+  object: {
+    one: 1,
+    two: 2
   }
-};
+}

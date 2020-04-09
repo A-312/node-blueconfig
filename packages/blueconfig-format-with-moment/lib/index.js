@@ -2,7 +2,7 @@
  * blueconfig-format-with-moment
  * Format 'duration' and 'timestamp' for blueconfig
  */
-'use strict'
+
 
 const moment = require('moment')
 
@@ -17,7 +17,7 @@ const duration = {
   coerce: (v) => {
     if (typeof v === 'string') {
       const split = v.split(' ')
-      if (split.length == 1) {
+      if (split.length === 1) {
         // It must be an integer in string form.
         return parseInt(v, 10)
       } else {
@@ -26,7 +26,7 @@ const duration = {
         return moment.duration(parseInt(split[0], 10), split[1]).valueOf()
       }
     } else {
-      return v;
+      return v
     }
   },
   validate: function(x) {

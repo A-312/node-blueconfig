@@ -1,13 +1,17 @@
 {
   "name": "blueconfig",
-  "description": "Featureful configuration management library for Node.js (nested structure, schema validation, etc.)",
+  "description": "Merge and validate your config depending of your schema, forked from node-convict.",
   "keywords": [
+    "node-convict",
     "configuration",
     "config",
-    "key value store",
     "schema",
     "nested",
-    "validation"
+    "validation",
+    "customize",
+    "yaml",
+    "json",
+    "validate"
   ],
   "version": "6.0.2",
   "license": "Apache-2.0",
@@ -18,7 +22,7 @@
   },
   "bugs": "https://github.com/A-312/node-blueconfig/issues",
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "scripts": {
     "posttest": "npm run lint",
@@ -40,7 +44,12 @@
     "blueconfig-format-with-validator": "file:../blueconfig-format-with-validator",
     "chai": "4.2.0",
     "deep-object-diff": "1.1.0",
-    "eslint": "6.5.1",
+    "eslint": "6.8.0",
+    "eslint-config-standard": "14.1.0",
+    "eslint-plugin-import": "2.20.1",
+    "eslint-plugin-node": "11.0.0",
+    "eslint-plugin-promise": "4.2.1",
+    "eslint-plugin-standard": "4.0.1",
     "js-yaml": "3.13.1",
     "json5": "2.1.0",
     "mocha": "6.2.2",

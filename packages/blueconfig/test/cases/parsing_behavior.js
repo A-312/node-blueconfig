@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   // default
   zoo: {
@@ -16,11 +14,11 @@ exports.conf = {
     format: '*',
     default: undefined
   }
-};
+}
 
 exports.data = {
   zoo: {
     elephant: ['Patrick', 'Bob', 'Carlo']
   },
   none: 8
-};
+}

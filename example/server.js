@@ -1,12 +1,10 @@
-'use strict';
+const path = require('path')
+const http = require('http')
+const blueconfig = require('blueconfig')
 
-const path = require('path');
-const http = require('http');
-const blueconfig = require('blueconfig');
+blueconfig.addFormat(require('blueconfig-format-with-validator').ipaddress)
 
-blueconfig.addFormat(require('blueconfig-format-with-validator').ipaddress);
-
-let conf = blueconfig({
+const conf = blueconfig({
   ip: {
     doc: 'The IP Address to bind.',
     format: 'ipaddress',
@@ -19,12 +17,14 @@ let conf = blueconfig({
     default: 0,
     env: 'PORT'
   }
-}).loadFile(path.join(__dirname, 'config.json')).validate();
+}).merge(path.join(__dirname, 'config.json')).validate()
 
-let server = http.createServer(function(req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Hello World\n');
-}).listen(conf.get('port'), conf.get('ip'), function() {
-  let addy = server.address();
-  console.log('running on http://%s:%d', addy.address, addy.port); // eslint-disable-line no-console
-});
+const server = http.createServer(function(req, res) {
+  res.writeHead(200, { 'Content-Type': 'text/plain' })
+  res.end('Hello World\n')
+})
+
+server.listen(conf.get('port'), conf.get('ip'), function() {
+  const address = server.address()
+  console.log('running on http://%s:%d', address.address, address.port) // eslint-disable-line no-console
+})

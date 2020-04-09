@@ -1,6 +1,4 @@
-'use strict';
-
 module.exports = {
-  'int': 7,
-  'str': '8'
-};
+  int: 7,
+  str: '8'
+}

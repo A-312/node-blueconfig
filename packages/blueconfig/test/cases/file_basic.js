@@ -1,9 +1,7 @@
-'use strict';
-
 exports.formats = [
   require('blueconfig-format-with-moment'),
   require('blueconfig-format-with-validator')
-];
+]
 
 exports.conf = {
   ip: {
@@ -28,11 +26,11 @@ exports.conf = {
     format: 'duration',
     default: '1 hour'
   }
-};
+}
 
 exports.data = {
   ip: '10.0.1.101',
   port: 8080,
   session: '4 days',
   cache: 3000
-};
+}

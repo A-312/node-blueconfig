@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   shorthand: 'value',
   basic: {
@@ -40,4 +38,4 @@ exports.conf = {
   nested: {
     child: 'ababa'
   }
-};
+}

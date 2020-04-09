@@ -1,0 +1,28 @@
+name: Deploy doc to GH-Pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+
+      - name: Install and Build 🔧
+        run: |
+          npm install
+          npm run doc
+          echo "blueconfig.js.org" > "gh-pages/CNAME"
+
+      - name: Deploy to GitHub Pages 👌
+        uses: JamesIves/github-pages-deploy-action@3.4.2
+        with:
+          access_token: ${{ secrets.ACCESS_TOKEN }} 
+          branch: gh-pages
+          folder: gh-pages

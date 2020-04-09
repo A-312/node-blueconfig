@@ -1,0 +1,22 @@
+{
+  "custom-filetypes": {
+    "title": "Custom filetypes"
+  },
+  "custom-formats": {
+    "title": "Custom formats example",
+    "children": {
+      "custom-formats-children": {
+        "title": "Custom format for similar object"
+      },
+      "custom-formats-object-arr": {
+        "title": "Custom format `Object[]` for Array&lt;object&gt;"
+      }
+    }
+  },
+  "schema-parsing-behavior": {
+    "title": "Schema parsing behavior"
+  },
+  "simple-usage": {
+    "title": "Simple usage"
+  }
+}

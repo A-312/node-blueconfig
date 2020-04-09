@@ -1,0 +1,17 @@
+{
+  "germany": {
+    "name": 1,
+    "population": "83783942 persons",
+    "subregion": "Western Europe"
+  },
+  "france": {
+    "name": "France",
+    "population": 65273511,
+    "subregion": "Europe"
+  },
+  "italy": {
+    "name": "Italy",
+    "population": 60461826,
+    "subregion": 2
+  }
+}

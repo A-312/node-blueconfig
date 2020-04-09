@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   env: {
     format: ['production', 'local'],
@@ -24,4 +22,4 @@ exports.conf = {
     default: '/home/browserid/var',
     doc: 'The path the the "var" directory, where logs and such will go'
   }
-};
+}

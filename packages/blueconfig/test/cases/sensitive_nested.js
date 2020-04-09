@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   item: {
     format: String,
@@ -14,4 +12,4 @@ exports.conf = {
       sensitive: true
     }
   }
-};
+}

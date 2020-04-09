@@ -1,6 +1,4 @@
-'use strict';
-
-exports.formats = require('blueconfig-format-with-validator');
+exports.formats = require('blueconfig-format-with-validator')
 
 exports.conf = {
   ip: {
@@ -13,6 +11,6 @@ exports.conf = {
     format: 'port',
     arg: 'port'
   }
-};
+}
 
-exports.argv = '--ip-address 10.0.1.101 --port 8080';
+exports.argv = '--ip-address 10.0.1.101 --port 8080'

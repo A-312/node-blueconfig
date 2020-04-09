@@ -1,5 +1,3 @@
-'use strict';
-
 exports.conf = {
   server: {
     port: {
@@ -15,6 +13,6 @@ exports.conf = {
       arg: 'ui.port'
     }
   }
-};
+}
 
-exports.argv = '--server.port 5000 --ui.port 4000';
+exports.argv = '--server.port 5000 --ui.port 4000'
