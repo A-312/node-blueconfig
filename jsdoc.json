@@ -29,7 +29,21 @@
     ],
     "scripts": [
       "custom.css"
-    ]
+    ],
+    "menu": {
+      "Github Page": {
+        "href": "https://github.com/A-312/node-blueconfig/",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "github_page"
+      },
+      "Npm page": {
+        "href": "https://www.npmjs.com/package/blueconfig",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "npm_page"
+      }
+    }
   },
   "templates": {
     "default": {
