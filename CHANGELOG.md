@@ -5,14 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [6.1.0] - 2019-0x-xx
+## [6.1.0] - 2019-04-09
 ### Added
  - Accept format in the root of a config tree (@A-312)
 
 ### Changed
  - Update package.json description and add tags. (= "Fork of node-convict", "node-convict") (@A-312)
  - Add doc with jsdoc (@A-312)
- - Full code review & rewriting code with class and inheritance (@A-312)
+ - Full code review (+ standard esLint) & rewriting code with class and inheritance (@A-312)
  - Blueconfig can be load without default getters/formats `require('blueconfig/lib/core.js')` (@A-312)
 
 
