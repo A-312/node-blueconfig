@@ -32,7 +32,7 @@
   },
   "scripts": {
     "bootstrap:ci": "npm ci && npm ci packages/*",
-    "doc": "node node_modules/jsdoc/jsdoc.js -c jsdoc.json",
+    "doc": "node node_modules/jsdoc/jsdoc.js -c jsdoc.json --readme ./docs/home/home.md",
     "posttest": "npm run lint",
     "test": "mocha --check-leaks packages/*/test/*-tests.js",
     "posttest:coverage": "npm run lint",
