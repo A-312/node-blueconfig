@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>index.js - Documentation</title>
+    <title>format/standard-formats.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -32,7 +32,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">index.js</h1>
+    <h1 class="page-title">format/standard-formats.js</h1>
     
 
     
@@ -42,78 +42,118 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const parseArgs = require('yargs-parser')
-
-const Core = require('./core.js')
-
-/**
- * Static version of BlueConfigCore, with standard getters/formats:
- *
- * ```js
- * Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
- * Blueconfig.sortGetters(['default', 'value']) // set default before value
- * Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
- *   return schema._cvtCoerce(this.getEnv()[value])
- * })
- * Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
- *   const argv = parseArgs(this.getArgs(), {
- *     configuration: {
- *       'dot-notation': false
- *     }
- *   })
- *   return schema._cvtCoerce(argv[value])
- * }, true)
- *
- * Blueconfig.addFormats(require('./format/standard-formats.js'))
- * ```
- *
- * @example
- * const schema = { port: { default: 80, format: 'port' } }
- * const conf = blueconfig(schema);
- *
- * @class
+            <pre class="prettyprint source linenums"><code>/*
+ * blueconfig-format
+ * Standard format for blueconfig
  */
-const Blueconfig = function(rawSchema, options) {
-  return Blueconfig.init(rawSchema, options)
+
+
+function assert(assertion, err_msg) {
+  if (!assertion) {
+    throw new Error(err_msg)
+  }
 }
 
 
-/* >> HACK TO KEEP THE SAME BEHAVIOR (= STATIC OBJECT like convict) AND PREVENT BREAK CHANGE FOR v6.1.0 */
-/* SORRY IF YOU HAVE HEART ATTACK WHILE YOU READING THIS LINE ;-) I had no choice in writing this… */
-Core.prototype.initPerformer.call(Blueconfig)
+function toInt(value) {
+  return (typeof value !== 'undefined') ? parseInt(value, 10) : value
+}
 
-Blueconfig.init = Core.prototype.init
-Blueconfig.getGettersOrder = Core.prototype.getGettersOrder
-Blueconfig.sortGetters = Core.prototype.sortGetters
-Blueconfig.addGetter = Core.prototype.addGetter
-Blueconfig.addGetters = Core.prototype.addGetters
-Blueconfig.addFormat = Core.prototype.addFormat
-Blueconfig.addFormats = Core.prototype.addFormats
-Blueconfig.addParser = Core.prototype.addParser
-/* &lt;&lt; */
 
-/* >> default getters &amp; standard formats */
-// Add getters
-Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
-Blueconfig.sortGetters(['default', 'value']) // set default before value
-Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
-  return schema._cvtCoerce(this.getEnv()[value])
-})
-Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
-  const argv = parseArgs(this.getArgs(), {
-    configuration: {
-      'dot-notation': false
+function isWindowsNamedPipe(x) {
+  return String(x).includes('\\\\.\\pipe\\')
+}
+
+
+/**
+ * @memberof standardFormat
+ */
+const int = {
+  name: 'int',
+  coerce: (value) => toInt(value),
+  validate: function(value) {
+    assert(Number.isInteger(value), 'must be an integer')
+  }
+}
+
+
+/**
+ * @memberof standardFormat
+ */
+const integer = {
+  name: 'integer',
+  coerce: int.coerce,
+  validate: int.validate
+}
+
+
+/**
+ * @memberof standardFormat
+ */
+const nat = {
+  name: 'nat',
+  coerce: (value) => toInt(value),
+  validate: function(value) {
+    assert(Number.isInteger(value) &amp;&amp; value >= 0, 'must be a positive integer')
+  }
+}
+
+
+/**
+ * @memberof standardFormat
+ */
+const port = {
+  name: 'port',
+  coerce: (value) => toInt(value),
+  validate: function(value) {
+    assert(Number.isInteger(value) &amp;&amp; value >= 0 &amp;&amp; value &lt;= 65535, 'ports must be within range 0 - 65535')
+  }
+}
+
+
+/**
+ * @memberof standardFormat
+ */
+const windows_named_pipe = {
+  name: 'windows_named_pipe',
+  validate: function(value) {
+    assert(isWindowsNamedPipe(value), 'must be a valid pipe')
+  }
+}
+
+
+/**
+ * @memberof standardFormat
+ */
+const port_or_windows_named_pipe = {
+  name: 'port_or_windows_named_pipe',
+  coerce: (v) => (isWindowsNamedPipe(v)) ? v : parseInt(v, 10),
+  validate: function(value) {
+    if (!isWindowsNamedPipe(value)) {
+      try {
+        port.validate(value)
+      } catch (err) { // change error message
+        assert(false, 'must be a windows named pipe or a number within range 0 - 65535')
+      }
     }
-  })
-  return schema._cvtCoerce(argv[value])
-}, true)
+  }
+}
 
-// Add formats
-Blueconfig.addFormats(require('./format/standard-formats.js'))
-/* &lt;&lt; */
 
-module.exports = Blueconfig
-
+/**
+ * Standard format
+ *
+ * @name standardFormat
+ * @class
+ */
+module.exports = {
+  int,
+  integer,
+  nat,
+  port,
+  windows_named_pipe,
+  port_or_windows_named_pipe
+}
 </code></pre>
         </article>
     </section>

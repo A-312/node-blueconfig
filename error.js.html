@@ -27,7 +27,7 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h3>Tutorials</h3><ul><li><a href="tutorial-index_.html">index</a></li><li><a href="tutorial-tutorial1.html">Tutorial One</a></li></ul><h3>Classes</h3><ul><li><a href="BLUECONFIG_ERROR.html">BLUECONFIG_ERROR</a></li><li><a href="CUSTOMISE_FAILED.html">CUSTOMISE_FAILED</a></li><li><a href="FORMAT_INVALID.html">FORMAT_INVALID</a></li><li><a href="INCORRECT_USAGE.html">INCORRECT_USAGE</a></li><li><a href="LISTOFERRORS.html">LISTOFERRORS</a></li><li><a href="PATH_INVALID.html">PATH_INVALID</a></li><li><a href="SCHEMA_INVALID.html">SCHEMA_INVALID</a></li><li><a href="VALIDATE_FAILED.html">VALIDATE_FAILED</a></li><li><a href="VALUE_INVALID.html">VALUE_INVALID</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blueconfig">blueconfig</a></li><li><a href="global.html#isPort">isPort</a></li><li><a href="global.html#isWindowsNamedPipe">isWindowsNamedPipe</a></li><li><a href="global.html#sortGetters">sortGetters</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/A-312/node-blueconfig/" target="_blank" class="menu-item" id="github_page" >Github Page</a></h2><h2><a href="https://www.npmjs.com/package/blueconfig" target="_blank" class="menu-item" id="npm_page" >Npm page</a></h2><h3>Tutorials</h3><ul><li><a href="tutorial-custom-filetypes.html">Custom filetypes</a></li><li><a href="tutorial-custom-formats.html">Custom formats example</a></li><li><a href="tutorial-schema-parsing-behavior.html">Schema parsing behavior</a></li><li><a href="tutorial-simple-usage.html">Simple usage</a></li></ul><h3>Classes</h3><ul><li><a href="Blueconfig.html">Blueconfig</a></li><li><a href="BlueconfigCore.html">BlueconfigCore</a><ul class='methods'><li data-type='method'><a href="BlueconfigCore.html#addFormat">addFormat</a></li><li data-type='method'><a href="BlueconfigCore.html#addFormats">addFormats</a></li><li data-type='method'><a href="BlueconfigCore.html#addGetter">addGetter</a></li><li data-type='method'><a href="BlueconfigCore.html#addGetters">addGetters</a></li><li data-type='method'><a href="BlueconfigCore.html#addParser">addParser</a></li><li data-type='method'><a href="BlueconfigCore.html#getGettersOrder">getGettersOrder</a></li><li data-type='method'><a href="BlueconfigCore.html#init">init</a></li><li data-type='method'><a href="BlueconfigCore.html#initPerformer">initPerformer</a></li><li data-type='method'><a href="BlueconfigCore.html#sortGetters">sortGetters</a></li></ul></li><li><a href="ConfigObjectModel.html">ConfigObjectModel</a><ul class='methods'><li data-type='method'><a href="ConfigObjectModel.html#default">default</a></li><li data-type='method'><a href="ConfigObjectModel.html#get">get</a></li><li data-type='method'><a href="ConfigObjectModel.html#getArgs">getArgs</a></li><li data-type='method'><a href="ConfigObjectModel.html#getEnv">getEnv</a></li><li data-type='method'><a href="ConfigObjectModel.html#getGettersOrder">getGettersOrder</a></li><li data-type='method'><a href="ConfigObjectModel.html#getOrigin">getOrigin</a></li><li data-type='method'><a href="ConfigObjectModel.html#getProperties">getProperties</a></li><li data-type='method'><a href="ConfigObjectModel.html#getSchema">getSchema</a></li><li data-type='method'><a href="ConfigObjectModel.html#getSchemaString">getSchemaString</a></li><li data-type='method'><a href="ConfigObjectModel.html#has">has</a></li><li data-type='method'><a href="ConfigObjectModel.html#load">load</a></li><li data-type='method'><a href="ConfigObjectModel.html#loadFile">loadFile</a></li><li data-type='method'><a href="ConfigObjectModel.html#merge">merge</a></li><li data-type='method'><a href="ConfigObjectModel.html#refreshGetters">refreshGetters</a></li><li data-type='method'><a href="ConfigObjectModel.html#reset">reset</a></li><li data-type='method'><a href="ConfigObjectModel.html#set">set</a></li><li data-type='method'><a href="ConfigObjectModel.html#sortGetters">sortGetters</a></li><li data-type='method'><a href="ConfigObjectModel.html#toString">toString</a></li><li data-type='method'><a href="ConfigObjectModel.html#validate">validate</a></li></ul></li><li><a href="SchemaNode.html">SchemaNode</a><ul class='methods'><li data-type='method'><a href="SchemaNode.html#coerce">coerce</a></li><li data-type='method'><a href="SchemaNode.html#getOrigin">getOrigin</a></li><li data-type='method'><a href="SchemaNode.html#validate">validate</a></li></ul></li><li><a href="SchemaNode.schema.html">schema</a></li><li><a href="standardFormat.html">standardFormat</a></li><li><a href="ZCUSTOMERROR.BLUECONFIG_ERROR.html">BLUECONFIG_ERROR</a></li><li><a href="ZCUSTOMERROR.CUSTOMISE_FAILED.html">CUSTOMISE_FAILED</a></li><li><a href="ZCUSTOMERROR.FORMAT_INVALID.html">FORMAT_INVALID</a></li><li><a href="ZCUSTOMERROR.INCORRECT_USAGE.html">INCORRECT_USAGE</a></li><li><a href="ZCUSTOMERROR.LISTOFERRORS.html">LISTOFERRORS</a></li><li><a href="ZCUSTOMERROR.PATH_INVALID.html">PATH_INVALID</a></li><li><a href="ZCUSTOMERROR.SCHEMA_INVALID.html">SCHEMA_INVALID</a></li><li><a href="ZCUSTOMERROR.VALIDATE_FAILED.html">VALIDATE_FAILED</a></li><li><a href="ZCUSTOMERROR.VALUE_INVALID.html">VALUE_INVALID</a></li></ul><h3>Namespaces</h3><ul><li><a href="ZCUSTOMERROR.html">ZCUSTOMERROR</a></li></ul>
 </nav>
 
 <div id="main">
@@ -42,30 +42,31 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>'use strict';
-
+            <pre class="prettyprint source linenums"><code>/**
+ * @namespace ZCUSTOMERROR
+ */
 
 /**
  * Custom Blueconfig errors are used to identify: Blueconfig internal error, Schema error or config error.
  *
  * This class is Parent of all other Blueconfig errors, all errors are inherited of this one.
  *
- * @example 
+ * @example
  * if (myError instanceof BLUECONFIG_ERROR) {
  *   console.log('is blueconfig error');
  * }
  *
  * @extends Error
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class BLUECONFIG_ERROR extends Error {
   /**
    * @param {String}   message   Error message
    */
   constructor(message) {
-    super(message);
-    return this;
+    super(message)
+    return this
   }
 }
 
@@ -73,32 +74,42 @@ class BLUECONFIG_ERROR extends Error {
 /**
  * List of errors (should be loop/parsed on LISTOFERRORS.errors like an array). Can be usefull with custom format.
  *
- * @example 
- * blueconfig.addFormat({ 
- *   name: 'children', 
- *   validate: function(children, schema, fullname) { 
- *     Object.keys(children).forEach((keyname) => { 
- *       try { 
- *         const conf = blueconfig(schema.children).merge(children[keyname]).validate(); 
- *         this.set(keyname, conf.getProperties()); 
- *       } catch (err) { errors.push(err); } 
- *     }); 
- *  
- *     if (errors.length !== 0) { throw new LISTOFERRORS(errors) } 
- *   } 
+ *
+ * ```text
+ * Validate failed because wrong value(s):
+ *   - root: Custom format "children" tried to validate something and failed:
+ *     1) germany:
+ *       - name: must be of type String: value was 1
+ *     2) italy:
+ *       - subregion: must be of type String: value was 2
+ * ```
+ *
+ * @example
+ * blueconfig.addFormat({ // Allow to do: config.*.name, by example : config.app1.name, config.app2.name
+ *   name: 'children',
+ *   validate: function(children, schema, fullname) {
+ *     Object.keys(children).forEach((keyname) => {
+ *       try {
+ *         const conf = blueconfig(schema.children).merge(children[keyname]).validate();
+ *         this.set(keyname, conf.getProperties());
+ *       } catch (err) { errors.push(err); }
+ *     });
+ *
+ *     if (errors.length !== 0) { throw new LISTOFERRORS(errors) }
+ *   }
  * });
  *
  * @extends BLUECONFIG_ERROR
  *
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class LISTOFERRORS extends BLUECONFIG_ERROR {
   /**
    * @param {BLUECONFIG_ERROR[]}   errors   List of errors
    */
   constructor(errors) {
-    super('List of several errors.');
+    super('List of several errors.')
 
     /**
      * List of errors
@@ -106,9 +117,9 @@ class LISTOFERRORS extends BLUECONFIG_ERROR {
      * @var errors
      * @memberof LISTOFERRORS
      */
-    this.errors = errors;
+    this.errors = errors
 
-    return this;
+    return this
   }
 }
 
@@ -131,28 +142,28 @@ class LISTOFERRORS extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class SCHEMA_INVALID extends BLUECONFIG_ERROR {
   /**
-   * @param {String}   fullName   Return the full selector (e.g.: `base.path.name`)
+   * @param {String}   fullname   Return the full selector (e.g.: `base.path.name`)
    * @param {String}   message    Error message
    */
-  constructor(fullName, message) {
-    super(`${fullName}: ${message}`);
+  constructor(fullname, message) {
+    super(`${fullname}: ${message}`)
 
     /**
      * Return the full selector (e.g.: `base.path.name`)
      *
-     * @var fullName
+     * @var fullname
      * @memberof SCHEMA_INVALID
      */
-    this.fullName = fullName;
+    this.fullname = fullname
 
-    this.type = 'SCHEMA_INVALID';
-    this.doc = 'You schema is not valid, edit your schema to continue.';
+    this.type = 'SCHEMA_INVALID'
+    this.doc = 'You schema is not valid, edit your schema to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -168,19 +179,19 @@ class SCHEMA_INVALID extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class CUSTOMISE_FAILED extends BLUECONFIG_ERROR {
   /**
    * @param {String}   message    Error message
    */
   constructor(message) {
-    super(message);
+    super(message)
 
-    this.type = 'CUSTOMISE_FAILED';
-    this.doc = 'You try to add a getter/format/parser but you failed, fix your javascript code to continue.';
+    this.type = 'CUSTOMISE_FAILED'
+    this.doc = 'You try to add a getter/format/parser but you failed, fix your javascript code to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -190,19 +201,19 @@ class CUSTOMISE_FAILED extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class INCORRECT_USAGE extends BLUECONFIG_ERROR {
   /**
    * @param {String}   message    Error message
    */
   constructor(message) {
-    super(message);
+    super(message)
 
-    this.type = 'INCORRECT_USAGE';
-    this.doc = 'Wrong usage of blueconfig function, maybe wrong parameter, fix your javascript code to continue.';
+    this.type = 'INCORRECT_USAGE'
+    this.doc = 'Wrong usage of blueconfig function, maybe wrong parameter, fix your javascript code to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -212,40 +223,48 @@ class INCORRECT_USAGE extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class PATH_INVALID extends BLUECONFIG_ERROR {
   /**
-   * @param {String}   fullName        Return the full selector of value missed (e.g.: `base.path.name`)
+   * @param {String}   fullname        Return the full selector of value missed (e.g.: `base.path.name`)
    * @param {String}   lastPosition    Return the nearest full selector before missed key (e.g.: `base.path.name`)
    * @param {Object}   parent          Parent
    * @param {Object}   parent.path     Return the full path of `parent`
    * @param {Object}   parent.value    Return the value of `parent`
    */
-  constructor(fullName, lastPosition, parent) {
-    let path = parent.path;
+  constructor(fullname, lastPosition, parent) {
+    let path = parent.path
     const state = (() => {
-      const type = typeof parent.value;
+      const type = typeof parent.value
       if (type !== 'object') {
-        return `a ${type}`;
+        return `a ${type}`
       } else if (parent.value === null) {
-        return 'null';
+        return 'null'
       } else {
-        path = lastPosition;
-        return 'not defined';
+        path = lastPosition
+        return 'not defined'
       }
-    })();
-    const why = `"${path}" is ${state}`;
+    })()
+    const why = `"${path}" is ${state}`
 
-    super(`${fullName}: cannot find "${lastPosition}" property because ${why}.`);
+    super(`${fullname}: cannot find "${lastPosition}" property because ${why}.`)
 
     /**
      * Return the full selector to the properties missing (e.g.: `base.path.name`)
      *
-     * @var fullName
+     * @var fullname
      * @memberof PATH_INVALID
      */
-    this.fullName = fullName;
+    this.fullname = fullname
+
+    /**
+     * Return the parent of to the properties missing (e.g.: `base.path`)
+     *
+     * @var parent
+     * @memberof PATH_INVALID
+     */
+    this.parent = parent
 
     /**
      * Return the nearest full selector before missed properties (e.g.: `base.path.name`)
@@ -253,7 +272,7 @@ class PATH_INVALID extends BLUECONFIG_ERROR {
      * @var lastPosition
      * @memberof PATH_INVALID
      */
-    this.lastPosition = lastPosition;
+    this.lastPosition = lastPosition
 
     /**
      * Error explanation
@@ -261,12 +280,12 @@ class PATH_INVALID extends BLUECONFIG_ERROR {
      * @var why
      * @memberof PATH_INVALID
      */
-    this.why = why;
+    this.why = why
 
-    this.type = 'PATH_INVALID';
-    this.doc = 'To fix this error you should try to use an existing property path (take a look on the schema), edit your javascript file to continue.';
+    this.type = 'PATH_INVALID'
+    this.doc = 'To fix this error you should try to use an existing property path (take a look on the schema), edit your javascript file to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -282,19 +301,19 @@ class PATH_INVALID extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class VALUE_INVALID extends BLUECONFIG_ERROR {
   /**
    * @param {String}   message    Error message
    */
   constructor(message) {
-    super(message);
+    super(message)
 
-    this.type = 'VALUE_INVALID';
-    this.doc = 'You should try to change your config to respect the schema to continue.';
+    this.type = 'VALUE_INVALID'
+    this.doc = 'You should try to change your config to respect the schema to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -304,14 +323,14 @@ class VALUE_INVALID extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class VALIDATE_FAILED extends BLUECONFIG_ERROR {
   /**
    * @param {String}    explains    List of explained error why validate failed
    */
   constructor(explains) {
-    super('Validate failed because wrong value(s):\n' + explains);
+    super('Validate failed because wrong value(s):\n' + explains)
 
     /**
      * List of explained error why validate failed (defined with the first argument of the constructor)
@@ -320,10 +339,10 @@ class VALIDATE_FAILED extends BLUECONFIG_ERROR {
      */
     this.why = explains
 
-    this.type = 'VALIDATE_FAILED';
-    this.doc = 'You should try to change your config to respect the schema to continue.';
+    this.type = 'VALIDATE_FAILED'
+    this.doc = 'You should try to change your config to respect the schema to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -335,33 +354,33 @@ class VALIDATE_FAILED extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class FORMAT_INVALID extends BLUECONFIG_ERROR {
   /**
-   * @param {String}   fullName        Return the full selector (e.g.: `base.path.name`)
+   * @param {String}   fullname        Return the full selector (e.g.: `base.path.name`)
    * @param {String}   message         Error message
    * @param {Object}   getter          Getter
    * @param {String}   getter.name     Getter name
    * @param {String}   getter.value    Getter value (=Getter keyname)
    * @param {String}   getter          Returned value by `Getter(keyname)`
    */
-  constructor(fullName, message, getter, value) {
-    super(message);
+  constructor(fullname, message, getter, value) {
+    super(message)
 
     /**
      * Return the full selector (e.g.: `base.path.name`)
      *
-     * @var fullName
+     * @var fullname
      * @memberof FORMAT_INVALID
      */
-    this.fullName = fullName;
+    this.fullname = fullname
 
     /**
      * Return the nearest full selector before missed key (e.g.: `base.path.name`)
      *
      * @var getter
-     * @typedef {Object} 
+     * @typedef {Object}
      * @property {string} name Getter name
      * @property {string} value Getter keyname
      * @memberof FORMAT_INVALID
@@ -369,7 +388,7 @@ class FORMAT_INVALID extends BLUECONFIG_ERROR {
     this.getter = {
       name: getter.name,
       keyname: getter.keyname
-    };
+    }
 
     /**
      * Returned value by `this.getter`
@@ -377,12 +396,12 @@ class FORMAT_INVALID extends BLUECONFIG_ERROR {
      * @var value
      * @memberof FORMAT_INVALID
      */
-    this.value = value;
+    this.value = value
 
-    this.type = 'FORMAT_INVALID';
-    this.doc = 'You should try to change the property value to respect the schema to continue.';
+    this.type = 'FORMAT_INVALID'
+    this.doc = 'You should try to change the property value to respect the schema to continue.'
 
-    return this;
+    return this
   }
 }
 
@@ -399,7 +418,7 @@ module.exports = {
   VALUE_INVALID,
   VALIDATE_FAILED,
   FORMAT_INVALID
-};
+}
 </code></pre>
         </article>
     </section>
@@ -414,7 +433,7 @@ module.exports = {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Mar 30 2020 17:11:09 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Apr 09 2020 02:24:47 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
@@ -423,5 +442,7 @@ module.exports = {
 
 
 
+    <link type="text/css" rel="stylesheet" href="custom.css">
+    
 </body>
 </html>

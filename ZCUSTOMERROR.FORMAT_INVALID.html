@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>index.js - Documentation</title>
+    <title>FORMAT_INVALID - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -32,91 +32,345 @@
 
 <div id="main">
     
-    <h1 class="page-title">index.js</h1>
+    <h1 class="page-title">FORMAT_INVALID</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>const parseArgs = require('yargs-parser')
+        <h2>
+            <span class="ancestors"><a href="ZCUSTOMERROR.html">ZCUSTOMERROR</a>~</span>
+        
+        FORMAT_INVALID
+        </h2>
+        
+            <div class="class-description usertext"><p>Value has wrong format.</p>
+<p>When an Error is caught in format function during the validation, FORMAT_INVALID is fired instead.</p></div>
+        
+    
+</header>
 
-const Core = require('./core.js')
+<article>
+    
+        <div class="container-overview">
+        
+            
 
-/**
- * Static version of BlueConfigCore, with standard getters/formats:
- *
- * ```js
- * Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
- * Blueconfig.sortGetters(['default', 'value']) // set default before value
- * Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
- *   return schema._cvtCoerce(this.getEnv()[value])
- * })
- * Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
- *   const argv = parseArgs(this.getArgs(), {
- *     configuration: {
- *       'dot-notation': false
- *     }
- *   })
- *   return schema._cvtCoerce(argv[value])
- * }, true)
- *
- * Blueconfig.addFormats(require('./format/standard-formats.js'))
- * ```
- *
- * @example
- * const schema = { port: { default: 80, format: 'port' } }
- * const conf = blueconfig(schema);
- *
- * @class
- */
-const Blueconfig = function(rawSchema, options) {
-  return Blueconfig.init(rawSchema, options)
-}
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="FORMAT_INVALID"><span class="type-signature"></span>new FORMAT_INVALID<span class="signature">(fullname, message, getter, getter)</span><span class="type-signature"></span></h4>
+
+    
 
 
-/* >> HACK TO KEEP THE SAME BEHAVIOR (= STATIC OBJECT like convict) AND PREVENT BREAK CHANGE FOR v6.1.0 */
-/* SORRY IF YOU HAVE HEART ATTACK WHILE YOU READING THIS LINE ;-) I had no choice in writing this… */
-Core.prototype.initPerformer.call(Blueconfig)
 
-Blueconfig.init = Core.prototype.init
-Blueconfig.getGettersOrder = Core.prototype.getGettersOrder
-Blueconfig.sortGetters = Core.prototype.sortGetters
-Blueconfig.addGetter = Core.prototype.addGetter
-Blueconfig.addGetters = Core.prototype.addGetters
-Blueconfig.addFormat = Core.prototype.addFormat
-Blueconfig.addFormats = Core.prototype.addFormats
-Blueconfig.addParser = Core.prototype.addParser
-/* &lt;&lt; */
 
-/* >> default getters &amp; standard formats */
-// Add getters
-Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
-Blueconfig.sortGetters(['default', 'value']) // set default before value
-Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
-  return schema._cvtCoerce(this.getEnv()[value])
-})
-Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
-  const argv = parseArgs(this.getArgs(), {
-    configuration: {
-      'dot-notation': false
-    }
-  })
-  return schema._cvtCoerce(argv[value])
-}, true)
+<dl class="details">
 
-// Add formats
-Blueconfig.addFormats(require('./format/standard-formats.js'))
-/* &lt;&lt; */
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="error.js.html">error.js</a>, <a href="error.js.html#line324">line 324</a>
+    </li></ul></dd>
+    
 
-module.exports = Blueconfig
+    
 
-</code></pre>
-        </article>
-    </section>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fullname</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Return the full selector (e.g.: <code>base.path.name</code>)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Error message</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>getter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Getter</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Getter name</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Getter value (=Getter keyname)</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>getter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Returned value by <code>Getter(keyname)</code></p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
+    
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li>BLUECONFIG_ERROR</li>
+    </ul>
+
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

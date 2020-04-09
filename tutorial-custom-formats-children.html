@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>index.js - Documentation</title>
+    <title>Tutorial: Custom format for similar object - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -32,94 +32,113 @@
 
 <div id="main">
     
-    <h1 class="page-title">index.js</h1>
+    <h1 class="page-title">Tutorial: Custom format for similar object</h1>
     
 
-    
-
-
-
-    
     <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>const parseArgs = require('yargs-parser')
 
-const Core = require('./core.js')
+<header>
+    
 
-/**
- * Static version of BlueConfigCore, with standard getters/formats:
- *
- * ```js
- * Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
- * Blueconfig.sortGetters(['default', 'value']) // set default before value
- * Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
- *   return schema._cvtCoerce(this.getEnv()[value])
- * })
- * Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
- *   const argv = parseArgs(this.getArgs(), {
- *     configuration: {
- *       'dot-notation': false
- *     }
- *   })
- *   return schema._cvtCoerce(argv[value])
- * }, true)
- *
- * Blueconfig.addFormats(require('./format/standard-formats.js'))
- * ```
- *
- * @example
- * const schema = { port: { default: 80, format: 'port' } }
- * const conf = blueconfig(schema);
- *
- * @class
- */
-const Blueconfig = function(rawSchema, options) {
-  return Blueconfig.init(rawSchema, options)
+    <h2>Custom format for similar object</h2>
+</header>
+
+<article>
+    <p>This format allows to write one model for several similar children object.</p>
+<pre class="prettyprint source lang-javascript"><code>{
+  &quot;germany&quot;: {
+    &quot;name&quot;: &quot;Germany&quot;,
+    &quot;population&quot;: 83783942,
+    &quot;subregion&quot;: &quot;Europe&quot;
+  },
+  &quot;france&quot;: {
+    &quot;name&quot;: &quot;France&quot;,
+    &quot;population&quot;: 65273511,
+    &quot;subregion&quot;: &quot;Europe&quot;
+  },
+  &quot;italy&quot;: {
+    &quot;name&quot;: &quot;Italy&quot;,
+    &quot;population&quot;: 60461826,
+    &quot;subregion&quot;: &quot;Europe&quot;
+  }
+}
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>const blueconfig = require('blueconfig')
+
+const LISTOFERRORS = require('blueconfig/lib/error.js').LISTOFERRORS
+
+function isObjNotNull(obj) {
+  return typeof obj === 'object' && obj !== null
 }
 
+blueconfig.addFormat({
+  name: 'children',
+  validate: function(children, schema, fullname) {
+    const errors = []
 
-/* >> HACK TO KEEP THE SAME BEHAVIOR (= STATIC OBJECT like convict) AND PREVENT BREAK CHANGE FOR v6.1.0 */
-/* SORRY IF YOU HAVE HEART ATTACK WHILE YOU READING THIS LINE ;-) I had no choice in writing this… */
-Core.prototype.initPerformer.call(Blueconfig)
-
-Blueconfig.init = Core.prototype.init
-Blueconfig.getGettersOrder = Core.prototype.getGettersOrder
-Blueconfig.sortGetters = Core.prototype.sortGetters
-Blueconfig.addGetter = Core.prototype.addGetter
-Blueconfig.addGetters = Core.prototype.addGetters
-Blueconfig.addFormat = Core.prototype.addFormat
-Blueconfig.addFormats = Core.prototype.addFormats
-Blueconfig.addParser = Core.prototype.addParser
-/* &lt;&lt; */
-
-/* >> default getters &amp; standard formats */
-// Add getters
-Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
-Blueconfig.sortGetters(['default', 'value']) // set default before value
-Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
-  return schema._cvtCoerce(this.getEnv()[value])
-})
-Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
-  const argv = parseArgs(this.getArgs(), {
-    configuration: {
-      'dot-notation': false
+    if (!isObjNotNull(children)) {
+      throw new Error('must be an Object not null')
     }
-  })
-  return schema._cvtCoerce(argv[value])
-}, true)
 
-// Add formats
-Blueconfig.addFormats(require('./format/standard-formats.js'))
-/* &lt;&lt; */
+    Object.keys(children).forEach((keyname) => {
+      try {
+        const conf = blueconfig(schema.children).merge(children[keyname]).validate()
+        this.set(fullname, conf.getProperties())
+      } catch (err) {
+        err.parent = fullname + '.' + keyname
+        errors.push(err)
+      }
+    })
 
-module.exports = Blueconfig
+    if (errors.length !== 0) {
+      throw new LISTOFERRORS(errors)
+    }
+  }
+})
 
+const conf = blueconfig({
+  format: 'children',
+  default: {},
+  children: {
+    // conf.{country-name}.xxx:
+    name: {
+      format: 'String',
+      default: undefined,
+      required: true
+    },
+
+    population: {
+      format: 'int',
+      default: 0
+    },
+
+    subregion: {
+      format: 'String',
+      default: 'Europe'
+    }
+  }
+}).merge({
+  germany: {
+    name: 'Germany',
+    population: '83783942 persons'
+  },
+  france: {
+    name: 'France',
+    population: 65273511
+  },
+  italy: {
+    name: 'Italy',
+    population: 60461826
+  }
+})
+
+conf.validate()
+
+console.log(conf.getProperties())
 </code></pre>
-        </article>
-    </section>
+</article>
 
-
-
+</section>
 
     
     

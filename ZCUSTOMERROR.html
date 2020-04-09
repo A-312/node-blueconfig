@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>index.js - Documentation</title>
+    <title>ZCUSTOMERROR - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -32,91 +32,134 @@
 
 <div id="main">
     
-    <h1 class="page-title">index.js</h1>
+    <h1 class="page-title">ZCUSTOMERROR</h1>
     
 
     
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>const parseArgs = require('yargs-parser')
+        <h2>
+        ZCUSTOMERROR
+        </h2>
+        
+    
+</header>
 
-const Core = require('./core.js')
+<article>
+    
+        <div class="container-overview">
+        
+            
 
-/**
- * Static version of BlueConfigCore, with standard getters/formats:
- *
- * ```js
- * Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
- * Blueconfig.sortGetters(['default', 'value']) // set default before value
- * Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
- *   return schema._cvtCoerce(this.getEnv()[value])
- * })
- * Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
- *   const argv = parseArgs(this.getArgs(), {
- *     configuration: {
- *       'dot-notation': false
- *     }
- *   })
- *   return schema._cvtCoerce(argv[value])
- * }, true)
- *
- * Blueconfig.addFormats(require('./format/standard-formats.js'))
- * ```
- *
- * @example
- * const schema = { port: { default: 80, format: 'port' } }
- * const conf = blueconfig(schema);
- *
- * @class
- */
-const Blueconfig = function(rawSchema, options) {
-  return Blueconfig.init(rawSchema, options)
-}
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="error.js.html">error.js</a>, <a href="error.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
 
 
-/* >> HACK TO KEEP THE SAME BEHAVIOR (= STATIC OBJECT like convict) AND PREVENT BREAK CHANGE FOR v6.1.0 */
-/* SORRY IF YOU HAVE HEART ATTACK WHILE YOU READING THIS LINE ;-) I had no choice in writing this… */
-Core.prototype.initPerformer.call(Blueconfig)
 
-Blueconfig.init = Core.prototype.init
-Blueconfig.getGettersOrder = Core.prototype.getGettersOrder
-Blueconfig.sortGetters = Core.prototype.sortGetters
-Blueconfig.addGetter = Core.prototype.addGetter
-Blueconfig.addGetters = Core.prototype.addGetters
-Blueconfig.addFormat = Core.prototype.addFormat
-Blueconfig.addFormats = Core.prototype.addFormats
-Blueconfig.addParser = Core.prototype.addParser
-/* &lt;&lt; */
 
-/* >> default getters &amp; standard formats */
-// Add getters
-Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
-Blueconfig.sortGetters(['default', 'value']) // set default before value
-Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
-  return schema._cvtCoerce(this.getEnv()[value])
-})
-Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
-  const argv = parseArgs(this.getArgs(), {
-    configuration: {
-      'dot-notation': false
-    }
-  })
-  return schema._cvtCoerce(argv[value])
-}, true)
+            
 
-// Add formats
-Blueconfig.addFormats(require('./format/standard-formats.js'))
-/* &lt;&lt; */
+            
+        
+        </div>
+    
 
-module.exports = Blueconfig
+    
 
-</code></pre>
-        </article>
-    </section>
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="ZCUSTOMERROR.BLUECONFIG_ERROR.html">BLUECONFIG_ERROR</a></dt>
+            <dd></dd>
+        
+            <dt><a href="ZCUSTOMERROR.CUSTOMISE_FAILED.html">CUSTOMISE_FAILED</a></dt>
+            <dd></dd>
+        
+            <dt><a href="ZCUSTOMERROR.FORMAT_INVALID.html">FORMAT_INVALID</a></dt>
+            <dd></dd>
+        
+            <dt><a href="ZCUSTOMERROR.INCORRECT_USAGE.html">INCORRECT_USAGE</a></dt>
+            <dd></dd>
+        
+            <dt><a href="ZCUSTOMERROR.LISTOFERRORS.html">LISTOFERRORS</a></dt>
+            <dd></dd>
+        
+            <dt><a href="ZCUSTOMERROR.PATH_INVALID.html">PATH_INVALID</a></dt>
+            <dd></dd>
+        
+            <dt><a href="ZCUSTOMERROR.SCHEMA_INVALID.html">SCHEMA_INVALID</a></dt>
+            <dd></dd>
+        
+            <dt><a href="ZCUSTOMERROR.VALIDATE_FAILED.html">VALIDATE_FAILED</a></dt>
+            <dd></dd>
+        
+            <dt><a href="ZCUSTOMERROR.VALUE_INVALID.html">VALUE_INVALID</a></dt>
+            <dd></dd>
+        </dl>
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

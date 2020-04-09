@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>model/schemanode.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/A-312/node-blueconfig/" target="_blank" class="menu-item" id="github_page" >Github Page</a></h2><h2><a href="https://www.npmjs.com/package/blueconfig" target="_blank" class="menu-item" id="npm_page" >Npm page</a></h2><h3>Tutorials</h3><ul><li><a href="tutorial-custom-filetypes.html">Custom filetypes</a></li><li><a href="tutorial-custom-formats.html">Custom formats example</a></li><li><a href="tutorial-schema-parsing-behavior.html">Schema parsing behavior</a></li><li><a href="tutorial-simple-usage.html">Simple usage</a></li></ul><h3>Classes</h3><ul><li><a href="Blueconfig.html">Blueconfig</a></li><li><a href="BlueconfigCore.html">BlueconfigCore</a><ul class='methods'><li data-type='method'><a href="BlueconfigCore.html#addFormat">addFormat</a></li><li data-type='method'><a href="BlueconfigCore.html#addFormats">addFormats</a></li><li data-type='method'><a href="BlueconfigCore.html#addGetter">addGetter</a></li><li data-type='method'><a href="BlueconfigCore.html#addGetters">addGetters</a></li><li data-type='method'><a href="BlueconfigCore.html#addParser">addParser</a></li><li data-type='method'><a href="BlueconfigCore.html#getGettersOrder">getGettersOrder</a></li><li data-type='method'><a href="BlueconfigCore.html#init">init</a></li><li data-type='method'><a href="BlueconfigCore.html#initPerformer">initPerformer</a></li><li data-type='method'><a href="BlueconfigCore.html#sortGetters">sortGetters</a></li></ul></li><li><a href="ConfigObjectModel.html">ConfigObjectModel</a><ul class='methods'><li data-type='method'><a href="ConfigObjectModel.html#default">default</a></li><li data-type='method'><a href="ConfigObjectModel.html#get">get</a></li><li data-type='method'><a href="ConfigObjectModel.html#getArgs">getArgs</a></li><li data-type='method'><a href="ConfigObjectModel.html#getEnv">getEnv</a></li><li data-type='method'><a href="ConfigObjectModel.html#getGettersOrder">getGettersOrder</a></li><li data-type='method'><a href="ConfigObjectModel.html#getOrigin">getOrigin</a></li><li data-type='method'><a href="ConfigObjectModel.html#getProperties">getProperties</a></li><li data-type='method'><a href="ConfigObjectModel.html#getSchema">getSchema</a></li><li data-type='method'><a href="ConfigObjectModel.html#getSchemaString">getSchemaString</a></li><li data-type='method'><a href="ConfigObjectModel.html#has">has</a></li><li data-type='method'><a href="ConfigObjectModel.html#load">load</a></li><li data-type='method'><a href="ConfigObjectModel.html#loadFile">loadFile</a></li><li data-type='method'><a href="ConfigObjectModel.html#merge">merge</a></li><li data-type='method'><a href="ConfigObjectModel.html#refreshGetters">refreshGetters</a></li><li data-type='method'><a href="ConfigObjectModel.html#reset">reset</a></li><li data-type='method'><a href="ConfigObjectModel.html#set">set</a></li><li data-type='method'><a href="ConfigObjectModel.html#sortGetters">sortGetters</a></li><li data-type='method'><a href="ConfigObjectModel.html#toString">toString</a></li><li data-type='method'><a href="ConfigObjectModel.html#validate">validate</a></li></ul></li><li><a href="SchemaNode.html">SchemaNode</a><ul class='methods'><li data-type='method'><a href="SchemaNode.html#coerce">coerce</a></li><li data-type='method'><a href="SchemaNode.html#getOrigin">getOrigin</a></li><li data-type='method'><a href="SchemaNode.html#validate">validate</a></li></ul></li><li><a href="SchemaNode.schema.html">schema</a></li><li><a href="standardFormat.html">standardFormat</a></li><li><a href="ZCUSTOMERROR.BLUECONFIG_ERROR.html">BLUECONFIG_ERROR</a></li><li><a href="ZCUSTOMERROR.CUSTOMISE_FAILED.html">CUSTOMISE_FAILED</a></li><li><a href="ZCUSTOMERROR.FORMAT_INVALID.html">FORMAT_INVALID</a></li><li><a href="ZCUSTOMERROR.INCORRECT_USAGE.html">INCORRECT_USAGE</a></li><li><a href="ZCUSTOMERROR.LISTOFERRORS.html">LISTOFERRORS</a></li><li><a href="ZCUSTOMERROR.PATH_INVALID.html">PATH_INVALID</a></li><li><a href="ZCUSTOMERROR.SCHEMA_INVALID.html">SCHEMA_INVALID</a></li><li><a href="ZCUSTOMERROR.VALIDATE_FAILED.html">VALIDATE_FAILED</a></li><li><a href="ZCUSTOMERROR.VALUE_INVALID.html">VALUE_INVALID</a></li></ul><h3>Namespaces</h3><ul><li><a href="ZCUSTOMERROR.html">ZCUSTOMERROR</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">model/schemanode.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const cloneDeep = require('lodash.clonedeep')
+
+const utils = require('./../performer/utils/utils.js')
+const unroot = utils.unroot
+
+const cvtError = require('./../error.js')
+
+const LISTOFERRORS = cvtError.LISTOFERRORS
+const FORMAT_INVALID = cvtError.FORMAT_INVALID
+
+
+/**
+ * SchemaNode is rules for property
+ *
+ * @class
+ */
+function SchemaNode(rawSchema) {
+  const schema = cloneDeep(rawSchema)
+
+  this._private = {
+    origin: undefined,
+    validate: () => {},
+    coerce: (v) => v
+  }
+
+  /**
+   * Is the public object given in the second argument of [validateCallback](./SchemaNode.html#.validateCallback)
+   *
+   * @memberOf SchemaNode
+   * @type {SchemaNode.schema}
+   */
+  this.attributes = schema
+
+  /**
+   * Is the public object given in the second argument of [validateCallback](./SchemaNode.html#.validateCallback)
+   *
+   * @name schema
+   * @memberOf SchemaNode
+   * @type {SchemaNode.schema}
+   *
+   * @class
+   */
+
+  /**
+   * Attributes are: schema.default, schema.format, schema.doc, schema.env, schema.arg...
+   *
+   * @name {attributes}
+   * @memberOf SchemaNode.schema
+   *
+   * @instance
+   */
+  // this.attributes.schema
+
+
+  /**
+   * Gets origin
+   *
+   * @name _cvtGetOrigin
+   * @memberOf SchemaNode.schema
+   *
+   * @instance
+   * @see SchemaNode.getOrigin
+   *
+   * @returns  {string}    value    Getter name which origin of the value
+   */
+  Object.defineProperty(this.attributes, '_cvtGetOrigin', {
+    enumerable: false,
+    configurable: false,
+    writable: true,
+    value: () => {
+      return this.getOrigin()
+    }
+  })
+
+
+  /**
+   * Validates config property
+   *
+   * @name _cvtValidateFormat
+   * @memberOf SchemaNode.schema
+   *
+   * @see SchemaNode.validate
+   *
+   * @param    {*}             value       Value of the property to validate
+   */
+  Object.defineProperty(this.attributes, '_cvtValidateFormat', {
+    enumerable: false,
+    configurable: false,
+    writable: false,
+    value: (value) => {
+      this.validate(value)
+    }
+  })
+
+
+  /**
+   * Coerces config property
+   *
+   * @name _cvtCoerce
+   * @memberOf SchemaNode.schema
+   *
+   * @instance
+   * @see SchemaNode.coerce
+   *
+   * @param    {*}    value    Value to coerce
+   *
+   * @returns  {*}    value    Returns coerced value
+   *
+   */
+  Object.defineProperty(this.attributes, '_cvtCoerce', {
+    enumerable: false,
+    configurable: false,
+    writable: false,
+    value: (value) => {
+      return this.coerce(value)
+    }
+  })
+}
+
+
+module.exports = SchemaNode
+
+
+/**
+ * Validates value, will call [validateCallback](./SchemaNode.html#.validateCallback)
+ *
+ * @param    {*}             value       Value of the property to validate
+ */
+SchemaNode.prototype.validate = function(value) {
+  const schema = this.attributes
+  const fullpath = unroot(this._private.fullpath)
+  try {
+    /**
+     * Validates function, should throw when value is not valid. Throws [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html)
+     * if you have several error (see [LISTOFERRORS](./ZCUSTOMERROR.LISTOFERRORS.html) example)
+     *
+     * Validate functions are declared with `addFormat`, and corresponding to `format` property.
+     *
+     * @callback SchemaNode.validateCallback
+     *
+     * @example
+     * Blueconfig.addFormat({
+     *   name: 'int',
+     *   coerce: (value) => (typeof value !== 'undefined') ? parseInt(value, 10) : value,
+     *   validate: function(value, schema, fullpath) {
+     *     if (Number.isInteger(value)) {
+     *       throw new Error('must be an integer')
+     *     }
+     *   }
+     * })
+     *
+     *
+     * @param    {*}             value       Value of the property to validate
+     * @param    {schemaNode}    schema      schemaNode (= rules) of the property
+     * @param    {string}        fullpath    Full property path
+     *
+     * @throws {Error}                       Throw [Error()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error/Error), `Error`s are transformed to `FORMAT_INVALID`.
+     * @throws {ZCUSTOMERROR.LISTOFERRORS}   Throw [LISTOFERRORS()](./ZCUSTOMERROR.LISTOFERRORS.html) usefull if you validate a children key.
+     *
+     * @this {ConfigObjectModel}
+     *
+     * @see ZCUSTOMERROR.LISTOFERRORS
+     */
+    this._private.validate(value, schema, fullpath)
+  } catch (err) {
+    if (err instanceof LISTOFERRORS) {
+      err.message = `${fullpath || 'root'}: Custom format "${schema.format}" tried to validate something and failed:`
+
+      err.errors.forEach((error, i) => {
+        err.message += `\n    ${i + 1}) ${unroot(error.parent)}:` + ('\n' + error.why).replace(/(\n)/g, '$1    ')
+      })
+
+      throw err
+    } else {
+      // Origin of the value, is getter {name}.
+      const name = this._private.origin
+      const keyname = (schema[this._private.origin]) ? schema[name] : ''
+      const getter = { name, keyname }
+
+      throw new FORMAT_INVALID(fullpath, err.message, getter, value)
+    }
+  }
+}
+
+
+/**
+ * Converts a value to a specified function. Coerce functions are declared with `addFormat`, and corresponding to `format` property.
+ *
+ * @example
+ * Blueconfig.addFormat({
+ *   name: 'int',
+ *   coerce: (value) => (typeof value !== 'undefined') ? parseInt(value, 10) : value,
+ *   validate: function(value) {
+ *     assert(Number.isInteger(value), 'must be an integer')
+ *   }
+ * })
+ *
+ * @param    {*}    value    Value to coerce
+ *
+ * @returns  {*}    value    Returns coerced value
+ *
+ * @memberof SchemaNode
+ */
+SchemaNode.prototype.coerce = function(value) {
+  return this._private.coerce(value)
+}
+
+
+/**
+ * Returns the name of the getter which gets the current value.
+ *
+ * @memberof SchemaNode
+ *
+ * @returns  {string}    value    Getter name which origin of the value
+ */
+SchemaNode.prototype.getOrigin = function() {
+  return this._private.origin
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Apr 09 2020 02:24:47 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+    <link type="text/css" rel="stylesheet" href="custom.css">
+    
+</body>
+</html>

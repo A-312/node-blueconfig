@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>index.js - Documentation</title>
+    <title>performer/apply.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -32,7 +32,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">index.js</h1>
+    <h1 class="page-title">performer/apply.js</h1>
     
 
     
@@ -42,78 +42,115 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const parseArgs = require('yargs-parser')
+            <pre class="prettyprint source linenums"><code>const cloneDeep = require('lodash.clonedeep')
 
-const Core = require('./core.js')
+const utils = require('./utils/utils.js')
+const isObjNotNull = utils.isObjNotNull
 
 /**
- * Static version of BlueConfigCore, with standard getters/formats:
+ * Apply values/getters on COM
  *
- * ```js
- * Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
- * Blueconfig.sortGetters(['default', 'value']) // set default before value
- * Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
- *   return schema._cvtCoerce(this.getEnv()[value])
- * })
- * Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
- *   const argv = parseArgs(this.getArgs(), {
- *     configuration: {
- *       'dot-notation': false
- *     }
- *   })
- *   return schema._cvtCoerce(argv[value])
- * }, true)
- *
- * Blueconfig.addFormats(require('./format/standard-formats.js'))
- * ```
- *
- * @example
- * const schema = { port: { default: 80, format: 'port' } }
- * const conf = blueconfig(schema);
- *
+ * @private
  * @class
  */
-const Blueconfig = function(rawSchema, options) {
-  return Blueconfig.init(rawSchema, options)
+function Apply() {
+
 }
 
 
-/* >> HACK TO KEEP THE SAME BEHAVIOR (= STATIC OBJECT like convict) AND PREVENT BREAK CHANGE FOR v6.1.0 */
-/* SORRY IF YOU HAVE HEART ATTACK WHILE YOU READING THIS LINE ;-) I had no choice in writing this… */
-Core.prototype.initPerformer.call(Blueconfig)
+module.exports = new Apply()
 
-Blueconfig.init = Core.prototype.init
-Blueconfig.getGettersOrder = Core.prototype.getGettersOrder
-Blueconfig.sortGetters = Core.prototype.sortGetters
-Blueconfig.addGetter = Core.prototype.addGetter
-Blueconfig.addGetters = Core.prototype.addGetters
-Blueconfig.addFormat = Core.prototype.addFormat
-Blueconfig.addFormats = Core.prototype.addFormats
-Blueconfig.addParser = Core.prototype.addParser
-/* &lt;&lt; */
 
-/* >> default getters &amp; standard formats */
-// Add getters
-Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
-Blueconfig.sortGetters(['default', 'value']) // set default before value
-Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
-  return schema._cvtCoerce(this.getEnv()[value])
-})
-Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
-  const argv = parseArgs(this.getArgs(), {
-    configuration: {
-      'dot-notation': false
+/**
+ * Apply getters values
+ */
+Apply.prototype.getters = function applyGetters(schema, node) {
+  Object.keys(schema._cvtProperties).forEach((name) => {
+    const mySchema = schema._cvtProperties[name]
+    if (mySchema._cvtProperties) {
+      if (!node[name]) {
+        node[name] = {}
+      }
+      applyGetters.call(this, mySchema, node[name])
+    } else {
+      const currentOrigin = mySchema.getOrigin()
+      const currentLevel = (currentOrigin) ? this._getters.order.indexOf(currentOrigin) : 0
+
+      for (let i = this._getters.order.length - 1; i >= 0; i--) {
+        if (i &lt; currentLevel) {
+          break // stop if the current getter is higher
+        }
+
+        const getterName = this._getters.order[i] // getterName
+        const getterObj = this._getters.list[getterName]
+        let propagationAsked = false // #224 accept undefined
+
+        if (!getterObj || !(getterName in mySchema.attributes)) {
+          continue
+        }
+        const getter = getterObj.getter
+        const value = cloneDeep(mySchema.attributes[getterName])
+        const stopPropagation = () => { propagationAsked = true }
+
+        /**
+         * Will get an external value depending of custom getter/code
+         *
+         * @callback ConfigObjectModel.getterCallback
+         *
+         * @example
+         * blueconfig.addGetter({
+         *   property: 'accept-undefined',
+         *   getter: (value, schema, stopPropagation) => schema._cvtCoerce(fs.readFileSync(value, 'utf-8').toString()),
+         *   usedOnlyOnce: true // use file only once
+         * });
+         *
+         * @param    {*}           value       Value to coerce
+         * @param    {string}      mySchema    Value to coerce
+         * @param    {function}    value       Stop propagation (accept undefined value). By default,
+         *                                     undefined don't stop the getter queue, this mean Blueconfig
+         *                                     will continue to call other getter to find a value not undefined.
+         *
+         * @returns  {*}    value    Returns coerced value
+         */
+        // call getter                        vvvvvvvvvvvvvvvvvvv Support prevent breakchanges
+        node[name] = getter.call(this, value, mySchema.attributes, stopPropagation)
+
+        if (typeof node[name] !== 'undefined' || propagationAsked) {
+          // We use function because function are not saved/exported in schema
+          mySchema._private.origin = getterName
+          break
+        }
+      }
     }
   })
-  return schema._cvtCoerce(argv[value])
-}, true)
+}
 
-// Add formats
-Blueconfig.addFormats(require('./format/standard-formats.js'))
-/* &lt;&lt; */
 
-module.exports = Blueconfig
+/**
+ * Apply values from config merged
+ */
+Apply.prototype.values = function applyValues(from, to, schema) {
+  const indexVal = this._getters.order.indexOf('value')
+  Object.keys(from).forEach((name) => {
+    const mySchema = (schema &amp;&amp; schema._cvtProperties) ? schema._cvtProperties[name] : null
+    // leaf
+    if (Array.isArray(from[name]) || !isObjNotNull(from[name]) || !schema || schema.format === 'object') {
+      const lastG = mySchema &amp;&amp; mySchema.getOrigin &amp;&amp; mySchema.getOrigin()
 
+      if (lastG &amp;&amp; indexVal &lt; this._getters.order.indexOf(lastG)) {
+        return
+      }
+
+      to[name] = (mySchema &amp;&amp; mySchema.coerce) ? mySchema.coerce(from[name]) : from[name]
+      if (lastG) {
+        mySchema._private.origin = 'value'
+      }
+    } else {
+      if (!isObjNotNull(to[name])) to[name] = {}
+      applyValues.call(this, from[name], to[name], mySchema)
+    }
+  })
+}
 </code></pre>
         </article>
     </section>

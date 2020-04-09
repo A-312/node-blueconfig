@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>index.js - Documentation</title>
+    <title>Tutorial: Schema parsing behavior - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -32,94 +32,130 @@
 
 <div id="main">
     
-    <h1 class="page-title">index.js</h1>
+    <h1 class="page-title">Tutorial: Schema parsing behavior</h1>
     
 
-    
-
-
-
-    
     <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>const parseArgs = require('yargs-parser')
 
-const Core = require('./core.js')
+<header>
+    
 
-/**
- * Static version of BlueConfigCore, with standard getters/formats:
- *
- * ```js
- * Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
- * Blueconfig.sortGetters(['default', 'value']) // set default before value
- * Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
- *   return schema._cvtCoerce(this.getEnv()[value])
- * })
- * Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
- *   const argv = parseArgs(this.getArgs(), {
- *     configuration: {
- *       'dot-notation': false
- *     }
- *   })
- *   return schema._cvtCoerce(argv[value])
- * }, true)
- *
- * Blueconfig.addFormats(require('./format/standard-formats.js'))
- * ```
- *
- * @example
- * const schema = { port: { default: 80, format: 'port' } }
- * const conf = blueconfig(schema);
- *
- * @class
- */
-const Blueconfig = function(rawSchema, options) {
-  return Blueconfig.init(rawSchema, options)
-}
+    <h2>Schema parsing behavior</h2>
+</header>
 
-
-/* >> HACK TO KEEP THE SAME BEHAVIOR (= STATIC OBJECT like convict) AND PREVENT BREAK CHANGE FOR v6.1.0 */
-/* SORRY IF YOU HAVE HEART ATTACK WHILE YOU READING THIS LINE ;-) I had no choice in writing this… */
-Core.prototype.initPerformer.call(Blueconfig)
-
-Blueconfig.init = Core.prototype.init
-Blueconfig.getGettersOrder = Core.prototype.getGettersOrder
-Blueconfig.sortGetters = Core.prototype.sortGetters
-Blueconfig.addGetter = Core.prototype.addGetter
-Blueconfig.addGetters = Core.prototype.addGetters
-Blueconfig.addFormat = Core.prototype.addFormat
-Blueconfig.addFormats = Core.prototype.addFormats
-Blueconfig.addParser = Core.prototype.addParser
-/* &lt;&lt; */
-
-/* >> default getters &amp; standard formats */
-// Add getters
-Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
-Blueconfig.sortGetters(['default', 'value']) // set default before value
-Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
-  return schema._cvtCoerce(this.getEnv()[value])
-})
-Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
-  const argv = parseArgs(this.getArgs(), {
-    configuration: {
-      'dot-notation': false
+<article>
+    <h2>Config &amp; blueconfig properties parsing</h2>
+<p>Config properties are property that you will use in your app, blueconfig properties are property that you will use in your schema to validate value (e.g.: <code>default</code>, <code>format</code>, <code>sensitive</code>, <code>env</code> or <code>arg</code>...).</p>
+<p>Only two blueconfig properties are used to turn an object to a config properties:</p>
+<ul>
+<li><code>default</code>: Every setting <em>must</em> have a default value but can be omitted if <code>format</code> is defined and not an Object <code>{...}</code>. If you want to use <code>default</code> property name like a config property in your schema use <code>$~default</code>. <code>$~default</code> will be replaced by <code>default</code> during the schema parsing;</li>
+<li><code>format</code>: If <code>default</code> is not defined and format is not an Object <code>{...}</code>, the current object will turn to a config properties.</li>
+</ul>
+<p>Also <strong>magic parsing</strong> will turn <code>keyname: [ notObject ]</code> to <code>keyname: { default: [ notObject ], format: [ keyname type ] }</code>. E.g:</p>
+<pre class="prettyprint source lang-javascript"><code>const config = blueconfig({
+  keyname: 'str',
+  zoo: {
+    elephant: {
+      doc: 'Elephant name',
+      format: Array
+    },
+    format: {
+      // magic parsing
+      bird: 'everywhere'
     }
-  })
-  return schema._cvtCoerce(argv[value])
-}, true)
-
-// Add formats
-Blueconfig.addFormats(require('./format/standard-formats.js'))
-/* &lt;&lt; */
-
-module.exports = Blueconfig
-
+  }
+})
+// blueconfig will understand `config.getSchema()`:
+({
+  keyname: {
+    default: 'str',
+    format: String
+  },
+  zoo: {
+    elephant: {
+      doc: 'Elephant name',
+      format: Array
+    },
+    format: {
+      bird: {
+        default: 'everywhere',
+        format: String
+      }
+    }
+  }
+})
 </code></pre>
-        </article>
-    </section>
+<p>When you use schema parsing with <code>opt.strictParsing = true</code>, <code>default</code> and <code>format</code> will be required, <strong>magic parsing</strong> will be disabled. Blueconfig will throw an error if <code>default</code> and <code>format</code> properties are missing.</p>
+<h2>Optional config property</h2>
+<p>By default, the config property will be ignored during the schema validation if its value is <code>undefined</code> and <code>schema.default</code> is <code>undefined</code>. If you want to not accept optional value and validate value in this case [<code>value === undefined and schema.default === default</code>], set <code>schema.required</code> to <code>true</code>.</p>
+<pre class="prettyprint source lang-javascript"><code>const config = blueconfig({
+  options: { // optional
+    format: String,
+    default: undefined
+  }, // if `options` stays `undefined`: will be not validate and not throw
+  password: { // required
+    format: String,
+    required: true,
+    default: undefined
+  } // if `password` stays `undefined`: will be validate and throw
+}).validate()
+</code></pre>
+<h2>Precedence order</h2>
+<p>When merging configuration values from different sources, Blueconfig follows precedence rules depending on the getters' order.
+The default getters order, from lowest to highest:</p>
+<pre class="prettyprint source lang-javascript"><code>blueconfig.getGettersOrder()
+// ['default', 'value', 'env', 'arg', 'force']
+</code></pre>
+<ol>
+<li>Use <code>default</code> property set in schema</li>
+<li><strong>Value</strong> used with:
+<ul>
+<li><code>config.merge(file)</code> and <code>config.merge(json)</code>;</li>
+<li><code>config.set(name, value, false, true)</code>.</li>
+</ul>
+</li>
+<li>Use the environment variable (only used when <code>env</code> property is set in schema)</li>
+<li>Use the commandline arguments (only used when <code>arg</code> property is set in schema)</li>
+<li><strong>Force</strong> used with:
+<ul>
+<li>With: <code>config.set(name, value, true)</code> (permanent);</li>
+<li>With: <code>config.set(name, value)</code> (can be undo with <code>config.refreshGetters()</code>).</li>
+</ul>
+</li>
+</ol>
+<p>This order means that if schema defines parameter to be taken from an environment variable and environment variable is set then you cannot override it with <code>config.merge(file)</code> or <code>config.merge(json)</code>.</p>
+<pre class="prettyprint source lang-javascript"><code>process.env.PORT = 8080 // environment variable is set
+const config = blueconfig({
+  port: {
+    default: 3000,
+    env: 'PORT'
+  }
+})
+config.merge({ port: 9000 })
+console.log(config.get('port')) // still 8080 from env
+</code></pre>
+<h2>Overriding Environment variables and Command line arguments</h2>
+<p>Blueconfig allows to override Environment variables and Command-line arguments.
+It can be helpful for testing purposes.</p>
+<p>When creating a config object pass an object with two optional properties as the 2nd parameter:</p>
+<ul>
+<li><code>env: Object</code> - this object will be used instead of <code>process.env</code></li>
+<li><code>args: Array&lt;string&gt;</code> - this array will be used instead of <code>process.argv</code></li>
+</ul>
+<pre class="prettyprint source lang-javascript"><code>const config = blueconfig({
+  // configuration schema
+}, {
+  env: {
+    // Environment variables
+  },
+  args: [
+    // Command line arguments
+  ]
+})
+</code></pre>
+</article>
 
-
-
+</section>
 
     
     

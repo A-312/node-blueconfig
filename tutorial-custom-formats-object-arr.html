@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>index.js - Documentation</title>
+    <title>Tutorial: Custom format `Object[]` for Array&lt;object&gt; - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -32,94 +32,97 @@
 
 <div id="main">
     
-    <h1 class="page-title">index.js</h1>
+    <h1 class="page-title">Tutorial: Custom format `Object[]` for Array&lt;object&gt;</h1>
     
 
-    
-
-
-
-    
     <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>const parseArgs = require('yargs-parser')
 
-const Core = require('./core.js')
+<header>
+    
 
-/**
- * Static version of BlueConfigCore, with standard getters/formats:
- *
- * ```js
- * Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
- * Blueconfig.sortGetters(['default', 'value']) // set default before value
- * Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
- *   return schema._cvtCoerce(this.getEnv()[value])
- * })
- * Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
- *   const argv = parseArgs(this.getArgs(), {
- *     configuration: {
- *       'dot-notation': false
- *     }
- *   })
- *   return schema._cvtCoerce(argv[value])
- * }, true)
- *
- * Blueconfig.addFormats(require('./format/standard-formats.js'))
- * ```
- *
- * @example
- * const schema = { port: { default: 80, format: 'port' } }
- * const conf = blueconfig(schema);
- *
- * @class
- */
-const Blueconfig = function(rawSchema, options) {
-  return Blueconfig.init(rawSchema, options)
+    <h2>Custom format `Object[]` for Array&lt;object&gt;</h2>
+</header>
+
+<article>
+    <p>You can specify a custom format checking for array items:</p>
+<pre class="prettyprint source lang-json"><code>{
+  &quot;sources&quot;: [
+    {
+      &quot;type&quot;: &quot;git&quot;,
+      &quot;url&quot;: &quot;https://github.com/A-312/node-blueconfig.git&quot;
+    },
+    {
+      &quot;type&quot;: &quot;git&quot;,
+      &quot;url&quot;: &quot;https://github.com/github/hub.git&quot;
+    }
+  ]
+}
+</code></pre>
+<pre class="prettyprint source lang-javascript"><code>blueconfig.addFormat({
+  name: 'Object[]',
+  validate: function(children, schema, fullname) {
+    const errors = []
+
+    if (!Array.isArray(children)) {
+      throw new Error('must be an Array')
+    }
+
+    children.forEach((child, keyname) => {
+      try {
+        const conf = blueconfig(schema.children).merge(children[keyname]).validate()
+        this.set(fullname + '.' + keyname, conf.getProperties())
+      } catch (err) {
+        err.parent = fullname + '.' + keyname
+        errors.push(err)
+      }
+    })
+
+    if (errors.length !== 0) {
+      // Returns several error, instead of the first find.
+      throw new LISTOFERRORS(errors)
+    }
+  }
+})
+
+blueconfig.addFormat(require('blueconfig-format-with-validator').url)
+
+const schema = {
+  sources: {
+    doc: 'A collection of data sources.',
+    format: 'Object[]',
+    default: [],
+
+    children: {
+      type: {
+        doc: 'The source type',
+        format: ['git', 'hg', 'svn'],
+        default: null
+      },
+      url: {
+        doc: 'The source URL',
+        format: 'url',
+        default: null
+      }
+    }
+  }
 }
 
-
-/* >> HACK TO KEEP THE SAME BEHAVIOR (= STATIC OBJECT like convict) AND PREVENT BREAK CHANGE FOR v6.1.0 */
-/* SORRY IF YOU HAVE HEART ATTACK WHILE YOU READING THIS LINE ;-) I had no choice in writing this… */
-Core.prototype.initPerformer.call(Blueconfig)
-
-Blueconfig.init = Core.prototype.init
-Blueconfig.getGettersOrder = Core.prototype.getGettersOrder
-Blueconfig.sortGetters = Core.prototype.sortGetters
-Blueconfig.addGetter = Core.prototype.addGetter
-Blueconfig.addGetters = Core.prototype.addGetters
-Blueconfig.addFormat = Core.prototype.addFormat
-Blueconfig.addFormats = Core.prototype.addFormats
-Blueconfig.addParser = Core.prototype.addParser
-/* &lt;&lt; */
-
-/* >> default getters &amp; standard formats */
-// Add getters
-Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
-Blueconfig.sortGetters(['default', 'value']) // set default before value
-Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
-  return schema._cvtCoerce(this.getEnv()[value])
-})
-Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
-  const argv = parseArgs(this.getArgs(), {
-    configuration: {
-      'dot-notation': false
+blueconfig(schema).merge({
+  'sources': [
+    {
+      'type': 'git',
+      'url': 'https://github.com/A-312/node-blueconfig.git'
+    },
+    {
+      'type': 'git',
+      'url': 'https://github.com/github/hub.git'
     }
-  })
-  return schema._cvtCoerce(argv[value])
-}, true)
-
-// Add formats
-Blueconfig.addFormats(require('./format/standard-formats.js'))
-/* &lt;&lt; */
-
-module.exports = Blueconfig
-
+  ]
+}).validate()
 </code></pre>
-        </article>
-    </section>
+</article>
 
-
-
+</section>
 
     
     

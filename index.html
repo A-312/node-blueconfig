@@ -27,7 +27,7 @@
 
 <nav >
     
-    <h2><a href="index.html">Home</a></h2><h3>Tutorials</h3><ul><li><a href="tutorial-index_.html">index</a></li><li><a href="tutorial-tutorial1.html">Tutorial One</a></li></ul><h3>Classes</h3><ul><li><a href="BLUECONFIG_ERROR.html">BLUECONFIG_ERROR</a></li><li><a href="CUSTOMISE_FAILED.html">CUSTOMISE_FAILED</a></li><li><a href="FORMAT_INVALID.html">FORMAT_INVALID</a></li><li><a href="INCORRECT_USAGE.html">INCORRECT_USAGE</a></li><li><a href="LISTOFERRORS.html">LISTOFERRORS</a></li><li><a href="PATH_INVALID.html">PATH_INVALID</a></li><li><a href="SCHEMA_INVALID.html">SCHEMA_INVALID</a></li><li><a href="VALIDATE_FAILED.html">VALIDATE_FAILED</a></li><li><a href="VALUE_INVALID.html">VALUE_INVALID</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blueconfig">blueconfig</a></li><li><a href="global.html#isPort">isPort</a></li><li><a href="global.html#isWindowsNamedPipe">isWindowsNamedPipe</a></li><li><a href="global.html#sortGetters">sortGetters</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h2><a href="https://github.com/A-312/node-blueconfig/" target="_blank" class="menu-item" id="github_page" >Github Page</a></h2><h2><a href="https://www.npmjs.com/package/blueconfig" target="_blank" class="menu-item" id="npm_page" >Npm page</a></h2><h3>Tutorials</h3><ul><li><a href="tutorial-custom-filetypes.html">Custom filetypes</a></li><li><a href="tutorial-custom-formats.html">Custom formats example</a></li><li><a href="tutorial-schema-parsing-behavior.html">Schema parsing behavior</a></li><li><a href="tutorial-simple-usage.html">Simple usage</a></li></ul><h3>Classes</h3><ul><li><a href="Blueconfig.html">Blueconfig</a></li><li><a href="BlueconfigCore.html">BlueconfigCore</a><ul class='methods'><li data-type='method'><a href="BlueconfigCore.html#addFormat">addFormat</a></li><li data-type='method'><a href="BlueconfigCore.html#addFormats">addFormats</a></li><li data-type='method'><a href="BlueconfigCore.html#addGetter">addGetter</a></li><li data-type='method'><a href="BlueconfigCore.html#addGetters">addGetters</a></li><li data-type='method'><a href="BlueconfigCore.html#addParser">addParser</a></li><li data-type='method'><a href="BlueconfigCore.html#getGettersOrder">getGettersOrder</a></li><li data-type='method'><a href="BlueconfigCore.html#init">init</a></li><li data-type='method'><a href="BlueconfigCore.html#initPerformer">initPerformer</a></li><li data-type='method'><a href="BlueconfigCore.html#sortGetters">sortGetters</a></li></ul></li><li><a href="ConfigObjectModel.html">ConfigObjectModel</a><ul class='methods'><li data-type='method'><a href="ConfigObjectModel.html#default">default</a></li><li data-type='method'><a href="ConfigObjectModel.html#get">get</a></li><li data-type='method'><a href="ConfigObjectModel.html#getArgs">getArgs</a></li><li data-type='method'><a href="ConfigObjectModel.html#getEnv">getEnv</a></li><li data-type='method'><a href="ConfigObjectModel.html#getGettersOrder">getGettersOrder</a></li><li data-type='method'><a href="ConfigObjectModel.html#getOrigin">getOrigin</a></li><li data-type='method'><a href="ConfigObjectModel.html#getProperties">getProperties</a></li><li data-type='method'><a href="ConfigObjectModel.html#getSchema">getSchema</a></li><li data-type='method'><a href="ConfigObjectModel.html#getSchemaString">getSchemaString</a></li><li data-type='method'><a href="ConfigObjectModel.html#has">has</a></li><li data-type='method'><a href="ConfigObjectModel.html#load">load</a></li><li data-type='method'><a href="ConfigObjectModel.html#loadFile">loadFile</a></li><li data-type='method'><a href="ConfigObjectModel.html#merge">merge</a></li><li data-type='method'><a href="ConfigObjectModel.html#refreshGetters">refreshGetters</a></li><li data-type='method'><a href="ConfigObjectModel.html#reset">reset</a></li><li data-type='method'><a href="ConfigObjectModel.html#set">set</a></li><li data-type='method'><a href="ConfigObjectModel.html#sortGetters">sortGetters</a></li><li data-type='method'><a href="ConfigObjectModel.html#toString">toString</a></li><li data-type='method'><a href="ConfigObjectModel.html#validate">validate</a></li></ul></li><li><a href="SchemaNode.html">SchemaNode</a><ul class='methods'><li data-type='method'><a href="SchemaNode.html#coerce">coerce</a></li><li data-type='method'><a href="SchemaNode.html#getOrigin">getOrigin</a></li><li data-type='method'><a href="SchemaNode.html#validate">validate</a></li></ul></li><li><a href="SchemaNode.schema.html">schema</a></li><li><a href="standardFormat.html">standardFormat</a></li><li><a href="ZCUSTOMERROR.BLUECONFIG_ERROR.html">BLUECONFIG_ERROR</a></li><li><a href="ZCUSTOMERROR.CUSTOMISE_FAILED.html">CUSTOMISE_FAILED</a></li><li><a href="ZCUSTOMERROR.FORMAT_INVALID.html">FORMAT_INVALID</a></li><li><a href="ZCUSTOMERROR.INCORRECT_USAGE.html">INCORRECT_USAGE</a></li><li><a href="ZCUSTOMERROR.LISTOFERRORS.html">LISTOFERRORS</a></li><li><a href="ZCUSTOMERROR.PATH_INVALID.html">PATH_INVALID</a></li><li><a href="ZCUSTOMERROR.SCHEMA_INVALID.html">SCHEMA_INVALID</a></li><li><a href="ZCUSTOMERROR.VALIDATE_FAILED.html">VALIDATE_FAILED</a></li><li><a href="ZCUSTOMERROR.VALUE_INVALID.html">VALUE_INVALID</a></li></ul><h3>Namespaces</h3><ul><li><a href="ZCUSTOMERROR.html">ZCUSTOMERROR</a></li></ul>
 </nav>
 
 <div id="main">
@@ -56,6 +56,112 @@
 
 
 
+    <section class="readme usertext">
+        <article><h1>Why Blueconfig ?</h1>
+<ol>
+<li>Merge several config in one;</li>
+<li>Support environmental variables and Command-line arguments;</li>
+<li>Validate your config with your schema;</li>
+<li>Customize your schema and your validation (with custom format, type and type converter);</li>
+<li>Use your own file format (JSON, JSON5, YAML, TOML, XML...); <em>(JSON5 allows comment)</em></li>
+<li>Only 3 dependancies (Blueconfig 7.0 will have only 2 dependancies).</li>
+</ol>
+<p><strong>Install:</strong> <code>npm install blueconfig</code></p>
+<h1>Exemple</h1>
+<h2>Schema</h2>
+<pre class="prettyprint source lang-yml"><code># Schema &lt;blueconfig.js.org>
+# database.yml
+db:
+  name:
+    # db.name
+    format: 'String'
+    default: ''
+  password:
+    # db.password
+    format: 'String'
+    sensitive: true
+    required: true
+    env: PWD
+  host:
+    # db.host (require https://www.npmjs.com/package/blueconfig-format-with-validator)
+    format: 'ipaddress'
+    default: '127.0.0.1'
+  port:
+    # db.port
+    format: 'port'
+    default: 80
+    arg: 'port'
+</code></pre>
+<h2>Code</h2>
+<p><strong>config.js:</strong></p>
+<pre class="prettyprint source"><code>const yaml = require('yaml')
+const blueconfig = require('blueconfig')
+const blueconfigValidatorFormat = require('blueconfig-format-with-validator')
+
+// add format with validator ( https://www.npmjs.com/package/validator )
+blueconfig.addFormat(blueconfigValidatorFormat.ipaddress)
+
+// add YAML parser
+blueconfig.addParser([
+  { extension: ['yml', 'yaml'], parse: yaml.parse }
+])
+
+// prepare config with schema.yml (and debug entries: opts.env)
+const config = blueconfig('schema.yml', {
+  env: { PWD: 'football' } // opts.env: Replace process.env
+})
+
+// merge data
+config.merge({ db: { name: 'example-db' } }, 'data')
+
+// config.merge(['./config.yml', './prod.yml'], 'file')
+
+// validate
+config.validate()
+
+module.exports = config // or config.getProperties()
+
+console.log(config.toString())
+// Debug output : { &quot;db&quot;: { &quot;name&quot;: &quot;example-db&quot;, &quot;password&quot;: &quot;[Sensitive]&quot;, &quot;host&quot;: &quot;127.0.0.1&quot;, &quot;port&quot;: 80 } }
+</code></pre>
+<p><strong>server.js:</strong></p>
+<pre class="prettyprint source lang-javascript"><code>const config = require('./config.js')
+
+const db = require('db').connect(config.get('db.host'), config.get('db.port'), config.get('db.password'), function () {
+  console.log('connected on ' + config.get('db.name'))
+})
+</code></pre>
+<h1>Blueconfig properties</h1>
+<ul>
+<li><strong>Type information</strong>: the <code>format</code> property specifies either a built-in blueconfig format (<code>ipaddress</code>, <code>port</code>, <code>int</code>, etc.) or it can be a function to check a custom format. During validation, if a format check fails it will be added to the error report.</li>
+<li><strong>Default values</strong>: Is a default value before this value will be overwritten by another getter.</li>
+<li><strong>Environmental variables</strong>: If the variable specified by <code>env</code> has a value, it will overwrite the setting's default value. An environment variable may not be mapped to more than one setting.</li>
+<li><strong>Command-line arguments</strong>: If the command-line argument specified by <code>arg</code> is supplied, it will overwrite the setting's default value or the value derived from <code>env</code>.</li>
+<li><strong>Sensitive values and secrets</strong>: If <code>sensitive</code> is set to <code>true</code>, this value will be masked to <code>&quot;[Sensitive]&quot;</code> when <code>config.toString()</code> is called. This helps avoid disclosing secret keys when printing configuration at application start for debugging purposes.</li>
+</ul>
+<h1>Schema parsing behavior</h1>
+<ul>
+<li><a href="./tutorial-schema-parsing-behavior.html">Understand schema parsing behavior</a></li>
+</ul>
+<h1>Coercion</h1>
+<p>Blueconfig will automatically coerce environmental variables from strings to their proper types when importing them.
+For instance, values with the format <code>int</code>, <code>nat</code>, <code>port</code>, or <code>Number</code> will become numbers after a straight forward
+<code>parseInt</code> or <code>parseFloat</code>.</p>
+<h1>Validation</h1>
+<p>Often developpers use tools to detect mistake oversight (like <code>eslint</code>). Validate function do the same thing. In order to help detect misconfigurations, blueconfig allows you to define a format for each setting. By default, blueconfig checks if the value of the property has the same type (according to <code>Object.prototype.toString.call</code>) as the default value specified in the schema. You can define a custom format checking function in the schema by setting the <code>format</code> property.</p>
+<p>Blueconfig provides several predefined formats for validation that you can use. Most of them are self-explanatory:</p>
+<ul>
+<li><code>*</code> - any value is valid</li>
+<li><code>int</code></li>
+<li><code>port</code></li>
+<li><code>windows_named_pipe</code></li>
+<li><code>port_or_windows_named_pipe</code></li>
+<li><code>nat</code> - positive integer (natural number)</li>
+</ul>
+<p>You can find other format <a href="https://www.npmjs.com/search?q=keywords:blueconfig-format">here</a>.</p>
+<p>If <code>format</code> is set to one of the built-in JavaScript constructors, <code>Object</code>, <code>Array</code>, <code>String</code>, <code>Number</code>, <code>RegExp</code>, or <code>Boolean</code>, validation will use Object.prototype.toString.call to check that the setting is the proper type.</p></article>
+    </section>
+
 
 
 
@@ -68,7 +174,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Mon Mar 30 2020 17:11:09 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.3</a> on Thu Apr 09 2020 02:24:47 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
@@ -77,5 +183,7 @@
 
 
 
+    <link type="text/css" rel="stylesheet" href="custom.css">
+    
 </body>
 </html>

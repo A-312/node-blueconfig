@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>index.js - Documentation</title>
+    <title>Tutorial: Simple usage - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -32,94 +32,70 @@
 
 <div id="main">
     
-    <h1 class="page-title">index.js</h1>
+    <h1 class="page-title">Tutorial: Simple usage</h1>
     
 
-    
-
-
-
-    
     <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>const parseArgs = require('yargs-parser')
 
-const Core = require('./core.js')
+<header>
+    
 
-/**
- * Static version of BlueConfigCore, with standard getters/formats:
- *
- * ```js
- * Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
- * Blueconfig.sortGetters(['default', 'value']) // set default before value
- * Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
- *   return schema._cvtCoerce(this.getEnv()[value])
- * })
- * Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
- *   const argv = parseArgs(this.getArgs(), {
- *     configuration: {
- *       'dot-notation': false
- *     }
- *   })
- *   return schema._cvtCoerce(argv[value])
- * }, true)
- *
- * Blueconfig.addFormats(require('./format/standard-formats.js'))
- * ```
- *
- * @example
- * const schema = { port: { default: 80, format: 'port' } }
- * const conf = blueconfig(schema);
- *
- * @class
- */
-const Blueconfig = function(rawSchema, options) {
-  return Blueconfig.init(rawSchema, options)
-}
+    <h2>Simple usage</h2>
+</header>
 
+<article>
+    <p>An example <code>config.js</code> file:</p>
+<pre class="prettyprint source lang-javascript"><code>const blueconfig = require('blueconfig')
 
-/* >> HACK TO KEEP THE SAME BEHAVIOR (= STATIC OBJECT like convict) AND PREVENT BREAK CHANGE FOR v6.1.0 */
-/* SORRY IF YOU HAVE HEART ATTACK WHILE YOU READING THIS LINE ;-) I had no choice in writing this… */
-Core.prototype.initPerformer.call(Blueconfig)
+blueconfig.addFormat(require('blueconfig-format-with-validator').ipaddress)
 
-Blueconfig.init = Core.prototype.init
-Blueconfig.getGettersOrder = Core.prototype.getGettersOrder
-Blueconfig.sortGetters = Core.prototype.sortGetters
-Blueconfig.addGetter = Core.prototype.addGetter
-Blueconfig.addGetters = Core.prototype.addGetters
-Blueconfig.addFormat = Core.prototype.addFormat
-Blueconfig.addFormats = Core.prototype.addFormats
-Blueconfig.addParser = Core.prototype.addParser
-/* &lt;&lt; */
-
-/* >> default getters &amp; standard formats */
-// Add getters
-Blueconfig.addGetter('default', (value, schema, stopPropagation) => schema._cvtCoerce(value))
-Blueconfig.sortGetters(['default', 'value']) // set default before value
-Blueconfig.addGetter('env', function(value, schema, stopPropagation) {
-  return schema._cvtCoerce(this.getEnv()[value])
-})
-Blueconfig.addGetter('arg', function(value, schema, stopPropagation) {
-  const argv = parseArgs(this.getArgs(), {
-    configuration: {
-      'dot-notation': false
+// Define a schema
+const config = blueconfig({
+  env: {
+    doc: 'The application environment.',
+    format: ['production', 'development', 'test'],
+    default: 'development',
+    env: 'NODE_ENV'
+  },
+  ip: {
+    doc: 'The IP address to bind.',
+    format: 'ipaddress',
+    default: '127.0.0.1',
+    env: 'IP_ADDRESS',
+  },
+  port: {
+    doc: 'The port to bind.',
+    format: 'port',
+    default: 8080,
+    env: 'PORT',
+    arg: 'port'
+  },
+  db: {
+    host: {
+      doc: 'Database host name/IP',
+      format: '*',
+      default: 'server1.dev.test'
+    },
+    name: {
+      doc: 'Database name',
+      format: String,
+      default: 'users'
     }
-  })
-  return schema._cvtCoerce(argv[value])
-}, true)
+  }
+})
 
-// Add formats
-Blueconfig.addFormats(require('./format/standard-formats.js'))
-/* &lt;&lt; */
+// Load environment dependent configuration
+const env = config.get('env')
+config.merge('./config/' + env + '.json')
 
-module.exports = Blueconfig
+// Perform validation
+config.validate({allowed: 'strict'})
 
+module.exports = config
 </code></pre>
-        </article>
-    </section>
+</article>
 
-
-
+</section>
 
     
     
