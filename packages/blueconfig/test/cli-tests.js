@@ -1,4 +1,3 @@
-
 /* eslint no-sync: 0 */
 
 const chai = require('chai')
@@ -70,11 +69,7 @@ describe('CLI tests', function() {
 
           conf = blueconfig(settings.conf, opts)
           if (settings.data) {
-            if (Array.isArray(settings.data)) {
-              settings.data.forEach((data) => conf.merge(data))
-            } else {
-              conf.merge(settings.data)
-            }
+            conf.merge(settings.data, settings.dataType || 'data')
           }
           conf.validate(settings.validate || {})
         }

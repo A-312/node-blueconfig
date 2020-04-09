@@ -1,5 +1,3 @@
-
-
 const chai = require('chai')
 const expect = chai.expect
 
@@ -14,9 +12,22 @@ describe('blueconfig getters', function() {
     expect(blueconfig.getGettersOrder()).to.be.deep.equal(order)
   })
 
+  it('must add several getters with array', function() {
+    const blueconfig = new_require('../')
+
+    blueconfig.addGetters([
+      { property: 'bird1', getter: () => {} }, // keep `property` key (alias of name) avoid a breakchange
+      { name: 'bird2', getter: () => {} },
+      { name: 'bird3', getter: () => {} }
+    ])
+
+    const goodOrder = ['default', 'value', 'env', 'arg', 'bird1', 'bird2', 'bird3', 'force']
+    expect(blueconfig.getGettersOrder()).to.be.deep.equal(goodOrder)
+  })
+
   it('must init and set custom getters', function() {
     blueconfig.addGetter({
-      property: 'ghost',
+      name: 'ghost',
       getter: (value, schema, stopPropagation) => {
         stopPropagation()
         return undefined
@@ -27,12 +38,10 @@ describe('blueconfig getters', function() {
       answer: {
         getter: (value, schema, stopPropagation) => 'Yes, you can.',
         usedOnlyOnce: true
+      },
+      answer_no: {
+        getter: (value, schema, stopPropagation) => 'No, you cannot.'
       }
-    })
-
-    blueconfig.addGetter({
-      property: 'answer_no',
-      getter: (value, schema, stopPropagation) => 'No, you cannot.'
     })
   })
 
@@ -75,6 +84,7 @@ describe('blueconfig getters', function() {
   it('must throw with an incorrect getter order', function() {
     expect(() => blueconfig.sortGetters('bad')).to.throw('Invalid argument: newOrder must be an array.')
     expect(() => blueconfig.sortGetters(['default', 'value', 'force', 'env'])).to.throw('Invalid order: force cannot be sorted')
+    expect(() => blueconfig.sortGetters(['default', 'value', 'env', 'arg', 'ghost', 'answer'])).to.throw('Invalid order: a getter is missed: answer_no')
     expect(() => blueconfig.sortGetters(['default', 'env'])).to.throw('Invalid order: several getters are missed: value, arg, ghost, answer, answer_no')
     const wrongOrder = ['default', 'value', 'env', 'arg', 'ghost', 'answer', 'answer_no', 'charlie']
     expect(() => blueconfig.sortGetters(wrongOrder)).to.throw('Invalid order: unknown getter: charlie')
@@ -138,10 +148,17 @@ describe('blueconfig getters', function() {
   })
 
   it('must not rewrite an existing getter', function() {
-    const expected = 'The getter property name "answer" is already registered. Set the 4th argument (rewrite) of `addGetter` at true to skip this error.'
+    const expected = 'Getter keyname "answer" is already registered. Set the 4th argument (rewrite) of `addGetter` at true to skip this error.'
     const getter = (value, schema, stopPropagation) => 'Yes, you can.'
 
     expect(() => blueconfig.addGetter('answer', getter)).to.throw(expected)
+  })
+
+  it('must accept only fonction', function() {
+    const expected = 'Getter keyname must be a string (current: "undefined").'
+    const str = 'not a function'
+
+    expect(() => blueconfig.addGetter([], str)).to.throw(expected)
   })
 
   it('must accept only fonction', function() {
@@ -151,14 +168,14 @@ describe('blueconfig getters', function() {
     expect(() => blueconfig.addGetter('bad', str)).to.throw(expected)
   })
 
-  it('must not accept getter name: value', function() {
-    const expected = 'Getter name use a reservated word: value'
+  it('must not accept getter keyname: value', function() {
+    const expected = 'Getter keyname use a reservated word: value'
 
     expect(() => blueconfig.addGetter('value', (v) => v)).to.throw(expected)
   })
 
-  it('must not accept getter name: force', function() {
-    const expected = 'Getter name use a reservated word: force'
+  it('must not accept getter keyname: force', function() {
+    const expected = 'Getter keyname use a reservated word: force'
 
     expect(() => blueconfig.addGetter('force', (v) => v)).to.throw(expected)
   })
@@ -174,7 +191,7 @@ describe('blueconfig getters', function() {
         answer: 'Can I fly?'
       }
     }
-    expect(() => blueconfig(schema)).to.throw('bird: uses a already used getter keyname for "answer", actual: `answer["Can I fly?"]`')
+    expect(() => blueconfig(schema)).to.throw('bird: uses a already used getter keyname for "answer", current: `answer["Can I fly?"]`')
   })
 
   it('must not rewrite an existing getter because I ask to force', function() {

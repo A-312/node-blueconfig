@@ -1,5 +1,3 @@
-
-
 module.exports = {
   env: 'local',
   URL: 'https://browserid.org',

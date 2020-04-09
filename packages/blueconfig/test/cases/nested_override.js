@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   object: {
     default: null,
@@ -7,6 +5,7 @@ exports.conf = {
   }
 }
 
+exports.dataType = 'array'
 exports.data = []
 
 exports.data.push({

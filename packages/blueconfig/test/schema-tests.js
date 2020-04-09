@@ -1,5 +1,3 @@
-
-
 const chai = require('chai')
 const expect = chai.expect
 
@@ -63,7 +61,7 @@ describe('blueconfig schema', function() {
       }
     }
 
-    expect(() => blueconfig(schema)).to.throw('bar: uses a already used getter keyname for "arg", actual: `arg["BAZ"]`')
+    expect(() => blueconfig(schema)).to.throw('bar: uses a already used getter keyname for "arg", current: `arg["BAZ"]`')
   })
 
   it('requiredPropConf must be valid', function() {
@@ -105,10 +103,17 @@ describe('blueconfig schema', function() {
         env: 'BAR',
         arg: 'bar'
       }
-    }, { args: ['--bar', 'baz'], env: { FOO: 'foz' } })
+    }, {
+      args: ['--bar', 'baz'],
+      env: {
+        FOO: 'foz'
+      }
+    })
 
     expect(conf.getArgs()).to.deep.equal(['--bar', 'baz'])
-    expect(conf.getEnv()).to.deep.equal({ FOO: 'foz' })
+    expect(conf.getEnv()).to.deep.equal({
+      FOO: 'foz'
+    })
     expect(conf.get('bar')).to.equal('baz')
     expect(conf.get('foo')).to.equal('foz')
   })
@@ -121,14 +126,16 @@ describe('blueconfig schema', function() {
     // <<
 
     it('must be merge several configs', function() {
-      myOwnConf.merge([
-        { foo: 914 }
-      ])
+      myOwnConf.merge([{
+        foo: 914
+      }])
       expect(myOwnConf.get('foo')).to.be.equal(914)
-      myOwnConf.merge([
-        { foo: 9, zoo: 4 },
-        { foo: 10 }
-      ])
+      myOwnConf.merge([{
+        foo: 9,
+        zoo: 4
+      }, {
+        foo: 10
+      }])
       expect(myOwnConf.get('foo')).to.be.equal(10)
       expect(myOwnConf.get('zoo')).to.be.equal(4)
     })
@@ -207,29 +214,44 @@ describe('blueconfig schema', function() {
         foo: {
           _cvtProperties: {
             bar: {
-              default: 7,
-              format: 'Number',
-              _cvtCoerce: '[FunctionReplacement]',
-              _cvtValidateFormat: '[FunctionReplacement]',
-              _cvtGetOrigin: '[FunctionReplacement]'
+              _private: {
+                coerce: '[FunctionReplacement]',
+                fullpath: 'root.foo.bar',
+                origin: 'default',
+                validate: '[FunctionReplacement]'
+              },
+              attributes: {
+                default: 7,
+                format: 'Number'
+              }
             },
             baz: {
               _cvtProperties: {
                 bing: {
-                  default: 'foo',
-                  format: 'String',
-                  _cvtCoerce: '[FunctionReplacement]',
-                  _cvtValidateFormat: '[FunctionReplacement]',
-                  _cvtGetOrigin: '[FunctionReplacement]'
+                  _private: {
+                    coerce: '[FunctionReplacement]',
+                    fullpath: 'root.foo.baz.bing',
+                    origin: 'default',
+                    validate: '[FunctionReplacement]'
+                  },
+                  attributes: {
+                    default: 'foo',
+                    format: 'String'
+                  }
                 },
                 'name with spaces': {
                   _cvtProperties: {
                     name_with_underscores: {
-                      default: true,
-                      format: 'Boolean',
-                      _cvtCoerce: '[FunctionReplacement]',
-                      _cvtValidateFormat: '[FunctionReplacement]',
-                      _cvtGetOrigin: '[FunctionReplacement]'
+                      _private: {
+                        coerce: '[FunctionReplacement]',
+                        fullpath: 'root.foo.baz.name with spaces.name_with_underscores',
+                        origin: 'default',
+                        validate: '[FunctionReplacement]'
+                      },
+                      attributes: {
+                        default: true,
+                        format: 'Boolean'
+                      }
                     }
                   }
                 }
@@ -262,6 +284,7 @@ describe('blueconfig schema', function() {
     describe('.has()', function() {
       it('must not have undefined properties', function() {
         expect(myOwnConf.has('foo.bar.madeup')).to.be.false
+        expect(myOwnConf.has('foo.bar')).to.be.true
       })
 
       it('must work on undeclared property', function() {
@@ -329,6 +352,7 @@ describe('blueconfig schema', function() {
 
       it('must throw if key doesn\'t exist', function() {
         expect(() => myOwnConf.default('foo.no')).to.throw('foo.no.default: cannot find "foo.no" property because "foo.no" is not defined.')
+        expect(() => myOwnConf.default('foo')).to.throw('foo: Cannot read property "default"')
       })
 
       describe('when acting on an Object property', function() {
@@ -351,7 +375,11 @@ describe('blueconfig schema', function() {
         })
 
         it('must not be altered by calls to .merge()', function() {
-          myOwnConf.merge({ someObject: { five: 5 } })
+          myOwnConf.merge({
+            someObject: {
+              five: 5
+            }
+          })
 
           expect(myOwnConf.default('someObject')).to.deep.equal({})
           expect(() => myOwnConf.default('someObject.five')).to.throw('someObject.five.default: cannot find "someObject" property because "someObject" is not defined.')
@@ -373,6 +401,7 @@ describe('blueconfig schema', function() {
       it('must reset the property to its default value', function() {
         expect(myOwnConf.get('foo.bar')).to.equal(8) // Modified
         expect(myOwnConf.getOrigin('foo.bar')).to.equal('value')
+        expect(myOwnConf.getOrigin('foo')).to.be.undefined
 
         myOwnConf.reset('foo.bar')
 
@@ -385,21 +414,39 @@ describe('blueconfig schema', function() {
       })
     })
   })
-})
 
-describe('blueconfig used multiple times on one schema', function() {
-  const blueconfig = require('../')
-  const schema = {
-    publicServerAddress: {
-      doc: 'The public-facing server address',
-      format: String,
-      default: 'localhost:5000'
+  describe('test SchemaNode()', function() {
+    const SchemaNode = require('../lib/model/schemanode.js')
+    const node = new SchemaNode({})
+    node._private.origin = 'plane'
+    node._private.validate = () => { throw new Error('I like flying') }
+    node._private.coerce = (v) => v + ' & plane'
+
+    it('must node.attributes._cvtGetOrigin() has the expected value', function() {
+      expect(node.attributes._cvtGetOrigin()).to.be.equal('plane')
+    })
+    it('must node.attributes._cvtValidateFormat() throws the expected message', function() {
+      expect(() => node.attributes._cvtValidateFormat()).to.throw('I like flying')
+    })
+    it('must node.attributes._cvtCoerce() returns the expected value', function() {
+      expect(node.attributes._cvtCoerce('flying')).to.be.equal('flying & plane')
+    })
+  })
+
+  it('blueconfig used multiple times on one schema', function() {
+    const blueconfig = require('../')
+    const schema = {
+      publicServerAddress: {
+        doc: 'The public-facing server address',
+        format: String,
+        default: 'localhost:5000'
+      }
     }
-  }
-  expect(function() {
-    blueconfig(schema)
-    blueconfig(schema)
-  }).to.not.throw()
+    expect(() => {
+      blueconfig(schema).validate()
+      blueconfig(schema).validate()
+    }).to.not.throw()
+  })
 })
 
 // replace Function by `[FunctionReplacement]` because `.to.deep.equal()` doesn't work well with function

@@ -2,22 +2,56 @@
   "opts": {
     "destination": "./gh-pages/",
     "tutorials": "./docs/",
-    "template": "node_modules/docdash",
-    "private": true
+    "template": "node_modules/docdash"
+  },
+  "plugins": ["plugins/markdown"],
+  "markdown": {
+    "excludeTags": ["author"]
   },
   "source": {
-    "include": [ "./packages/blueconfig/lib" ]
+    "include": [
+      "./packages/blueconfig/lib/",
+      "./packages/blueconfig/lib/format/",
+      "./packages/blueconfig/lib/model/",
+      "./packages/blueconfig/lib/performer/"
+    ]
   },
   "docdash": {
     "sectionOrder": [
-       "Tutorials",
-       "Classes",
-       "Modules",
-       "Externals",
-       "Events",
-       "Namespaces",
-       "Mixins",
-       "Interfaces"
-    ]
+      "Tutorials",
+      "Classes",
+      "Modules",
+      "Externals",
+      "Events",
+      "Namespaces",
+      "Mixins",
+      "Interfaces"
+    ],
+    "scripts": [
+      "custom.css"
+    ],
+    "menu": {
+      "Github Page": {
+        "href": "https://github.com/A-312/node-blueconfig/",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "github_page"
+      },
+      "Npm page": {
+        "href": "https://www.npmjs.com/package/blueconfig",
+        "target": "_blank",
+        "class": "menu-item",
+        "id": "npm_page"
+      }
+    }
+  },
+  "templates": {
+    "default": {
+      "staticFiles": {
+        "include": [
+          "./docs/home/custom.css"
+        ]
+      }
+    }
   }
 }

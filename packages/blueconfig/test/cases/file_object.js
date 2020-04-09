@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   single: {
     format: Object,

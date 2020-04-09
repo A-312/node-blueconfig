@@ -1,5 +1,3 @@
-
-
 const chai = require('chai')
 const expect = chai.expect
 
@@ -7,6 +5,7 @@ const validator = require('validator')
 
 const new_require = require('./new_require.js')
 const blueconfig = new_require('../')
+const LISTOFERRORS = require('blueconfig/lib/error.js').LISTOFERRORS
 
 describe('blueconfig formats', function() {
   let conf
@@ -107,6 +106,37 @@ describe('blueconfig formats', function() {
     })
   })
 
+  it('must throw with bad name', function() {
+    expect(() => blueconfig.addFormat({ name: [], validate: () => {} })).to.throw('Schema name must be a string (current: "object").')
+  })
+
+  it('must add several formats with array', function() {
+    const blueconfig = new_require('../')
+
+    blueconfig.addFormats([
+      { name: 'bird1', validate: () => {} },
+      { name: 'bird2', validate: () => {} },
+      { name: 'bird3', validate: () => {} }
+    ])
+
+    const conf = blueconfig({
+      a: {
+        format: 'bird1',
+        default: 'ok'
+      },
+      b: {
+        format: 'bird2',
+        default: 'ok'
+      },
+      c: {
+        format: 'bird3',
+        default: 'ok'
+      }
+    })
+
+    expect(() => conf.validate()).to.not.throw()
+  })
+
   it('validates default schema', function() {
     expect(() => conf.validate()).to.not.throw()
   })
@@ -203,7 +233,7 @@ describe('blueconfig formats', function() {
       }
     }
 
-    expect(() => blueconfig(schema)).to.throw('foo: uses an unknown format type (actual: "unknown")')
+    expect(() => blueconfig(schema)).to.throw('foo: uses an unknown format type (current: "unknown")')
   })
 
   it('must accept undefined as a default', function() {
@@ -216,7 +246,7 @@ describe('blueconfig formats', function() {
     const schema = {
       sources: {
         doc: 'A collection of data sources.',
-        format: 'source-array',
+        format: 'Object[]',
         default: [],
 
         children: {
@@ -262,15 +292,27 @@ describe('blueconfig formats', function() {
 
     it('must parse a config specification', function() {
       blueconfig.addFormat({
-        name: 'source-array',
-        validate: function(sources, schema) {
-          if (!Array.isArray(sources)) {
-            throw new Error('must be of type Array')
+        name: 'Object[]',
+        validate: function(children, schema, fullname) {
+          const errors = []
+
+          if (!Array.isArray(children)) {
+            throw new Error('must be an Array')
           }
 
-          sources.forEach((source) => {
-            blueconfig(schema.children).merge(source).validate()
+          children.forEach((child, keyname) => {
+            try {
+              const conf = blueconfig(schema.children).merge(children[keyname]).validate()
+              this.set(fullname + '.' + keyname, conf.getProperties())
+            } catch (err) {
+              err.parent = fullname + '.' + keyname
+              errors.push(err)
+            }
           })
+
+          if (errors.length !== 0) {
+            throw new LISTOFERRORS(errors)
+          }
         }
       })
     })
@@ -279,8 +321,25 @@ describe('blueconfig formats', function() {
       blueconfig.addFormat(require('blueconfig-format-with-validator').url)
     })
 
+    let myConf
+
     it('must validate children value without throw an Error', function() {
-      expect(() => blueconfig(schema).merge(config).validate()).to.not.throw()
+      expect(() => {
+        myConf = blueconfig(schema).merge(config).validate()
+      }).to.not.throw()
+    })
+
+    it('must have children (Object[])', function() {
+      console.log(myConf.getProperties())
+      expect(myConf.getProperties()).to.be.deep.equal({
+        sources: [{
+          type: 'git',
+          url: 'https://github.com/A-312/node-blueconfig.git'
+        }, {
+          type: 'git',
+          url: 'https://github.com/github/hub.git'
+        }]
+      })
     })
 
     it('successfully fails to validate incorrect children values', function() {

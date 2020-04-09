@@ -1,5 +1,3 @@
-
-
 const blueconfig = require('blueconfig')
 const LISTOFERRORS = require('blueconfig/lib/error.js').LISTOFERRORS
 
@@ -13,7 +11,7 @@ exports.formats = {
       const errors = []
 
       if (!isObjNotNull(children)) {
-        throw new Error('must be of an Object not null')
+        throw new Error('must be an Object not null')
       }
 
       Object.keys(children).forEach((keyname) => {

@@ -1,0 +1,19 @@
+db:
+  name:
+    # db.name
+    format: 'String'
+    default: ''
+  password:
+    # db.password
+    format: 'String'
+    sensitive: true
+    required: true
+    env: PWD
+  host:
+    # db.host (require https://www.npmjs.com/package/blueconfig-format-with-validator)
+    format: 'ipaddress'
+    default: '127.0.0.1'
+  port:
+    # db.port
+    format: 'port'
+    default: 80

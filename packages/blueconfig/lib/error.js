@@ -1,4 +1,6 @@
-
+/**
+ * @namespace ZCUSTOMERROR
+ */
 
 /**
  * Custom Blueconfig errors are used to identify: Blueconfig internal error, Schema error or config error.
@@ -12,7 +14,7 @@
  *
  * @extends Error
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class BLUECONFIG_ERROR extends Error {
   /**
@@ -28,8 +30,18 @@ class BLUECONFIG_ERROR extends Error {
 /**
  * List of errors (should be loop/parsed on LISTOFERRORS.errors like an array). Can be usefull with custom format.
  *
+ *
+ * ```text
+ * Validate failed because wrong value(s):
+ *   - root: Custom format "children" tried to validate something and failed:
+ *     1) germany:
+ *       - name: must be of type String: value was 1
+ *     2) italy:
+ *       - subregion: must be of type String: value was 2
+ * ```
+ *
  * @example
- * blueconfig.addFormat({
+ * blueconfig.addFormat({ // Allow to do: config.*.name, by example : config.app1.name, config.app2.name
  *   name: 'children',
  *   validate: function(children, schema, fullname) {
  *     Object.keys(children).forEach((keyname) => {
@@ -46,7 +58,7 @@ class BLUECONFIG_ERROR extends Error {
  * @extends BLUECONFIG_ERROR
  *
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class LISTOFERRORS extends BLUECONFIG_ERROR {
   /**
@@ -86,23 +98,23 @@ class LISTOFERRORS extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class SCHEMA_INVALID extends BLUECONFIG_ERROR {
   /**
-   * @param {String}   fullName   Return the full selector (e.g.: `base.path.name`)
+   * @param {String}   fullname   Return the full selector (e.g.: `base.path.name`)
    * @param {String}   message    Error message
    */
-  constructor(fullName, message) {
-    super(`${fullName}: ${message}`)
+  constructor(fullname, message) {
+    super(`${fullname}: ${message}`)
 
     /**
      * Return the full selector (e.g.: `base.path.name`)
      *
-     * @var fullName
+     * @var fullname
      * @memberof SCHEMA_INVALID
      */
-    this.fullName = fullName
+    this.fullname = fullname
 
     this.type = 'SCHEMA_INVALID'
     this.doc = 'You schema is not valid, edit your schema to continue.'
@@ -123,7 +135,7 @@ class SCHEMA_INVALID extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class CUSTOMISE_FAILED extends BLUECONFIG_ERROR {
   /**
@@ -145,7 +157,7 @@ class CUSTOMISE_FAILED extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class INCORRECT_USAGE extends BLUECONFIG_ERROR {
   /**
@@ -167,17 +179,17 @@ class INCORRECT_USAGE extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class PATH_INVALID extends BLUECONFIG_ERROR {
   /**
-   * @param {String}   fullName        Return the full selector of value missed (e.g.: `base.path.name`)
+   * @param {String}   fullname        Return the full selector of value missed (e.g.: `base.path.name`)
    * @param {String}   lastPosition    Return the nearest full selector before missed key (e.g.: `base.path.name`)
    * @param {Object}   parent          Parent
    * @param {Object}   parent.path     Return the full path of `parent`
    * @param {Object}   parent.value    Return the value of `parent`
    */
-  constructor(fullName, lastPosition, parent) {
+  constructor(fullname, lastPosition, parent) {
     let path = parent.path
     const state = (() => {
       const type = typeof parent.value
@@ -192,15 +204,23 @@ class PATH_INVALID extends BLUECONFIG_ERROR {
     })()
     const why = `"${path}" is ${state}`
 
-    super(`${fullName}: cannot find "${lastPosition}" property because ${why}.`)
+    super(`${fullname}: cannot find "${lastPosition}" property because ${why}.`)
 
     /**
      * Return the full selector to the properties missing (e.g.: `base.path.name`)
      *
-     * @var fullName
+     * @var fullname
      * @memberof PATH_INVALID
      */
-    this.fullName = fullName
+    this.fullname = fullname
+
+    /**
+     * Return the parent of to the properties missing (e.g.: `base.path`)
+     *
+     * @var parent
+     * @memberof PATH_INVALID
+     */
+    this.parent = parent
 
     /**
      * Return the nearest full selector before missed properties (e.g.: `base.path.name`)
@@ -237,7 +257,7 @@ class PATH_INVALID extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class VALUE_INVALID extends BLUECONFIG_ERROR {
   /**
@@ -259,7 +279,7 @@ class VALUE_INVALID extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class VALIDATE_FAILED extends BLUECONFIG_ERROR {
   /**
@@ -290,27 +310,27 @@ class VALIDATE_FAILED extends BLUECONFIG_ERROR {
  *
  * @extends BLUECONFIG_ERROR
  *
- * @class
+ * @Memberof ZCUSTOMERROR
  */
 class FORMAT_INVALID extends BLUECONFIG_ERROR {
   /**
-   * @param {String}   fullName        Return the full selector (e.g.: `base.path.name`)
+   * @param {String}   fullname        Return the full selector (e.g.: `base.path.name`)
    * @param {String}   message         Error message
    * @param {Object}   getter          Getter
    * @param {String}   getter.name     Getter name
    * @param {String}   getter.value    Getter value (=Getter keyname)
    * @param {String}   getter          Returned value by `Getter(keyname)`
    */
-  constructor(fullName, message, getter, value) {
+  constructor(fullname, message, getter, value) {
     super(message)
 
     /**
      * Return the full selector (e.g.: `base.path.name`)
      *
-     * @var fullName
+     * @var fullname
      * @memberof FORMAT_INVALID
      */
-    this.fullName = fullName
+    this.fullname = fullname
 
     /**
      * Return the nearest full selector before missed key (e.g.: `base.path.name`)

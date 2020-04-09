@@ -1,0 +1,6 @@
+Validate failed because wrong value(s):
+  - root: Custom format "Object[]" tried to validate something and failed:
+    1) 0:
+      - name: must be of type String: value was 1
+    2) 2:
+      - subregion: must be of type String: value was 2, getter was `value`

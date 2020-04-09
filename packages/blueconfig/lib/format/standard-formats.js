@@ -1,4 +1,4 @@
-/**
+/*
  * blueconfig-format
  * Standard format for blueconfig
  */
@@ -10,14 +10,20 @@ function assert(assertion, err_msg) {
   }
 }
 
+
 function toInt(value) {
   return (typeof value !== 'undefined') ? parseInt(value, 10) : value
 }
+
 
 function isWindowsNamedPipe(x) {
   return String(x).includes('\\\\.\\pipe\\')
 }
 
+
+/**
+ * @memberof standardFormat
+ */
 const int = {
   name: 'int',
   coerce: (value) => toInt(value),
@@ -26,13 +32,20 @@ const int = {
   }
 }
 
-// alias
+
+/**
+ * @memberof standardFormat
+ */
 const integer = {
   name: 'integer',
   coerce: int.coerce,
   validate: int.validate
 }
 
+
+/**
+ * @memberof standardFormat
+ */
 const nat = {
   name: 'nat',
   coerce: (value) => toInt(value),
@@ -41,6 +54,10 @@ const nat = {
   }
 }
 
+
+/**
+ * @memberof standardFormat
+ */
 const port = {
   name: 'port',
   coerce: (value) => toInt(value),
@@ -49,6 +66,10 @@ const port = {
   }
 }
 
+
+/**
+ * @memberof standardFormat
+ */
 const windows_named_pipe = {
   name: 'windows_named_pipe',
   validate: function(value) {
@@ -56,6 +77,10 @@ const windows_named_pipe = {
   }
 }
 
+
+/**
+ * @memberof standardFormat
+ */
 const port_or_windows_named_pipe = {
   name: 'port_or_windows_named_pipe',
   coerce: (v) => (isWindowsNamedPipe(v)) ? v : parseInt(v, 10),
@@ -70,6 +95,13 @@ const port_or_windows_named_pipe = {
   }
 }
 
+
+/**
+ * Standard format
+ *
+ * @name standardFormat
+ * @class
+ */
 module.exports = {
   int,
   integer,

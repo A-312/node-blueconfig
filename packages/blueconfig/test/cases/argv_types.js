@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   boolTrue: {
     default: null,

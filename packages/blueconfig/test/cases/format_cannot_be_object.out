@@ -1,1 +1,1 @@
-none: uses an invalid format, it must be a format name, a function, an array or a known format type (actual: "[object Object]")
+none: uses an invalid format, it must be a format name, a function, an array or a known format type (current: "[object Object]")

@@ -1,5 +1,3 @@
-
-
 module.exports = {
   shorthand: 'value',
   basic: true,

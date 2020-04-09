@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   something: {
     default: 'good',

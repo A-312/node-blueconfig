@@ -1,5 +1,3 @@
-
-
 exports.conf = {
   shorthand: 'value',
   basic: {

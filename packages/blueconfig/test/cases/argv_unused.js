@@ -1,5 +1,3 @@
-
-
 exports.formats = require('blueconfig-format-with-validator')
 
 exports.conf = {

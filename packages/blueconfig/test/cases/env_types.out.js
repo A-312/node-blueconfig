@@ -1,5 +1,3 @@
-
-
 module.exports = {
   boolTrue: true,
   boolFalse: false,

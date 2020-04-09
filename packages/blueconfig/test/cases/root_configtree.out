@@ -3,4 +3,4 @@ Validate failed because wrong value(s):
     1) germany:
       - name: must be of type String: value was 1
     2) italy:
-      - subregion: must be of type String: value was 2
+      - subregion: must be of type String: value was 2, getter was `value`
