@@ -84,6 +84,7 @@ describe('blueconfig getters', function() {
   it('must throw with an incorrect getter order', function() {
     expect(() => blueconfig.sortGetters('bad')).to.throw('Invalid argument: newOrder must be an array.')
     expect(() => blueconfig.sortGetters(['default', 'value', 'force', 'env'])).to.throw('Invalid order: force cannot be sorted')
+    expect(() => blueconfig.sortGetters(['default', 'value', 'env', 'arg', 'ghost', 'answer'])).to.throw('Invalid order: a getter is missed: answer_no')
     expect(() => blueconfig.sortGetters(['default', 'env'])).to.throw('Invalid order: several getters are missed: value, arg, ghost, answer, answer_no')
     const wrongOrder = ['default', 'value', 'env', 'arg', 'ghost', 'answer', 'answer_no', 'charlie']
     expect(() => blueconfig.sortGetters(wrongOrder)).to.throw('Invalid order: unknown getter: charlie')

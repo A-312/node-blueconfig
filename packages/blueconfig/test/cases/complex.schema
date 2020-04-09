@@ -67,6 +67,10 @@
     "default": "1 minute",
     "format": "duration"
   },
+  "regex": {
+    "default": {},
+    "format": "RegExp"
+  },
   "statsd": {
     "enabled": {
       "default": true,

@@ -60,12 +60,15 @@ const VALIDATE_FAILED = cvtError.VALIDATE_FAILED
  * @param   {string}    [options.defaultSubstitute]    Override `'$~default'`, this value will be replaced by `'default'` during the schema parsing.
  * @param   {string}    [options.strictParsing]        Throw an error if `default` or `format` properties are omitted.
  *
+ * @param   {object}   scope           workers
+ * @param   {Getter}   scope.Getter    Getter worker
+ * @param   {Parser}   scope.Parser    Parser worker
+ * @param   {Ruler}    scope.Ruler     Ruler worker
+ *
  * @class
  */
 function ConfigObjectModel(rawSchema, options, scope) {
   this.options = options
-
-  scope = scope || {}
 
   this.Getter = scope.Getter
   this.Parser = scope.Parser
@@ -196,13 +199,11 @@ function convertSchema(schemaObjectModel) {
       schemaObjectModel = schemaObjectModel.attributes
       isSchemaNode = true
     }
-    const schema = Array.isArray(schemaObjectModel) ? [] : {}
+    const schema = {}
 
     Object.keys(schemaObjectModel).forEach((name) => {
       let keyname = name
-      if (typeof schemaObjectModel[name] === 'function') {
-        return
-      } else if (name === 'default' && !isSchemaNode) {
+      if (name === 'default' && !isSchemaNode) {
         keyname = this._defaultSubstitute
       }
 
@@ -262,8 +263,8 @@ ConfigObjectModel.prototype.get = function(path) {
  */
 ConfigObjectModel.prototype.getOrigin = function(path) {
   path = pathToSchemaPath(path)
-  const o = walk(this._schemaRoot._cvtProperties, path)
-  return o ? o.getOrigin() : null
+  const obj = walk(this._schemaRoot._cvtProperties, path)
+  return (obj instanceof SchemaNode) ? obj.getOrigin() : undefined
 }
 
 
@@ -362,10 +363,10 @@ ConfigObjectModel.prototype.refreshGetters = function() {
  *
  * @return   {*}     Returns the default value.
  */
-ConfigObjectModel.prototype.default = function(path) {
+ConfigObjectModel.prototype.default = function(strPath) {
   // The default value for FOO.BAR.BAZ is stored in `_schema._cvtProperties` at:
   //   FOO._cvtProperties.BAR._cvtProperties.BAZ.default
-  path = pathToSchemaPath(path)
+  const path = pathToSchemaPath(strPath)
 
   try {
     const prop = walk(this._schemaRoot._cvtProperties, path)
@@ -374,8 +375,9 @@ ConfigObjectModel.prototype.default = function(path) {
     if (err instanceof PATH_INVALID) {
       err.fullname += '.default'
       throw new PATH_INVALID(err.fullname, err.lastPosition, err.parent)
+    } else {
+      throw new INCORRECT_USAGE(unroot(strPath) + ': Cannot read property "default"')
     }
-    throw err
   }
 }
 
@@ -415,6 +417,9 @@ ConfigObjectModel.prototype.has = function(name) {
       const prop = walk(this._schemaRoot._cvtProperties, pathToSchemaPath(name))
       return prop.attributes.required
     } catch (err) {
+      return false
+      /*
+      // For debug:
       if (err instanceof PATH_INVALID) {
         // undeclared property
         return false
@@ -422,6 +427,7 @@ ConfigObjectModel.prototype.has = function(name) {
         // internal error
         throw err
       }
+      */
     }
   })()
 
@@ -429,13 +435,7 @@ ConfigObjectModel.prototype.has = function(name) {
     // values that are set and required = false but undefined return false
     return isRequired || typeof this.get(name) !== 'undefined'
   } catch (err) {
-    if (err instanceof PATH_INVALID) {
-      // undeclared property
-      return false
-    } else {
-      // internal error
-      throw err
-    }
+    return false
   }
 }
 

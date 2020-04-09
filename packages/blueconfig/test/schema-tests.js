@@ -284,6 +284,7 @@ describe('blueconfig schema', function() {
     describe('.has()', function() {
       it('must not have undefined properties', function() {
         expect(myOwnConf.has('foo.bar.madeup')).to.be.false
+        expect(myOwnConf.has('foo.bar')).to.be.true
       })
 
       it('must work on undeclared property', function() {
@@ -351,6 +352,7 @@ describe('blueconfig schema', function() {
 
       it('must throw if key doesn\'t exist', function() {
         expect(() => myOwnConf.default('foo.no')).to.throw('foo.no.default: cannot find "foo.no" property because "foo.no" is not defined.')
+        expect(() => myOwnConf.default('foo')).to.throw('foo: Cannot read property "default"')
       })
 
       describe('when acting on an Object property', function() {
@@ -399,6 +401,7 @@ describe('blueconfig schema', function() {
       it('must reset the property to its default value', function() {
         expect(myOwnConf.get('foo.bar')).to.equal(8) // Modified
         expect(myOwnConf.getOrigin('foo.bar')).to.equal('value')
+        expect(myOwnConf.getOrigin('foo')).to.be.undefined
 
         myOwnConf.reset('foo.bar')
 
@@ -411,21 +414,39 @@ describe('blueconfig schema', function() {
       })
     })
   })
-})
 
-describe('blueconfig used multiple times on one schema', function() {
-  const blueconfig = require('../')
-  const schema = {
-    publicServerAddress: {
-      doc: 'The public-facing server address',
-      format: String,
-      default: 'localhost:5000'
+  describe('test SchemaNode()', function() {
+    const SchemaNode = require('../lib/model/schemanode.js')
+    const node = new SchemaNode({})
+    node._private.origin = 'plane'
+    node._private.validate = () => { throw new Error('I like flying') }
+    node._private.coerce = (v) => v + ' & plane'
+
+    it('must node.attributes._cvtGetOrigin() has the expected value', function() {
+      expect(node.attributes._cvtGetOrigin()).to.be.equal('plane')
+    })
+    it('must node.attributes._cvtValidateFormat() throws the expected message', function() {
+      expect(() => node.attributes._cvtValidateFormat()).to.throw('I like flying')
+    })
+    it('must node.attributes._cvtCoerce() returns the expected value', function() {
+      expect(node.attributes._cvtCoerce('flying')).to.be.equal('flying & plane')
+    })
+  })
+
+  it('blueconfig used multiple times on one schema', function() {
+    const blueconfig = require('../')
+    const schema = {
+      publicServerAddress: {
+        doc: 'The public-facing server address',
+        format: String,
+        default: 'localhost:5000'
+      }
     }
-  }
-  expect(function() {
-    blueconfig(schema)
-    blueconfig(schema)
-  }).to.not.throw()
+    expect(() => {
+      blueconfig(schema).validate()
+      blueconfig(schema).validate()
+    }).to.not.throw()
+  })
 })
 
 // replace Function by `[FunctionReplacement]` because `.to.deep.equal()` doesn't work well with function

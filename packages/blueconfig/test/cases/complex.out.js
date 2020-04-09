@@ -22,5 +22,6 @@ module.exports = {
   default_lang: ['en-US'],
   supported_languages: ['en-US'],
   locale_directory: 'locale',
-  express_log_format: 'default'
+  express_log_format: 'default',
+  regex: /en-US/
 }

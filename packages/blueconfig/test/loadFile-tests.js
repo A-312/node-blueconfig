@@ -13,6 +13,17 @@ describe('blueconfig merge & addParser functions', function() {
   const schema = require('./fixtures/schema')
   const expected_output = require('./fixtures/out')
 
+  describe('blueconfig()', function() {
+    it('must init worker', function() {
+      const Blueconfig = require('../lib/core.js')
+      const blueconfig = new Blueconfig()
+
+      expect(blueconfig.Getter).to.be.an('object')
+      expect(blueconfig.Parser).to.be.an('object')
+      expect(blueconfig.Ruler).to.be.an('object')
+    })
+  })
+
   describe('.addParser()', function() {
     it('must not throw on valid parser', function() {
       const parser1 = {
