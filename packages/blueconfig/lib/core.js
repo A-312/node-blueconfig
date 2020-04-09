@@ -12,7 +12,7 @@ const CUSTOMISE_FAILED = cvtError.CUSTOMISE_FAILED
  * Cutomize Blueconfig before make a ConfigObjectModel (= COM, Like DOM but not for Document, for Config)
  *
  * @example
- * const Blueconfig = require('blueconfig/core.js')
+ * const Blueconfig = require('blueconfig/lib/core.js')
  * const blueconfig = new Blueconfig()
  * console.log(blueconfig.getGettersOrder()) // === [value', 'force']
  *
@@ -43,7 +43,7 @@ BlueconfigCore.prototype.initPerformer = function() {
  * Gets array with getter name in the current order of priority
  *
  * @example
- * const Blueconfig = require('blueconfig/core.js')
+ * const Blueconfig = require('blueconfig/lib/core.js')
  * const blueconfig = new Blueconfig()
  * blueconfig.init(rawSchema, options)
  *
