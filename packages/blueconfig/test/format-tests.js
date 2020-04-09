@@ -330,7 +330,6 @@ describe('blueconfig formats', function() {
     })
 
     it('must have children (Object[])', function() {
-      console.log(myConf.getProperties())
       expect(myConf.getProperties()).to.be.deep.equal({
         sources: [{
           type: 'git',
