@@ -268,16 +268,16 @@ ConfigObjectModel.prototype.getOrigin = function(path) {
 }
 
 
-function pathToSchemaPath(path, addPath) {
+function pathToSchemaPath(path) {
   const schemaPath = []
 
   path = parsePath(path)
   path.forEach((property) => schemaPath.push(property, '_cvtProperties'))
   schemaPath.splice(-1)
 
-  if (addPath) {
+  /* if (addPath) {
     parsePath(addPath).forEach((key) => schemaPath.push(key))
-  }
+  } */
 
   return schemaPath
 }
