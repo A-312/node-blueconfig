@@ -64,9 +64,6 @@ function SchemaNode(rawSchema) {
    * @returns  {string}    value    Getter name which origin of the value
    */
   Object.defineProperty(this.attributes, '_cvtGetOrigin', {
-    enumerable: false,
-    configurable: false,
-    writable: true,
     value: () => {
       return this.getOrigin()
     }
@@ -84,9 +81,6 @@ function SchemaNode(rawSchema) {
    * @param    {*}             value       Value of the property to validate
    */
   Object.defineProperty(this.attributes, '_cvtValidateFormat', {
-    enumerable: false,
-    configurable: false,
-    writable: false,
     value: (value) => {
       this.validate(value)
     }
@@ -108,9 +102,6 @@ function SchemaNode(rawSchema) {
    *
    */
   Object.defineProperty(this.attributes, '_cvtCoerce', {
-    enumerable: false,
-    configurable: false,
-    writable: false,
     value: (value) => {
       return this.coerce(value)
     }
