@@ -373,8 +373,7 @@ ConfigObjectModel.prototype.default = function(strPath) {
     return cloneDeep(prop.attributes.default)
   } catch (err) {
     if (err instanceof PATH_INVALID) {
-      err.fullname += '.default'
-      throw new PATH_INVALID(err.fullname, err.lastPosition, err.parent)
+      throw new PATH_INVALID(err.fullname + '.default', err.path, err.name, err.value)
     } else {
       throw new INCORRECT_USAGE(unroot(strPath) + ': Cannot read property "default"')
     }

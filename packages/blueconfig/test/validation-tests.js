@@ -65,8 +65,8 @@ describe('configuration files contain properties not declared in the schema', fu
     conf.merge(path.join(__dirname, 'fixtures/validation_incorrect.json'))
 
     const expected = 'Validate failed because wrong value(s):' +
-    "\n  - configuration param 'undeclared' not declared in the schema" +
-    "\n  - configuration param 'nested.level1_1' not declared in the schema"
+    "\n  - configuration param 'nested.level1_1' not declared in the schema" +
+    "\n  - configuration param 'undeclared' not declared in the schema"
 
     expect(() => conf.validate(strictMode)).to.throw(expected)
   })
@@ -95,8 +95,8 @@ describe('configuration files contain properties not declared in the schema', fu
     const expected = 'Validate failed because wrong value(s):' +
       '\n  - foo: must be of type String: value was 58, getter was `value`' +
       '\n  - bar: must be of type String: value was 98, getter was `value`' +
-      "\n  - configuration param 'undeclared' not declared in the schema" +
-      "\n  - configuration param 'nested.level1_1' not declared in the schema"
+      "\n  - configuration param 'nested.level1_1' not declared in the schema" +
+      "\n  - configuration param 'undeclared' not declared in the schema"
 
     expect(() => conf.validate(strictMode)).to.throw(expected)
   })
@@ -189,22 +189,22 @@ describe('setting specific values', function() {
     expect(() => myOwnConf.validate(strictMode)).to.not.throw()
   })
 
-  it('must show warning for undeclared property names similar to nested declared property name', function() {
+  it('must throw for undeclared property names similar to nested declared property name', function() {
     myOwnConf.set('parent.object', { foo: 'bar' })
     myOwnConf.set('parent_object', { foo: 'bar' })
 
     const expected = 'Validate failed because wrong value(s):' +
-      "\n  - configuration param 'parent_object.foo' not declared in the schema" +
-      "\n  - configuration param 'parent.object.foo' not declared in the schema"
+      "\n  - configuration param 'parent' not declared in the schema" +
+      "\n  - configuration param 'parent_object' not declared in the schema"
 
     expect(() => myOwnConf.validate(strictMode)).to.throw(expected)
   })
 
-  it('must show warning for undeclared property names starting with declared object properties', function() {
+  it('must throw for undeclared property names starting with declared object properties', function() {
     myOwnConf.set('object', { foo: 'bar' })
     myOwnConf.set('objectfoo', { foo: 'bar' })
 
-    expect(() => myOwnConf.validate(strictMode)).to.throw("configuration param 'objectfoo.foo' not declared in the schema")
+    expect(() => myOwnConf.validate(strictMode)).to.throw("configuration param 'objectfoo' not declared in the schema")
   })
 })
 

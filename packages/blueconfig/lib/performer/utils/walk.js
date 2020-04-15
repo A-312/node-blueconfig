@@ -3,7 +3,6 @@ const stringifyPath = require('objectpath').stringify
 
 const utils = require('./utils.js')
 const isObjNotNull = utils.isObjNotNull
-const unroot = utils.unroot
 
 const cvtError = require('./../../error.js')
 const PATH_INVALID = cvtError.PATH_INVALID
@@ -28,10 +27,7 @@ function walk(obj, path, initializeMissing) {
         obj = obj[key]
       } else {
         const noCvtProp = (path) => path !== '_cvtProperties'
-        throw new PATH_INVALID(stringifyPath(path.filter(noCvtProp)), stringifyPath(historic), {
-          path: unroot(stringifyPath(historic.slice(0, -1))),
-          value: obj
-        })
+        throw new PATH_INVALID(stringifyPath(path.filter(noCvtProp)), historic.slice(0, -1), historic[historic.length - 1], obj)
       }
     }
   }

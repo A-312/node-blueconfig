@@ -1,3 +1,8 @@
+const stringifyPath = require('objectpath').stringify
+
+const utils = require('./performer/utils/utils.js')
+const unroot = utils.unroot
+
 /**
  * @namespace ZCUSTOMERROR
  */
@@ -117,7 +122,7 @@ class SCHEMA_INVALID extends BLUECONFIG_ERROR {
     this.fullname = fullname
 
     this.type = 'SCHEMA_INVALID'
-    this.doc = 'You schema is not valid, edit your schema to continue.'
+    this.doc = 'The schema is not valid, edit your schema to continue.'
 
     return this
   }
@@ -183,31 +188,29 @@ class INCORRECT_USAGE extends BLUECONFIG_ERROR {
  */
 class PATH_INVALID extends BLUECONFIG_ERROR {
   /**
-   * @param {String}   fullname        Return the full selector of value missed (e.g.: `base.path.name`)
-   * @param {String}   lastPosition    Return the nearest full selector before missed key (e.g.: `base.path.name`)
-   * @param {Object}   parent          Parent
-   * @param {Object}   parent.path     Return the full path of `parent`
-   * @param {Object}   parent.value    Return the value of `parent`
+   * @param {String}   fullname         Return the full selector of value missed (e.g.: `base.path.name`)
+   * @param {Array}    path             Return the nearest full selector before missed key (e.g.: `['base', 'path']`)
+   * @param {String}   name             Return the property name missing or invalid value
+   * @param {*}        value            Return the value (should be an object)
    */
-  constructor(fullname, lastPosition, parent) {
-    let path = parent.path
-    const state = (() => {
-      const type = typeof parent.value
+  constructor(fullname, path, name, value) {
+    const fullpath = unroot(stringifyPath([...path, name]))
+
+    const why = (() => {
+      const type = typeof value
       if (type !== 'object') {
-        return `a ${type}`
-      } else if (parent.value === null) {
-        return 'null'
+        return `"${unroot(stringifyPath(path))}" is a ${type}`
+      } else if (value === null) {
+        return `"${unroot(stringifyPath(path))}" is null`
       } else {
-        path = lastPosition
-        return 'not defined'
+        return `"${fullpath}" is not defined`
       }
     })()
-    const why = `"${path}" is ${state}`
 
-    super(`${fullname}: cannot find "${lastPosition}" property because ${why}.`)
+    super(`${fullname}: cannot find "${fullpath}" property because ${why}.`)
 
     /**
-     * Return the full selector to the properties missing (e.g.: `base.path.name`)
+     * Return the full selector of value missed (e.g.: `base.path.name`)
      *
      * @var fullname
      * @memberof PATH_INVALID
@@ -215,20 +218,28 @@ class PATH_INVALID extends BLUECONFIG_ERROR {
     this.fullname = fullname
 
     /**
-     * Return the parent of to the properties missing (e.g.: `base.path`)
+     * Return the nearest full selector before missed key (e.g.: `base.path`)
      *
-     * @var parent
+     * @var path
      * @memberof PATH_INVALID
      */
-    this.parent = parent
+    this.path = path
 
     /**
-     * Return the nearest full selector before missed properties (e.g.: `base.path.name`)
+     * Return the property name missing or invalid value
      *
-     * @var lastPosition
+     * @var name
      * @memberof PATH_INVALID
      */
-    this.lastPosition = lastPosition
+    this.name = name
+
+    /**
+     * Return the value (should be an object)
+     *
+     * @var value
+     * @memberof PATH_INVALID
+     */
+    this.value = value
 
     /**
      * Error explanation
