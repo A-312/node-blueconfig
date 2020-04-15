@@ -700,7 +700,7 @@ ConfigObjectModel.prototype.validate = function(options) {
 
   const output_function = options.output || global.console.log
 
-  const errors = validator(this._instance, this._schema, options.allowed)
+  const errors = validator.call(this, options.allowed)
 
   // Write 'Warning:' in bold and in yellow
   const BOLD_YELLOW_TEXT = '\x1b[33;1m'

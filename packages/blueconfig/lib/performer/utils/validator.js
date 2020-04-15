@@ -57,7 +57,10 @@ function flatten(obj, useProperties) {
   return flattened
 }
 
-function validator(instance, schema, strictValidation) {
+function validator(strictValidation) {
+  const instance = this._instance
+  const schema = this._schema
+
   const errors = {
     undeclared: [],
     invalid_type: [],
