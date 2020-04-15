@@ -37,11 +37,11 @@ function validator(strictValidation) {
             errors.undeclared.push(err)
           }
         } else if (nodeKeys.indexOf(name) !== -1) {
-          // If node[name] and schema[name] exist:
+          // If node[name] and schema[name] exists:
           if (!schema[name]._cvtProperties) {
+            const attr = schema[name].attributes
             // Is a property:
-            if (schema[name].attributes.required || !(typeof schema[name].attributes.default === 'undefined' &&
-                  node[name] === schema[name].attributes.default)) {
+            if (attr.required || !(typeof attr.default === 'undefined' && node[name] === attr.default)) {
               try {
                 schema[name].validate(node[name])
               } catch (err) {
