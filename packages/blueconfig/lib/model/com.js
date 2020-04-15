@@ -569,7 +569,7 @@ function traverseSchema(schema, path) {
  */
 ConfigObjectModel.prototype.load = function(obj) {
   Apply.values.call(this, {
-    root: obj
+    root: cloneDeep(obj)
   }, this._instance, this._schema)
 
   return this

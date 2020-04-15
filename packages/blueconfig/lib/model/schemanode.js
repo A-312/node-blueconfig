@@ -1,10 +1,7 @@
-const cloneDeep = require('lodash.clonedeep')
-
 const utils = require('./../performer/utils/utils.js')
 const unroot = utils.unroot
 
 const cvtError = require('./../error.js')
-
 const LISTOFERRORS = cvtError.LISTOFERRORS
 const FORMAT_INVALID = cvtError.FORMAT_INVALID
 
@@ -15,7 +12,7 @@ const FORMAT_INVALID = cvtError.FORMAT_INVALID
  * @class
  */
 function SchemaNode(rawSchema) {
-  const schema = cloneDeep(rawSchema)
+  const schema = { ...rawSchema }
 
   this._private = {
     origin: undefined,
