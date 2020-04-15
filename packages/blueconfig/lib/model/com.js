@@ -101,7 +101,7 @@ function ConfigObjectModel(rawSchema, options, scope) {
   this._sensitive = new Set()
 
   // inheritance (own getter)
-  this._getters = cloneDeep(this.Getter.storage)
+  this._getters = this.Getter.cloneStorage()
 
   Object.keys(rawSchema).forEach((key) => {
     parsingSchema.call(this, key, rawSchema[key], this._schema._cvtProperties, key)
@@ -347,7 +347,7 @@ ConfigObjectModel.prototype.sortGetters = function(newOrder) {
  * blueconfig.getGettersOrder() // ['value', 'default', 'arg', 'env', 'force']
  */
 ConfigObjectModel.prototype.refreshGetters = function() {
-  this._getters = cloneDeep(this.Getter.storage)
+  this._getters = this.Getter.cloneStorage()
 
   Apply.getters.call(this, this._schema, this._instance)
 }
