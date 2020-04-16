@@ -1,15 +1,13 @@
-os:
-  - linux
+dist: xenial
+os: linux
 
 language: node_js
-
-sudo: false
 
 node_js:
   - "8.15"
   - "10.16"
-  - lts/*
-  - stable
+  - "stable"
+  - "lts/*"
 
 branches:
   only:
@@ -22,10 +20,6 @@ jobs:
 cache:
   directories:
     - node_modules
-
-node_js:
-  - "stable"
-  - "lts/*"
 
 install:
   - npm run bootstrap:ci
