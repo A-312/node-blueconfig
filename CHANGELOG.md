@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [6.2.0] - 2019-04-16
+### Changed
+ - Improve coverage % (@A-312)
+ - Code review: Validate is 3 times faster than before (@A-312)
+   ```
+   convict@5.2.0 x 40,531 ops/sec ±1.59% (86 runs sampled)
+   blueconfig@6.2.0 x 134,203 ops/sec ±1.52% (90 runs sampled)
+   blueconfig@6.0.2 x 37,208 ops/sec ±1.18% (92 runs sampled)
+   Fastest is blueconfig@latest
+   ```
+
 ## [6.1.0] - 2019-04-09
 ### Added
  - Accept format in the root of a config tree (@A-312)
