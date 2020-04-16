@@ -101,7 +101,7 @@ function ConfigObjectModel(rawSchema, options, scope) {
   this._sensitive = new Set()
 
   // inheritance (own getter)
-  this._getters = cloneDeep(this.Getter.storage)
+  this._getters = this.Getter.cloneStorage()
 
   Object.keys(rawSchema).forEach((key) => {
     parsingSchema.call(this, key, rawSchema[key], this._schema._cvtProperties, key)
@@ -347,7 +347,7 @@ ConfigObjectModel.prototype.sortGetters = function(newOrder) {
  * blueconfig.getGettersOrder() // ['value', 'default', 'arg', 'env', 'force']
  */
 ConfigObjectModel.prototype.refreshGetters = function() {
-  this._getters = cloneDeep(this.Getter.storage)
+  this._getters = this.Getter.cloneStorage()
 
   Apply.getters.call(this, this._schema, this._instance)
 }
@@ -373,8 +373,7 @@ ConfigObjectModel.prototype.default = function(strPath) {
     return cloneDeep(prop.attributes.default)
   } catch (err) {
     if (err instanceof PATH_INVALID) {
-      err.fullname += '.default'
-      throw new PATH_INVALID(err.fullname, err.lastPosition, err.parent)
+      throw new PATH_INVALID(err.fullname + '.default', err.path, err.name, err.value)
     } else {
       throw new INCORRECT_USAGE(unroot(strPath) + ': Cannot read property "default"')
     }
@@ -570,7 +569,7 @@ function traverseSchema(schema, path) {
  */
 ConfigObjectModel.prototype.load = function(obj) {
   Apply.values.call(this, {
-    root: obj
+    root: cloneDeep(obj)
   }, this._instance, this._schema)
 
   return this
@@ -700,7 +699,7 @@ ConfigObjectModel.prototype.validate = function(options) {
 
   const output_function = options.output || global.console.log
 
-  const errors = validator(this._instance, this._schema, options.allowed)
+  const errors = validator.call(this, options.allowed)
 
   // Write 'Warning:' in bold and in yellow
   const BOLD_YELLOW_TEXT = '\x1b[33;1m'

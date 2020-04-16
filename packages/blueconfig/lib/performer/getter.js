@@ -52,6 +52,19 @@ Getter.prototype.add = function(keyname, getter, usedOnlyOnce, rewrite) {
   }
 }
 
+
+/**
+ * @returns Returns sorted function which sorts array to newOrder
+ */
+Getter.prototype.cloneStorage = function() {
+  const storage = this.storage
+  return {
+    order: [...storage.order],
+    list: { ...storage.list }
+  }
+}
+
+
 /**
  * @returns Returns sorted function which sorts array to newOrder
  */
