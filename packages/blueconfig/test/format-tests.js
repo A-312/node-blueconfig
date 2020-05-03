@@ -1,8 +1,6 @@
 const chai = require('chai')
 const expect = chai.expect
 
-const validator = require('validator')
-
 const new_require = require('./new_require.js')
 const blueconfig = new_require('../')
 const LISTOFERRORS = require('blueconfig/lib/error.js').LISTOFERRORS
@@ -84,7 +82,7 @@ describe('blueconfig formats', function() {
         },
         custom: {
           format: function(val) {
-            if (!validator.isAlpha(val)) {
+            if (parseInt(val, 16).toString(16) !== val.toLowerCase()) {
               throw new Error('expected alpha characters, got ' + val)
             }
           },
