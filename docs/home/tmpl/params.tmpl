@@ -1,0 +1,98 @@
+<?js
+  var isChild = false
+  var origin = ''
+
+  if (typeof obj === 'object' && obj !== null && obj.subparams) {
+    origin = obj.path + '.'
+    obj = obj.subparams
+    isChild = true
+  }
+
+  var params = obj
+
+  function escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  /* sort subparams under their parent params (like opts.classname) */
+  var parentParam = null
+  params.forEach(function(param, i) {
+    var paramRegExp
+
+    if (!param) {
+      return
+    }
+
+    param.fullname = origin + param.name
+    if (parentParam && parentParam.name && param.name) {
+      try {
+        paramRegExp = new RegExp('^(?:' + escapeRegExp(parentParam.name) + '(?:\\[\\])*)\\.(.+)$')
+      }   
+      catch (e) {   
+        console.error('Problem parsing comment', e)
+        // there's probably a typo in the JSDoc comment that resulted in a weird  
+        // parameter name   
+        return   
+      }
+
+      if ( paramRegExp.test(param.name) ) {
+        param.name = RegExp.$1
+        parentParam.subparams = parentParam.subparams || []
+        parentParam.subparams.push(param)
+        params[i] = null
+      }
+      else {
+        parentParam = param
+      }
+    }
+    else {
+      parentParam = param
+    }
+  })
+?>
+
+<dl>
+  <?js if (isChild) { ?>
+    <h6>Sub properties</h6>
+  <?js } ?>
+  <?js
+    var self = this
+    params.forEach(function(param) {
+      if (!param) { return }
+  ?>
+    <dt>
+      <code class="parameter"><?js= param.fullname ?></code>
+      <?js if (param.type && param.type.names) {?>
+        <?js= self.partial('type.tmpl', param.type.names) ?>
+      <?js } ?>
+    </dt>
+    <dd class="para">
+      <?js if (params.hasAttributes) {?>
+        <?js if (param.optional) { ?>
+          &ltoptional><br>
+        <?js } ?>
+
+        <?js if (param.nullable) { ?>
+          &ltnullable><br>
+        <?js } ?>
+
+        <?js if (param.variable) { ?>
+          &ltrepeatable><br>
+        <?js } ?>
+      <?js } ?>
+
+      <?js if (params.hasDefault) {?>
+        <?js if (typeof param.defaultvalue !== 'undefined') { ?>
+          <code><?js= self.htmlsafe(param.defaultvalue) ?></code>
+        <?js } ?>
+      <?js } ?>
+
+      <?js= param.description ?></p>
+
+      <?js if (param.subparams) { ?>
+        <?js= self.partial('params.tmpl', { 'subparams': param.subparams, 'path': param.fullname }) ?>
+      <?js } ?>
+    </dd>
+  <?js }) ?> 
+</dl>
+

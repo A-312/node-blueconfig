@@ -20,17 +20,11 @@
   "engines": {
     "node": ">=8"
   },
-  "scripts": {
-    "posttest": "npm run lint",
-    "test": "mocha --check-leaks test/*-tests.js",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
-  },
   "files": [
     "lib"
   ],
   "main": "lib/index.js",
   "dependencies": {
-    "validator": "11.1.0"
+    "validator": "13.0.0"
   }
 }

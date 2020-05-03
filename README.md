@@ -1,7 +1,7 @@
 # Node-blueconfig
 
 [![Dependency Status](https://david-dm.org/A-312/node-blueconfig.svg)](https://david-dm.org/A-312/node-blueconfig)
-[![devDependency Status](https://david-dm.org/A-312/node-blueconfig/dev-status.svg)](https://david-dm.org/A-312/node-blueconfig#info=devDependencies)
+[![devDependency Status](https://david-dm.org/A-312/node-blueconfig/dev-status.svg)](https://david-dm.org/A-312/node-blueconfig?type=dev)
 [![Build Status](https://travis-ci.com/A-312/node-blueconfig.svg?branch=master)](https://travis-ci.com/A-312/node-blueconfig)
 [![Coverage Status](https://coveralls.io/repos/github/A-312/node-blueconfig/badge.svg?branch=master)](https://coveralls.io/github/A-312/node-blueconfig?branch=master)
 

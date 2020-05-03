@@ -19,17 +19,11 @@
   "engines": {
     "node": ">=8"
   },
-  "scripts": {
-    "posttest": "npm run lint",
-    "test": "mocha --check-leaks test/*-tests.js",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
-  },
   "files": [
     "lib"
   ],
   "main": "lib/index.js",
   "dependencies": {
-    "moment": "2.24.0"
+    "moment": "2.25.1"
   }
 }
