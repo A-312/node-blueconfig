@@ -25,6 +25,6 @@
   ],
   "main": "lib/index.js",
   "dependencies": {
-    "validator": "11.1.0"
+    "validator": "13.0.0"
   }
 }
