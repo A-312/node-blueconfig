@@ -1,13 +1,6 @@
 {
   "name": "node-blueconfig",
   "private": true,
-  "dependencies": {
-    "lodash.clonedeep": "4.5.0",
-    "moment": "2.24.0",
-    "objectpath": "2.0.0",
-    "validator": "11.1.0",
-    "yargs-parser": "18.1.3"
-  },
   "devDependencies": {
     "blueconfig": "file:./packages/blueconfig/",
     "blueconfig-format-with-moment": "file:./packages/blueconfig-format-with-moment/",
@@ -27,19 +20,18 @@
     "json5": "2.1.3",
     "lerna": "3.20.2",
     "mocha": "7.1.2",
-    "nyc": "14.1.1",
+    "nyc": "15.0.1",
     "toml": "3.0.0"
   },
   "scripts": {
-    "bootstrap:ci": "npm ci && npm ci packages/*",
-    "doc": "node node_modules/jsdoc/jsdoc.js -c jsdoc.json --readme ./docs/home/home.md",
+    "setup:ci": "npm ci",
+    "postinstall": "node node_modules/lerna/cli.js link",
+    "doc": "node node_modules/jsdoc_a312/jsdoc.js -c jsdoc.json --readme ./docs/home/home.md",
     "posttest": "npm run lint",
     "test": "mocha --check-leaks packages/*/test/*-tests.js",
     "posttest:coverage": "npm run lint",
     "test:coverage": "nyc --nycrc-path=nycrc.json --cache-dir=/tmp/nyc_cache_blueconfig mocha packages/*/test/*-tests.js",
-    "pretest:ci": "npm run lint",
     "test:ci": "npm run test:coverage && cat /tmp/nyc_report_blueconfig/lcov.info | coveralls",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
+    "lint": "eslint ."
   }
 }

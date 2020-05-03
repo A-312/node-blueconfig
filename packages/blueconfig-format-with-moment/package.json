@@ -19,12 +19,6 @@
   "engines": {
     "node": ">=8"
   },
-  "scripts": {
-    "posttest": "npm run lint",
-    "test": "mocha --check-leaks test/*-tests.js",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix ."
-  },
   "files": [
     "lib"
   ],

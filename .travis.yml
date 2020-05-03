@@ -22,7 +22,8 @@ cache:
     - node_modules
 
 install:
-  - npm run bootstrap:ci
+  - npm run setup:ci
+  - npm ci packages/*
 
 script:
   - npm run test:ci
