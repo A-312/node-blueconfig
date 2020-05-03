@@ -255,352 +255,177 @@ console.log(blueconfig.getGettersOrder()) // === [value', 'force']</code></pre>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">name</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 |
 
 <span class="param-type">object</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p>String for Format name, <code>Object/Object[]</code> or which contains arguments:</p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>String for Format name, <code>Object/Object[]</code> or which contains arguments:</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
+      
         
 
-        <th>Type</th>
-
+<dl>
+  
+    <h6>Sub properties</h6>
+  
+  
+    <dt>
+      <code class="parameter">name.name</code>
+      
         
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p>Format name</p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>Format name</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>validate</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">name.validate</code>
+      
+        
 <span class="param-type">function</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p><em>See below</em></p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p><em>See below</em></p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>coerce</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">name.coerce</code>
+      
+        
 <span class="param-type">function</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p><em>See below</em></p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p><em>See below</em></p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>rewrite</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">name.rewrite</code>
+      
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p><em>See below</em></p></p>
 
-                
-                </td>
-            
+      
+    </dd>
+   
+</dl>
 
-            
-                <td class="default">
-                
-                    <code>false</code>
-                
-                </td>
-            
 
-            <td class="description last"><p><em>See below</em></p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>validate</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">validate</code>
+      
+        
 <span class="param-type"><a href="SchemaNode.html#.validateCallback">SchemaNode.validateCallback</a></span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p>Validate function, should throw if the value is wrong <code>Error</code> or <a href="./ZCUSTOMERROR.LISTOFERRORS.html"><code>LISTOFERRORS</code> (see example)</a></p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>Validate function, should throw if the value is wrong <code>Error</code> or <a href="./ZCUSTOMERROR.LISTOFERRORS.html"><code>LISTOFERRORS</code> (see example)</a></p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>coerce</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">coerce</code>
+      
+        
 <span class="param-type">SchemaNode.coerce</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p>Coerce function to convert a value to a specified function (can be omitted)</p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>Coerce function to convert a value to a specified function (can be omitted)</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>rewrite</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">rewrite</code>
+      
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p>Allow rewrite an existant format</p></p>
 
-                
-                </td>
-            
+      
+    </dd>
+   
+</dl>
 
-            
-                <td class="default">
-                
-                    <code>false</code>
-                
-                </td>
-            
-
-            <td class="description last"><p>Allow rewrite an existant format</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -736,241 +561,131 @@ blueconfig.addFormats({ // add: email, ipaddress, url, token
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">formats</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>formats</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">object</span>
 |
 
 <span class="param-type">Array.&lt;object></span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Object containing list of Object</p></p>
 
-            <td class="description last"><p>Object containing list of Object</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
+      
         
 
-        <th>Type</th>
-
+<dl>
+  
+    <h6>Sub properties</h6>
+  
+  
+    <dt>
+      <code class="parameter">formats.{name}</code>
+      
         
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>{name}</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">object</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>{name} in <code>formats.{name}</code> is the format name</p></p>
 
-            <td class="description last"><p>{name} in <code>formats.{name}</code> is the format name</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
+      
         
 
-        <th>Type</th>
-
+<dl>
+  
+    <h6>Sub properties</h6>
+  
+  
+    <dt>
+      <code class="parameter">formats.{name}.validate</code>
+      
         
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>validate</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">function</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p><em>See Blueconfig.addFormat</em></p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p><em>See Blueconfig.addFormat</em></p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>coerce</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">formats.{name}.coerce</code>
+      
+        
 <span class="param-type">function</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p><em>See Blueconfig.addFormat</em></p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p><em>See Blueconfig.addFormat</em></p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>rewrite</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">formats.{name}.rewrite</code>
+      
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p><em>See Blueconfig.addFormat</em></p></p>
 
-                
-                </td>
-            
+      
+    </dd>
+   
+</dl>
 
-            
-                <td class="default">
-                
-                    <code>false</code>
-                
-                </td>
-            
 
-            <td class="description last"><p><em>See Blueconfig.addFormat</em></p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
-            </td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -1088,360 +803,177 @@ blueconfig.addFormats({ // add: email, ipaddress, url, token
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">name</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 |
 
 <span class="param-type">object</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p>String for Getter name, <code>Object/Object[]</code> or which contains arguments:</p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>String for Getter name, <code>Object/Object[]</code> or which contains arguments:</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
+      
         
 
-        <th>Type</th>
-
+<dl>
+  
+    <h6>Sub properties</h6>
+  
+  
+    <dt>
+      <code class="parameter">name.name</code>
+      
         
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p>Getter name</p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>Getter name</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>getter</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">name.getter</code>
+      
+        
 <span class="param-type">function</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p><em>See below</em></p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p><em>See below</em></p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>usedOnlyOnce</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">name.usedOnlyOnce</code>
+      
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p><em>See below</em></p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>false</code>
-                
-                </td>
-            
-
-            <td class="description last"><p><em>See below</em></p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>rewrite</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">name.rewrite</code>
+      
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p><em>See below</em></p></p>
 
-                
-                </td>
-            
+      
+    </dd>
+   
+</dl>
 
-            
-                <td class="default">
-                
-                    <code>false</code>
-                
-                </td>
-            
 
-            <td class="description last"><p><em>See below</em></p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>getter</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">getter</code>
+      
+        
 <span class="param-type"><a href="ConfigObjectModel.html#.getterCallback">ConfigObjectModel.getterCallback</a></span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p>Getter function get external value depending of the name name.</p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>Getter function get external value depending of the name name.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>usedOnlyOnce</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">usedOnlyOnce</code>
+      
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p><code>false</code> by default. If true, The value can't be reused by another <code>keyname=value</code></p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>false</code>
-                
-                </td>
-            
-
-            <td class="description last"><p><code>false</code> by default. If true, The value can't be reused by another <code>keyname=value</code></p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>rewrite</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">rewrite</code>
+      
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p>Allow rewrite an existant format</p></p>
 
-                
-                </td>
-            
+      
+    </dd>
+   
+</dl>
 
-            
-                <td class="default">
-                
-                    <code>false</code>
-                
-                </td>
-            
-
-            <td class="description last"><p>Allow rewrite an existant format</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -1569,245 +1101,131 @@ Blueconfig.addGetters({
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">getters</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>getters</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">object</span>
 |
 
 <span class="param-type">Array.&lt;object></span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Object containing list of Getters/Object</p></p>
 
-            <td class="description last"><p>Object containing list of Getters/Object</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
+      
         
 
-        <th>Type</th>
-
+<dl>
+  
+    <h6>Sub properties</h6>
+  
+  
+    <dt>
+      <code class="parameter">getters.{name}</code>
+      
         
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>{name}</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">object</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p><code>name</code> is the getter name</p></p>
 
-            <td class="description last"><p>{name} in <code>getters.{name}</code> is the getter name</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
+      
         
 
-        <th>Type</th>
-
+<dl>
+  
+    <h6>Sub properties</h6>
+  
+  
+    <dt>
+      <code class="parameter">getters.{name}.getter</code>
+      
         
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>getter</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">function</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p><em>See Blueconfig.addGetter</em></p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p><em>See Blueconfig.addGetter</em></p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>usedOnlyOnce</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">getters.{name}.usedOnlyOnce</code>
+      
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p><em>See Blueconfig.addGetter</em></p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>false</code>
-                
-                </td>
-            
-
-            <td class="description last"><p><em>See Blueconfig.addGetter</em></p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>rewrite</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">getters.{name}.rewrite</code>
+      
+        
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p><em>See Blueconfig.addGetter</em></p></p>
 
-                
-                </td>
-            
+      
+    </dd>
+   
+</dl>
 
-            
-                <td class="default">
-                
-                    <code>false</code>
-                
-                </td>
-            
 
-            <td class="description last"><p><em>See Blueconfig.addGetter</em></p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
-            </td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -1932,122 +1350,79 @@ config.merge('config.yml')</code></pre>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">parsers</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>parsers</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">Array.&lt;object></span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Parser</p></p>
 
-            <td class="description last"><p>Parser</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
+      
         
 
-        <th>Type</th>
-
+<dl>
+  
+    <h6>Sub properties</h6>
+  
+  
+    <dt>
+      <code class="parameter">parsers.extension</code>
+      
         
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>extension</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Parser extension</p></p>
 
-            <td class="description last"><p>Parser extension</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>parse</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">parsers.parse</code>
+      
+        
 <span class="param-type">function</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Parser function</p></p>
 
-            <td class="description last"><p>Parser function</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
-            </td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -2279,96 +1654,52 @@ blueconfig.init(rawSchema, options)</code></pre>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">rawSchema</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>rawSchema</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 |
 
 <span class="param-type">object</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p>Schema object or a path to a schema JSON file</p></p>
 
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Schema object or a path to a schema JSON file</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">options</code>
+      
+        
 <span class="param-type">object</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p>Options. <a href="./ConfigObjectModel.html">See ConfigObjectModel constructor doc</a></p></p>
 
-                
-                </td>
-            
+      
+    </dd>
+   
+</dl>
 
-            
-
-            <td class="description last"><p>Options. <a href="./ConfigObjectModel.html">See ConfigObjectModel constructor doc</a></p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -2609,50 +1940,30 @@ blueconfig.getGettersOrder()
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">newOrder</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>newOrder</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">Array.&lt;string></span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Value of the property to validate</p></p>
 
-            <td class="description last"><p>Value of the property to validate</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -2710,7 +2021,7 @@ blueconfig.getGettersOrder()
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Sat May 02 2020 08:22:10 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Sun May 03 2020 09:51:02 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

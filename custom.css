@@ -31,3 +31,44 @@
 code {
   overflow: auto;
 }
+
+body {
+  overflow-x: hidden
+}
+
+.params .type {
+    white-space: normal;
+    word-break: initial;
+    max-width: 50px;
+}
+
+dl dd {
+  margin-left: 1.5em;
+}
+
+dl h6 {
+  margin: 0 0 8px;
+}
+
+dl dl {
+  margin: 0 0 0 20px;
+  padding: 0 0 0 20px;
+  border-left:1px solid #4d4e53;
+}
+
+dd.para p {
+    margin: 0 0 20px;
+}
+
+code.parameter {
+  color: #369;
+  font-weight: 700;
+}
+
+h1.page-title,
+h1 { font-size: 48px; }
+h2 { font-size: 42px; }
+h3 { font-size: 36px; }
+h4 { font-size: 28px; } h4.name { font-size: 18px; }
+h5 { font-size: 24px; }
+h6 { font-size: 20px; }

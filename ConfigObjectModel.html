@@ -148,382 +148,226 @@ config = blueconfig('/some/path/to/a/config-schema.json');</code></pre>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">rawSchema</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>rawSchema</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 |
 
 <span class="param-type">object</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p>Schema object or a path to a schema JSON file</p></p>
 
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Schema object or a path to a schema JSON file</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">options</code>
+      
+        
 <span class="param-type">object</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p>Options:</p></p>
 
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Options:</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
+      
         
 
-        <th>Type</th>
-
+<dl>
+  
+    <h6>Sub properties</h6>
+  
+  
+    <dt>
+      <code class="parameter">options.env</code>
+      
         
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>env</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">object</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p>Override <code>process.env</code> if specified using an object <code>{'NODE_ENV': 'production'}</code>.</p></p>
 
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Override <code>process.env</code> if specified using an object <code>{'NODE_ENV': 'production'}</code>.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>args</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">options.args</code>
+      
+        
 <span class="param-type">Array.&lt;string></span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p>Override <code>process.argv</code> if specified using an array <code>['--argname', 'value']</code> or a string <code>--argname value</code>.</p></p>
 
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Override <code>process.argv</code> if specified using an array <code>['--argname', 'value']</code> or a string <code>--argname value</code>.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>defaultSubstitute</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">options.defaultSubstitute</code>
+      
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p>Override <code>'$~default'</code>, this value will be replaced by <code>'default'</code> during the schema parsing.</p></p>
 
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Override <code>'$~default'</code>, this value will be replaced by <code>'default'</code> during the schema parsing.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>strictParsing</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">options.strictParsing</code>
+      
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p>Throw an error if <code>default</code> or <code>format</code> properties are omitted.</p></p>
 
-                
-                </td>
-            
+      
+    </dd>
+   
+</dl>
 
-            
 
-            <td class="description last"><p>Throw an error if <code>default</code> or <code>format</code> properties are omitted.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>scope</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">scope</code>
+      
+        
 <span class="param-type">object</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p>workers</p></p>
 
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>workers</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
+      
         
 
-        <th>Type</th>
-
+<dl>
+  
+    <h6>Sub properties</h6>
+  
+  
+    <dt>
+      <code class="parameter">scope.Getter</code>
+      
         
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>Getter</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type"><a href="Getter.html">Getter</a></span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Getter worker</p></p>
 
-            <td class="description last"><p>Getter worker</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>Parser</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">scope.Parser</code>
+      
+        
 <span class="param-type"><a href="Parser.html">Parser</a></span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Parser worker</p></p>
 
-            <td class="description last"><p>Parser worker</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>Ruler</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">scope.Ruler</code>
+      
+        
 <span class="param-type"><a href="Ruler.html">Ruler</a></span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Ruler worker</p></p>
 
-            <td class="description last"><p>Ruler worker</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
-            </td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -642,50 +486,30 @@ config = blueconfig('/some/path/to/a/config-schema.json');</code></pre>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">name</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Target property, <code>name</code> can use dot notation to reference</p></p>
 
-            <td class="description last"><p>Target property, <code>name</code> can use dot notation to reference</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -813,50 +637,30 @@ config.get("['site.fr']") // { 'site.fr': 'french site' }</code></pre>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">name</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Target property, <code>name</code> can use dot notation to reference</p></p>
 
-            <td class="description last"><p>Target property, <code>name</code> can use dot notation to reference</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -1316,50 +1120,30 @@ the second argument (options) argument of the blueconfig function.</p>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">name</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Target property, <code>name</code> can use dot notation to reference</p></p>
 
-            <td class="description last"><p>Target property, <code>name</code> can use dot notation to reference</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -1583,58 +1367,30 @@ the second argument (options) argument of the blueconfig function.</p>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">{debug</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>{debug</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
-                <td class="default">
-                
-                    <code>false}</code>
-                
-                </td>
-            
+      <p>When debug is true, returns Schema Node Model (as stored in blueconfig database).</p></p>
 
-            <td class="description last"><p>When debug is true, returns Schema Node Model (as stored in blueconfig database).</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -1749,58 +1505,30 @@ the second argument (options) argument of the blueconfig function.</p>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">{debug</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>{debug</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">boolean</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
-                <td class="default">
-                
-                    <code>false}</code>
-                
-                </td>
-            
+      <p>When debug is true, returns Schema Node Model (as stored in blueconfig database).</p></p>
 
-            <td class="description last"><p>When debug is true, returns Schema Node Model (as stored in blueconfig database).</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -1922,50 +1650,30 @@ the second argument (options) argument of the blueconfig function.</p>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">name</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Target property, <code>name</code> can use dot notation to reference</p></p>
 
-            <td class="description last"><p>Target property, <code>name</code> can use dot notation to reference</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -2082,50 +1790,30 @@ the second argument (options) argument of the blueconfig function.</p>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">obj</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>obj</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">object</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Load object</p></p>
 
-            <td class="description last"><p>Load object</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -2238,53 +1926,33 @@ the second argument (options) argument of the blueconfig function.</p>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">paths</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>paths</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 |
 
 <span class="param-type">Array.&lt;string></span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Config file paths</p></p>
 
-            <td class="description last"><p>Config file paths</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -2648,50 +2316,30 @@ blueconfig.getGettersOrder() // ['value', 'default', 'arg', 'env', 'force']</cod
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">name</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Target property, <code>name</code> can use dot notation to reference</p></p>
 
-            <td class="description last"><p>Target property, <code>name</code> can use dot notation to reference</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -2828,101 +2476,44 @@ config.merge({color: 'blue'}) // getter: 'value'
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">name</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
+      
 
-                
+      <p>Target property, <code>name</code> can use dot notation to reference nested values, e.g. <code>&quot;db.name&quot;</code>.
+If objects in the chain don't yet exist, they will be initialized to empty objects.</p></p>
 
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"><p>Target property, <code>name</code> can use dot notation to reference nested values, e.g. <code>&quot;db.name&quot;</code>.
-If objects in the chain don't yet exist, they will be initialized to empty objects.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>priority</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">priority</code>
+      
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>false</code>
-                
-                </td>
-            
-
-            <td class="description last"><p>Optional, can be a boolean or getter name (a string). You must declare this property in
+      <p>Optional, can be a boolean or getter name (a string). You must declare this property in
 the schema to use this option. <code>set</code> will change the property getter origin depending on
 <code>priority</code> value:</p>
 <ul>
@@ -2930,52 +2521,33 @@ the schema to use this option. <code>set</code> will change the property getter 
 <li><code>true</code>: priority set to <code>force</code>, can be only changed if you do another <code>.set(name, value)</code>.
 Make sure that <code>.refreshGetters()</code> will not overwrite your value.</li>
 <li><code>&lt;string&gt;</code>: must be a getter name (e.g.: <code>default</code>, <code>env</code>, <code>arg</code>).</li>
-</ul></td>
-        </tr>
+</ul></p>
 
-    
-
-        <tr>
-            
-                <td class="name"><code>respectPriority</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">respectPriority</code>
+      
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p>Optional, if this argument is <code>true</code> this function will change the value only if <code>priority</code>
+is higher than or equal to the property getter origin.</p></p>
 
-                
-                </td>
-            
+      
+    </dd>
+   
+</dl>
 
-            
-                <td class="default">
-                
-                    <code>false</code>
-                
-                </td>
-            
-
-            <td class="description last"><p>Optional, if this argument is <code>true</code> this function will change the value only if <code>priority</code>
-is higher than or equal to the property getter origin.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -3099,50 +2671,30 @@ is higher than or equal to the property getter origin.</p></td>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">newOrder</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>newOrder</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">Array.&lt;string></span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>The new getter order</p></p>
 
-            <td class="description last"><p>The new getter order</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
 
 
 
@@ -3373,175 +2925,86 @@ All errors are collected and thrown or displayed at once.</p>
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">options</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>options</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">object</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p>Options, accepts: <code>options.allow</code> and <code>options.output</code>:</p></p>
 
-                
-                </td>
-            
-
-            
-
-            <td class="description last"><p>Options, accepts: <code>options.allow</code> and <code>options.output</code>:</p>
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
+      
         
 
-        <th>Type</th>
-
+<dl>
+  
+    <h6>Sub properties</h6>
+  
+  
+    <dt>
+      <code class="parameter">options.allowed</code>
+      
         
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>allowed</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>warn</code>
-                
-                </td>
-            
-
-            <td class="description last"><p>Any properties specified in config files that are not declared in the schema will
+      <p>Any properties specified in config files that are not declared in the schema will
 print a warning or throw an error depending on this setting:</p>
 <ul>
 <li><code>'warn'</code>: is the default behavior, will print a warning.</li>
 <li><code>'strict'</code>: will throw errors. This is to ensure that the schema and the config
 files are sync.</li>
-</ul></td>
-        </tr>
+</ul></p>
 
-    
-
-        <tr>
-            
-                <td class="name"><code>output</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">options.output</code>
+      
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
+      
 
-                
+      <p>You can replace the default output <code>console.log</code> by your own output function.
+You can use <a href="https://www.npmjs.com/package/debug">debug module</a> like the example.</p></p>
 
-                
-                </td>
-            
+      
+    </dd>
+   
+</dl>
 
-            
-                <td class="default">
-                
-                </td>
-            
 
-            <td class="description last"><p>You can replace the default output <code>console.log</code> by your own output function.
-You can use <a href="https://www.npmjs.com/package/debug">debug module</a> like the example.</p></td>
-        </tr>
+      
+    </dd>
+   
+</dl>
 
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -3667,98 +3130,70 @@ You can use <a href="https://www.npmjs.com/package/debug">debug module</a> like 
     <h5>Parameters:</h5>
     
 
-<table class="params">
-    <thead>
-    <tr>
+<dl>
+  
+  
+    <dt>
+      <code class="parameter">value</code>
+      
         
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">*</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Value to coerce</p></p>
 
-            <td class="description last"><p>Value to coerce</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>mySchema</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">mySchema</code>
+      
+        
 <span class="param-type">string</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
+      <p>Value to coerce</p></p>
 
-            <td class="description last"><p>Value to coerce</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-
-            <td class="type">
-            
-                
+      
+    </dd>
+  
+    <dt>
+      <code class="parameter">value</code>
+      
+        
 <span class="param-type">function</span>
 
 
-            
-            </td>
+      
+    </dt>
+    <dd class="para">
+      
 
-            
+      
 
-            
-
-            <td class="description last"><p>Stop propagation (accept undefined value). By default,
+      <p>Stop propagation (accept undefined value). By default,
 undefined don't stop the getter queue, this mean Blueconfig
-will continue to call other getter to find a value not undefined.</p></td>
-        </tr>
+will continue to call other getter to find a value not undefined.</p></p>
 
-    
-    </tbody>
-</table>
+      
+    </dd>
+   
+</dl>
+
 
 
 
@@ -3818,7 +3253,7 @@ will continue to call other getter to find a value not undefined.</p></td>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Sat May 02 2020 08:22:10 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a> on Sun May 03 2020 09:51:02 GMT+0000 (Coordinated Universal Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
