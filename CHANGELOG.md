@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [6.2.2] - 2019-05-03
+### Fixed
+- Improve lerna usage: (@A-312)
+  - Remove useless packages/\*/package-lock.json ;
+  - Remove useless script property in packages/\*/package.json ;
+  - Improve script commands & add postinstall.
+- Improve parameters display on docs (we don't use table anymore) (@A-312)
+- Fix vulns by upgrading some devDeps and yars-parser (@A-312)
+
 ## [6.2.1] - 2019-05-02
 ### Fixed
 - Fix vulns by upgrading some devDeps and yars-parser (@A-312)
