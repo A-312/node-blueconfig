@@ -155,7 +155,7 @@ BlueconfigCore.prototype.addGetter = function(name, getter, usedOnlyOnce, rewrit
  * })
  *
  * @param {object|object[]}    getters                      Object containing list of Getters/Object
- * @param {object}    getters.{name}                        {name} in `getters.{name}` is the getter name
+ * @param {object}    getters.{name}                        `name` is the getter name
  * @param {function}  getters.{name}.getter                 *See Blueconfig.addGetter*
  * @param {boolean}   [getters.{name}.usedOnlyOnce=false]   *See Blueconfig.addGetter*
  * @param {boolean}   [getters.{name}.rewrite=false]        *See Blueconfig.addGetter*

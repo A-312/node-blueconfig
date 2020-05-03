@@ -52,6 +52,9 @@
           "./docs/home/custom.css"
         ]
       }
+    },
+    "overwrite": {
+      "node_modules/docdash/tmpl/params.tmpl": "docs/home/tmpl/params.tmpl"
     }
   }
 }
